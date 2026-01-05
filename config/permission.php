@@ -210,6 +210,7 @@ return [
         
         //analytics
         'analytics.my',
+        'analytics.full',
 
         //settings
         'settings.manage',
@@ -243,6 +244,10 @@ return [
         'leads.list',
         'leads.delete',
         'leads.edit',
+        'leads.view',
+
+        //credit
+        'workspace.credit'
     ],
 
     'roles' => [
@@ -257,13 +262,28 @@ return [
                 'kanban.my',
                 'calender.my',
                 'analytics.my',
-                'settings.manage',
+
+                //proposals
                 'proposal.create',
                 'proposal.list',
                 'proposal.edit',
+
+                //portfolios
                 'portfolio.create',
                 'portfolio.list',
                 'portfolio.edit',
+
+                //leads
+                'leads.my',
+                'leads.list',
+                'leads.edit',
+                'leads.view',
+
+                //contacts
+                'contact.create',
+                'contact.list',
+                'contact.edit',
+                'contact.view',
             ]
         ]
     ],

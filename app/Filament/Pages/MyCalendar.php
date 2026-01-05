@@ -8,9 +8,14 @@ use Filament\Pages\Page;
 use Filament\Support\Icons\Heroicon;
 use Illuminate\Support\Facades\Auth;
 use UnitEnum;
+use App\Traits\HasPermission;
 
 class MyCalendar extends Page
 {
+    use HasPermission;
+    
+    protected static ?string $permission = 'calender.my';
+    
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedCalendar;
 
     protected static ?string $navigationLabel = 'My Calendar';

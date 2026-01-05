@@ -20,6 +20,11 @@ use Throwable;
 
 class ExtensionController extends Controller
 {
+    public function test(): JsonResponse
+    {
+        return response()->json(['success' => true, 'message' => 'Extension API is working']);
+    }
+
     public function __construct(private ProposalService $proposalService)
     {
     }
@@ -132,6 +137,15 @@ class ExtensionController extends Controller
 
         $description = $validated['job_description'];
         $type = $validated['type'] ?? 'intermediate';
+
+        $mapping = [
+          'beginner' => 'pitch',  
+          'intermediate' => 'experience',  
+          'professional' => 'approach',  
+        ];
+
+        $type = $mapping[$type] ?? 'experience';
+
         $words = isset($validated['words']) ? (int) $validated['words'] : 180;
 
         try {

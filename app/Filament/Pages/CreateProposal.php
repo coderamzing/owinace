@@ -18,11 +18,14 @@ use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
-
+use App\Traits\HasPermission;
 class CreateProposal extends Page implements HasForms
 {
     use InteractsWithForms;
-
+    use HasPermission;
+    
+    protected static ?string $permission = 'proposal.create';
+    
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedDocumentText;
 
     protected static ?string $navigationLabel = 'Create Proposal';

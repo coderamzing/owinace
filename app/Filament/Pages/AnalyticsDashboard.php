@@ -20,12 +20,17 @@ use Carbon\Carbon;
 use Livewire\Attributes\On;
 use Filament\Support\Icons\Heroicon;
 use BackedEnum;
+use App\Traits\HasPermission;
 
 class AnalyticsDashboard extends Page
 {
+    use HasPermission;
+    
+    protected static ?string $permission = 'analytics.full';
+    
     public ?string $selectedPeriod = null;
 
-    protected static ?string $navigationLabel = 'Dashboard';
+    protected static ?string $navigationLabel = 'Analytics';
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedBriefcase;
 

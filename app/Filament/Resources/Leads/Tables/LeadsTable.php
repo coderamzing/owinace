@@ -6,6 +6,7 @@ use App\Models\LeadKanban;
 use App\Models\LeadSource;
 use App\Models\TeamMember;
 use Filament\Forms\Components\TextInput;
+use Filament\Actions\DeleteAction;
 use Filament\Actions\EditAction;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
@@ -13,9 +14,11 @@ use Filament\Tables\Enums\FiltersLayout;
 use Filament\Tables\Filters\Filter;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
+use App\Traits\HasPermission;
 
 class LeadsTable
 {
+    use HasPermission;
     public static function configure(Table $table): Table
     {
         return $table
@@ -152,11 +155,29 @@ class LeadsTable
             ->filtersLayout(FiltersLayout::AboveContent)
             ->filtersFormColumns(3)
             ->recordActions([
-                \Filament\Actions\ViewAction::make(),
+                \Filament\Actions\ViewAction::make()
+                    ->visible(fn ($record) => self::hasPermissionTo('leads.view')),
                 EditAction::make()
                     ->modalHeading('Edit Lead')
                     ->modalSubmitActionLabel('Save')
-                    ->slideOver(),
+                    ->slideOver()
+                    ->visible(fn ($record) => self::hasPermissionTo('leads.edit'))
+                    ->mutateFormDataUsing(function (array $data): array {
+                        // Auto-set team_id from session
+                        $teamId = session('team_id');
+                        if ($teamId) {
+                            $data['team_id'] = $teamId;
+                        }
+                        
+                        return $data;
+                    }),
+                DeleteAction::make()
+                    ->requiresConfirmation()
+                    ->modalHeading('Delete Lead')
+                    ->modalDescription('This will permanently remove the lead.')
+                    ->modalSubmitActionLabel('Delete')
+                    ->visible(fn ($record) => self::hasPermissionTo('leads.delete'))
+                    ->color('danger'),
             ]);
     }
 }

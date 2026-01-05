@@ -11,9 +11,14 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
+use App\Traits\HasPermission;
 
 class LeadGoalResource extends Resource
 {
+    use HasPermission;
+
+    protected static ?string $permission = 'settings.manage';
+
     protected static ?string $model = LeadGoal::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedFlag;

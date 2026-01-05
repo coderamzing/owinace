@@ -55,6 +55,8 @@ class ListTeamMembers extends ListRecords
                         ]
                     );
 
+                    $user->assignRole($data['role']);
+
                     // Set user_id for team member
                     $data['user_id'] = $user->id;
                     unset($data['name']);

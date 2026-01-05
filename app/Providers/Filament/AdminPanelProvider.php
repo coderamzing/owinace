@@ -44,7 +44,7 @@ class AdminPanelProvider extends PanelProvider
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\Filament\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\Filament\Pages')
             ->pages([
-                \App\Filament\Pages\AnalyticsDashboard::class,
+                \App\Filament\Pages\MyAnalytics::class,
             ])
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\Filament\Widgets')
             ->widgets([
@@ -77,7 +77,7 @@ class AdminPanelProvider extends PanelProvider
                 Authenticate::class,
             ])
             ->renderHook(
-                PanelsRenderHook::TOPBAR_START,
+                PanelsRenderHook::USER_MENU_BEFORE,
                 fn (): View => view('filament.hooks.team-switcher'),
             )
             ->viteTheme('resources/css/filament/admin/theme.css');

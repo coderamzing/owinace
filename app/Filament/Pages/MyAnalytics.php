@@ -15,14 +15,19 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use Carbon\Carbon;
 use UnitEnum;
+use App\Traits\HasPermission;
 
 class MyAnalytics extends Page
 {
+    use HasPermission;
+    
+    protected static ?string $permission = 'analytics.my';
+    
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedChartBar;
 
     protected static ?string $navigationLabel = 'My Analytics';
 
-    protected static ?int $navigationSort = 5;
+    protected static ?int $navigationSort = 1;
 
     protected static ?string $title = 'My Analytics';
 

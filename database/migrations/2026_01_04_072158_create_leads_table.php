@@ -15,9 +15,9 @@ return new class extends Migration
             $table->id();
             $table->string('title', 255);
             $table->longText('description')->nullable();
-            $table->decimal('expected_value', 10, 2);
-            $table->decimal('actual_value', 10, 2);
-            $table->decimal('cost', 10, 2);
+            $table->decimal('expected_value', 10, 2)->nullable()->default(0);
+            $table->decimal('actual_value', 10, 2)->nullable()->default(0);
+            $table->decimal('cost', 10, 2)->nullable()->default(0);
             $table->timestamp('next_follow_up')->nullable();
             $table->timestamp('conversion_date')->nullable();
             $table->longText('notes')->nullable();

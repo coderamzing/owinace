@@ -11,10 +11,15 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
+use App\Traits\HasPermission;
 
 class ProposalResource extends Resource
 {
+    use HasPermission;
+
     protected static ?string $model = Proposal::class;
+
+    protected static ?string $permission = 'proposal.list';
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedDocumentText;
 

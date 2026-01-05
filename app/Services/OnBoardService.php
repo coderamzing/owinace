@@ -52,6 +52,9 @@ class OnBoardService
                 'owner_id' => $user->id,
                 'description' => $workspaceData['description'] ?? null,
                 'slug' => $slug,
+                'trial_end' => now()->addDays(14),
+                'expire_at' => now()->addDays(30),
+                'start_at' => now(),
             ]);
 
         

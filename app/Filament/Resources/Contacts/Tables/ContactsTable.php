@@ -3,13 +3,16 @@
 namespace App\Filament\Resources\Contacts\Tables;
 
 use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use App\Traits\HasPermission;
 
 class ContactsTable
 {
+    use HasPermission;
     public static function configure(Table $table): Table
     {
         return $table
@@ -82,6 +85,7 @@ class ContactsTable
                     ->modalHeading('Edit Contact')
                     ->modalSubmitActionLabel('Save')
                     ->slideOver()
+                    ->visible(fn ($record) => self::hasPermissionTo('contact.edit'))
                     ->mutateFormDataUsing(function (array $data, $record): array {
                         $teamId = session('team_id');
 
@@ -93,6 +97,13 @@ class ContactsTable
 
                         return $data;
                     }),
+                DeleteAction::make()
+                    ->requiresConfirmation()
+                    ->modalHeading('Delete Contact')
+                    ->modalDescription('This will permanently remove the contact.')
+                    ->modalSubmitActionLabel('Delete')
+                    ->visible(fn ($record) => self::hasPermissionTo('contact.delete'))
+                    ->color('danger'),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([

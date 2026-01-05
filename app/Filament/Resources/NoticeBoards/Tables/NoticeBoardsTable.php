@@ -10,9 +10,11 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\ViewColumn;
 use Filament\Tables\Table;
 use Illuminate\Support\HtmlString;
+use App\Traits\HasPermission;
 
 class NoticeBoardsTable
 {
+    use HasPermission;
     public static function configure(Table $table): Table
     {
         return $table
@@ -60,11 +62,13 @@ class NoticeBoardsTable
                         'record' => $record,
                     ]))
                     ->modalSubmitAction(false)
-                    ->modalCancelActionLabel('Close'),
+                    ->modalCancelActionLabel('Close')
+                    ->visible(fn ($record) => self::hasPermissionTo('noticeboard.view')),
                 EditAction::make()
                     ->modalHeading('Edit Notice')
                     ->modalSubmitActionLabel('Save')
                     ->slideOver()
+                    ->visible(fn ($record) => self::hasPermissionTo('noticeboard.edit'))
                     ->mutateFormDataUsing(function (array $data, $record): array {
                         // Preserve workspace_id - don't allow it to be changed
                         $data['workspace_id'] = $record->workspace_id;
@@ -76,6 +80,7 @@ class NoticeBoardsTable
                     ->modalHeading('Delete Notice')
                     ->modalDescription('This action will permanently remove this notice.')
                     ->modalSubmitActionLabel('Delete')
+                    ->visible(fn ($record) => self::hasPermissionTo('noticeboard.delete'))
                     ->color('danger'),
             ])
             ->bulkActions([]);

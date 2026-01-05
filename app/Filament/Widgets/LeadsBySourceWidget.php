@@ -12,6 +12,8 @@ use Carbon\Carbon;
 class LeadsBySourceWidget extends ChartWidget
 {
     protected static ?int $sort = 4;
+    
+    protected int | string | array $columnSpan = '1/2';
 
     public function getHeading(): string
     {

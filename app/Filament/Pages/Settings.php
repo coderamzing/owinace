@@ -9,13 +9,18 @@ use App\Filament\Resources\LeadSources\LeadSourceResource;
 use App\Filament\Resources\LeadTags\LeadTagResource;
 use App\Filament\Resources\TeamMembers\TeamMemberResource;
 use App\Filament\Resources\Teams\TeamResource;
+use App\Filament\Resources\WorkspaceCredits\WorkspaceCreditResource;
 use BackedEnum;
 use Filament\Pages\Page;
 use Filament\Support\Icons\Heroicon;
 use UnitEnum;
+use App\Traits\HasPermission;
 
 class Settings extends Page
 {
+    use HasPermission;
+
+    protected static ?string $permission = 'settings.manage';
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedCog6Tooth;
     
@@ -88,6 +93,14 @@ class Settings extends Page
                 'url' => LeadGoalResource::getUrl('index'),
                 'color' => 'warning',
                 'resource' => LeadGoalResource::class,
+            ],
+            [
+                'title' => 'Credit History',
+                'description' => 'View workspace credit transactions and balance history',
+                'icon' => 'heroicon-o-credit-card',
+                'url' => WorkspaceCreditResource::getUrl('index'),
+                'color' => 'info',
+                'resource' => WorkspaceCreditResource::class,
             ],
         ];
 

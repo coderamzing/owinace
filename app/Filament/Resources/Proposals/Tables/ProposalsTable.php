@@ -7,9 +7,11 @@ use Filament\Actions\EditAction;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use App\Traits\HasPermission;
 
 class ProposalsTable
 {
+    use HasPermission;
     public static function configure(Table $table): Table
     {
         return $table
@@ -25,9 +27,6 @@ class ProposalsTable
                     ->sortable(),
                 IconColumn::make('is_active')
                     ->boolean(),
-                TextColumn::make('user.name')
-                    ->searchable()
-                    ->sortable(),
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -44,12 +43,14 @@ class ProposalsTable
                 EditAction::make()
                     ->modalHeading('Edit Proposal')
                     ->modalSubmitActionLabel('Save')
-                    ->slideOver(),
+                    ->slideOver()
+                    ->visible(fn ($record) => self::hasPermissionTo('proposal.edit')),
                 DeleteAction::make()
                     ->requiresConfirmation()
                     ->modalHeading('Delete Proposal')
                     ->modalDescription('This will permanently remove the proposal.')
                     ->modalSubmitActionLabel('Delete')
+                    ->visible(fn ($record) => self::hasPermissionTo('proposal.delete'))
                     ->color('danger'),
             ])
             ->bulkActions([]);

@@ -7,9 +7,11 @@ use Filament\Actions\EditAction;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use App\Traits\HasPermission;
 
 class PortfoliosTable
 {
+    use HasPermission;
     public static function configure(Table $table): Table
     {
         return $table
@@ -43,12 +45,14 @@ class PortfoliosTable
                 EditAction::make()
                     ->modalHeading('Edit Portfolio')
                     ->modalSubmitActionLabel('Save')
-                    ->slideOver(),
+                    ->slideOver()
+                    ->visible(fn ($record) => self::hasPermissionTo('portfolio.edit')),
                 DeleteAction::make()
                     ->requiresConfirmation()
                     ->modalHeading('Delete Portfolio')
                     ->modalDescription('This will permanently remove the portfolio.')
                     ->modalSubmitActionLabel('Delete')
+                    ->visible(fn ($record) => self::hasPermissionTo('portfolio.delete'))
                     ->color('danger'),
             ])
             ->bulkActions([]);

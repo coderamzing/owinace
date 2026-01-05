@@ -18,7 +18,7 @@ class ProposalService
     public function generateProposal(
         string $jobDescription, 
         int $teamId, 
-        string $type = 'intermediate', 
+        string $type = 'pitch', 
         int $words = 180
     ): array
     {
