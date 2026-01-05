@@ -72,7 +72,7 @@ class OnBoardService
             // Create default team for the workspace
             $team = Team::create([
                 'workspace_id' => $workspace->id,
-                'name' => 'Default Team',
+                'name' => $workspace->name,
                 'description' => 'Default team for ' . $workspace->name,
                 'created_by_id' => $user->id,
             ]);
@@ -83,6 +83,7 @@ class OnBoardService
                 'user_id' => $user->id,
                 'role' => 'admin',
                 'status' => 'active',
+                'email' => $user->email,
                 'joined_at' => now(),
             ]);
 

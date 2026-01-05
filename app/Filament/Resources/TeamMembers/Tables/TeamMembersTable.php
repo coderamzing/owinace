@@ -2,11 +2,21 @@
 
 namespace App\Filament\Resources\TeamMembers\Tables;
 
+use App\Mail\WelcomeTeamMemberMail;
+use App\Models\User;
+use Filament\Actions\Action;
+use Filament\Actions\ActionGroup;
 use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
-use Filament\Actions\EditAction;
+use Filament\Forms\Components\TextInput;
+use Filament\Notifications\Notification;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Str;
 
 class TeamMembersTable
 {
@@ -58,10 +68,59 @@ class TeamMembersTable
                 //
             ])
             ->recordActions([
-                EditAction::make()
-                    ->modalHeading('Edit Team Member')
-                    ->modalSubmitActionLabel('Save')
-                    ->slideOver(),
+                ActionGroup::make([
+                    Action::make('resetPassword')
+                        ->label('Reset Password')
+                        ->icon('heroicon-o-key')
+                        ->color('warning')
+                        ->requiresConfirmation()
+                        ->modalHeading('Reset Password')
+                        ->modalDescription('Enter a new password for this team member.')
+                        ->modalSubmitActionLabel('Reset Password')
+                        ->form([
+                            TextInput::make('password')
+                                ->label('New Password')
+                                ->password()
+                                ->required()
+                                ->minLength(8)
+                                ->confirmed(),
+                            TextInput::make('password_confirmation')
+                                ->label('Confirm New Password')
+                                ->password()
+                                ->required(),
+                        ])
+                        ->action(function (array $data, $record): void {
+                            if ($record->user) {
+                                $record->user->update([
+                                    'password' => Hash::make($data['password']),
+                                ]);
+
+                                Notification::make()
+                                    ->title('Password reset successfully')
+                                    ->success()
+                                    ->send();
+                            } else {
+                                Notification::make()
+                                    ->title('User not found')
+                                    ->danger()
+                                    ->send();
+                            }
+                        })
+                        ->visible(fn ($record) => $record->user !== null),
+                    DeleteAction::make()
+                        ->label('Delete')
+                        ->modalHeading('Delete Team Member')
+                        ->modalDescription('Are you sure you want to delete this team member? This action cannot be undone.')
+                        ->modalSubmitActionLabel('Delete')
+                        ->successNotificationTitle('Team member deleted successfully')
+                        ->visible(fn ($record) => $record->user_id !== Auth::id())
+                        ->after(function ($record) {
+                            // Delete the associated user if exists
+                            if ($record->user) {
+                                $record->user->delete();
+                            }
+                        }),
+                ]),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([

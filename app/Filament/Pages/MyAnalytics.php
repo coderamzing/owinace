@@ -28,6 +28,11 @@ class MyAnalytics extends Page
 
     protected static ?string $slug = 'my-analytic';
 
+    /**
+     * Hide the default page heading – the view renders its own header.
+     */
+    protected ?string $heading = '';
+
     protected string $view = 'filament.pages.my-analytics';
 
     public ?string $selectedPeriod = null;

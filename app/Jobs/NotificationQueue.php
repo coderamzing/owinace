@@ -23,7 +23,7 @@ use Illuminate\Queue\SerializesModels;
  * // Notify a single employee
  * NotificationQueue::dispatch(
  *     type: 'employee',
- *     identifier: $employeeId, // employee ID
+ *     identifier: $memberId, // employee ID
  *     notificationType: 'leave.approved',
  *     data: [
  *         'title' => 'Leave Approved',
@@ -82,8 +82,8 @@ class NotificationQueue implements ShouldQueue
      * @param array $data Notification data ['title' => string, 'content' => string, 'url' => string|null, 'email' => array]
      */
     public function __construct(
-        public string $type, // 'employee' or 'workspace'
-        public int $identifier, // employee_id or workspace_id
+        public string $type, 
+        public int $identifier,
         public string $notificationType,
         public array $data = []
     ) {
@@ -99,7 +99,7 @@ class NotificationQueue implements ShouldQueue
         if ($this->type === 'member') {
             // Notify a single employee
             $notificationService->notifyMember(
-                employeeId: $this->identifier,
+                memberId: $this->identifier,
                 notificationType: $this->notificationType,
                 data: $this->data
             );

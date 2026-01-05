@@ -13,11 +13,9 @@ class MyCalendar extends Page
 {
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedCalendar;
 
-    protected static string|UnitEnum|null $navigationGroup = 'Personal';
-
     protected static ?string $navigationLabel = 'My Calendar';
 
-    protected static ?int $navigationSort = 4;
+    protected static ?int $navigationSort = 2;
 
     protected static ?string $title = 'My Calendar';
 

@@ -2,6 +2,7 @@
 
 namespace App\Livewire;
 
+use App\Models\Lead;
 use App\Models\LeadKanban;
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -101,6 +102,11 @@ class LeadKanbanManagement extends Component
         // Prevent deletion of system kanban
         if ($kanban->is_system) {
             session()->flash('error', 'Cannot delete system kanban.');
+            return;
+        }
+
+        if (Lead::where('team_id', $teamId)->where('kanban_id', $kanban->id)->exists()) {
+            session()->flash('error', 'Cannot delete this stage because it is linked to existing leads.');
             return;
         }
         

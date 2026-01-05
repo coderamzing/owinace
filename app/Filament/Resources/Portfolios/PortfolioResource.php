@@ -18,6 +18,8 @@ class PortfolioResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedBriefcase;
 
+    protected static ?int $navigationSort = 10;
+
     public static function form(Schema $schema): Schema
     {
         return PortfolioForm::configure($schema);

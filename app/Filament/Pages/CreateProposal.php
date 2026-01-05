@@ -5,8 +5,8 @@ namespace App\Filament\Pages;
 use App\Models\Proposal;
 use App\Models\Team;
 use App\Models\WorkspaceCredit;
-use App\Services\OpenAIService;
 use App\Services\ProposalService;
+use App\Filament\Resources\Proposals\ProposalResource;
 use BackedEnum;
 use Filament\Forms\Components\Radio;
 use Filament\Forms\Components\Textarea;
@@ -27,9 +27,9 @@ class CreateProposal extends Page implements HasForms
 
     protected static ?string $navigationLabel = 'Create Proposal';
 
-    protected static ?int $navigationSort = 3;
+    protected static ?int $navigationSort = 2;
 
-    protected static ?string $title = 'Create New Coverletter';
+    protected static ?string $title = '';
 
     protected static ?string $slug = 'create-proposal';
 
@@ -38,12 +38,10 @@ class CreateProposal extends Page implements HasForms
     public ?array $data = [];
 
     protected ProposalService $proposalService;
-    protected OpenAIService $openAIService;
 
-    public function boot(ProposalService $proposalService, OpenAIService $openAIService): void
+    public function boot(ProposalService $proposalService): void
     {
         $this->proposalService = $proposalService;
-        $this->openAIService = $openAIService;
     }
 
     public function mount(): void
@@ -81,9 +79,9 @@ class CreateProposal extends Page implements HasForms
                 Radio::make('type')
                     ->label('Proposal Type')
                     ->options([
-                        'beginner' => 'Beginner',
-                        'intermediate' => 'Intermediate',
-                        'professional' => 'Professional',
+                        'pitch' => 'PITCH',
+                        'intermediate' => 'EXPERIENCE',
+                        'professional' => 'APPROACH',
                     ])
                     ->default('intermediate')
                     ->inline()
@@ -126,15 +124,13 @@ class CreateProposal extends Page implements HasForms
             //     ]);
             // }
 
-            // Match portfolio
-            $portfolioText = $this->proposalService->matchPortfolio($description, $teamId);
-
             // Generate proposal
-            $result = $this->openAIService->generateProposal($description, $portfolioText, $type, $words);
-
-            // Extract keywords
-            $keywords = $this->openAIService->extractKeywords($description);
-            $keywordsText = implode(' ', $keywords);
+            $result = $this->proposalService->generateProposal(
+                $description,
+                $teamId,
+                $type,
+                $words
+            );
 
             // Deduct credits
             WorkspaceCredit::create([
@@ -145,12 +141,12 @@ class CreateProposal extends Page implements HasForms
             ]);
 
             // Save proposal
-            Proposal::create([
+            $proposal = Proposal::create([
                 'user_id' => Auth::id(),
                 'team_id' => $teamId,
                 'title' => substr($result['title'], 0, 255),
                 'description' => $result['content'],
-                'keywords' => $keywordsText,
+                'keywords' => '',
                 'job_description' => $description,
                 'sort_order' => 0,
             ]);
@@ -158,18 +154,18 @@ class CreateProposal extends Page implements HasForms
             Notification::make()
                 ->success()
                 ->title('Proposal Generated')
-                ->body('Your proposal has been generated successfully!')
+                ->body('Your proposal has been generated successfully! Redirecting...')
                 ->send();
 
-            // Redirect to proposals list
-            $this->redirect(route('filament.admin.resources.proposals.index'));
+            // Redirect to proposal view page
+            $this->redirect(ProposalResource::getUrl('view', ['record' => $proposal]));
         } catch (ValidationException $e) {
             throw $e;
         } catch (\Exception $e) {
             Notification::make()
                 ->danger()
                 ->title('Error')
-                ->body('Failed to generate proposal: ' . $e->getMessage())
+                ->body('Failed to generate proposal: ' . $e->getTraceAsString())
                 ->send();
         }
     }

@@ -4,6 +4,7 @@ namespace App\Filament\Resources\Portfolios\Schemas;
 
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\TagsInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Schema;
 
@@ -11,8 +12,6 @@ class PortfolioForm
 {
     public static function configure(Schema $schema): Schema
     {
-        $workspaceId = session('workspace_id') ?? auth()->user()?->workspace_id;
-
         return $schema
             ->components([
                 TextInput::make('title')
@@ -20,12 +19,17 @@ class PortfolioForm
                     ->maxLength(255),
                 Textarea::make('description')
                     ->required()
+                    ->maxLength(150)
+                    ->rule('max:150')
                     ->columnSpanFull(),
                 TextInput::make('scale')
                     ->required()
                     ->maxLength(100),
-                Textarea::make('keywords')
+                TagsInput::make('keywords')
                     ->required()
+                    ->rules(['array', 'max:10'])
+                    ->reorderable(false)
+                    ->placeholder('Add up to 10 keywords')
                     ->columnSpanFull(),
                 TextInput::make('sort_order')
                     ->required()

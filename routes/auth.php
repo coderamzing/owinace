@@ -9,6 +9,7 @@ use App\Http\Controllers\Auth\PasswordController;
 use App\Http\Controllers\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\Auth\RegisterController;
+use App\Http\Controllers\Auth\ResendVerificationController;
 use App\Http\Controllers\Auth\VerifyEmailController;
 use Illuminate\Support\Facades\Route;
 
@@ -34,6 +35,11 @@ Route::middleware('guest')->group(function () {
 
     Route::post('reset-password', [NewPasswordController::class, 'store'])
         ->name('password.store');
+
+    // Resend verification email for guests
+    Route::post('resend-verification', [ResendVerificationController::class, 'resend'])
+        ->middleware('throttle:6,1')
+        ->name('verification.resend');
 });
 
 // Email verification route - accessible without auth (EmailVerificationRequest handles authentication)

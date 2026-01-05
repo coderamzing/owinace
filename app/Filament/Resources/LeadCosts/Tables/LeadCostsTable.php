@@ -2,6 +2,8 @@
 
 namespace App\Filament\Resources\LeadCosts\Tables;
 
+use Filament\Actions\ActionGroup;
+use Filament\Actions\DeleteAction;
 use Filament\Actions\EditAction;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
@@ -42,10 +44,14 @@ class LeadCostsTable
                 //
             ])
             ->recordActions([
-                EditAction::make()
-                    ->modalHeading('Edit Lead Cost')
-                    ->modalSubmitActionLabel('Save')
-                    ->slideOver(),
+                ActionGroup::make([
+                    EditAction::make()
+                        ->modalHeading('Edit Lead Cost')
+                        ->modalSubmitActionLabel('Save')
+                        ->slideOver(),
+                    DeleteAction::make()
+                        ->requiresConfirmation(),
+                ]),
             ])
             ->bulkActions([]);
     }

@@ -199,4 +199,72 @@ return [
 
         'store' => 'default',
     ],
+
+
+    'permissions' => [
+        //kanban
+        'kanban.my',
+
+        //calendar
+        'calender.my',
+        
+        //analytics
+        'analytics.my',
+
+        //settings
+        'settings.manage',
+
+        //proposal
+        'proposal.create',
+        'proposal.list',
+        'proposal.delete',
+        'proposal.edit',
+
+        //portfolio
+        'portfolio.create',
+        'portfolio.list',
+        'portfolio.delete',
+        'portfolio.edit',
+
+        //Noticeboard
+        'noticeboard.create',
+        'noticeboard.list',
+        'noticeboard.delete',
+        'noticeboard.edit',
+
+        //contact
+        'contact.create',
+        'contact.list',
+        'contact.delete',
+        'contact.edit',
+
+        //leads
+        'leads.my',
+        'leads.list',
+        'leads.delete',
+        'leads.edit',
+    ],
+
+    'roles' => [
+        'owner' => [
+            'permissions' => ['all']
+        ],
+        'admin' => [
+            'permissions' => ['all']
+        ],
+        'member' => [
+            'permissions' => [
+                'kanban.my',
+                'calender.my',
+                'analytics.my',
+                'settings.manage',
+                'proposal.create',
+                'proposal.list',
+                'proposal.edit',
+                'portfolio.create',
+                'portfolio.list',
+                'portfolio.edit',
+            ]
+        ]
+    ],
 ];

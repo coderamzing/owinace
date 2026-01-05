@@ -81,7 +81,18 @@ class ContactsTable
                 EditAction::make()
                     ->modalHeading('Edit Contact')
                     ->modalSubmitActionLabel('Save')
-                    ->slideOver(),
+                    ->slideOver()
+                    ->mutateFormDataUsing(function (array $data, $record): array {
+                        $teamId = session('team_id');
+
+                        if ($teamId) {
+                            $data['team_id'] = $teamId;
+                        } elseif ($record?->team_id) {
+                            $data['team_id'] = $record->team_id;
+                        }
+
+                        return $data;
+                    }),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([

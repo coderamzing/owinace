@@ -1,5 +1,5 @@
 <x-filament-panels::page>
-    <div class="max-w-4xl mx-auto">
+    <div class="min-w-full mx-auto lg:min-w-5xl">
         <div class="bg-white dark:bg-gray-800 shadow-sm border border-gray-200 dark:border-gray-700 rounded-lg">
             <div class="p-6 border-b border-gray-200 dark:border-gray-700">
                 <h2 class="text-2xl font-bold text-gray-900 dark:text-white">
@@ -14,13 +14,29 @@
                     {{ $this->form }}
 
                     <div class="mt-6 flex justify-center">
-                        <x-filament::button 
-                            type="submit" 
+                        <x-filament::button
+                            type="submit"
                             color="primary"
                             size="lg"
-                            icon="heroicon-o-sparkles"
+                            wire:target="generate"
+                            wire:loading.attr="disabled"
+                            wire:loading.class="opacity-70 cursor-not-allowed"
                         >
-                            Generate
+                            <span class="inline-flex items-center gap-2">
+                                <x-filament::loading-indicator
+                                    wire:loading
+                                    wire:target="generate"
+                                    class="w-5 h-5"
+                                />
+                                <x-filament::icon
+                                    icon="heroicon-o-sparkles"
+                                    class="w-5 h-5"
+                                    wire:loading.remove
+                                    wire:target="generate"
+                                />
+                                <span wire:loading.remove wire:target="generate">Generate</span>
+                                <span wire:loading wire:target="generate">Generating...</span>
+                            </span>
                         </x-filament::button>
                     </div>
                 </form>

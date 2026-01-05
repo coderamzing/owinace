@@ -5,11 +5,14 @@ namespace App\Filament\Resources\NoticeBoards\Pages;
 use App\Filament\Resources\NoticeBoards\NoticeBoardResource;
 use Filament\Actions;
 use Filament\Resources\Pages\ListRecords;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\Builder;
 
 class ListNoticeBoards extends ListRecords
 {
     protected static string $resource = NoticeBoardResource::class;
+
+    protected string $view = 'filament.resources.notice-boards.list-notice-boards';
 
     protected function getHeaderActions(): array
     {
@@ -23,7 +26,7 @@ class ListNoticeBoards extends ListRecords
                     
                     if (!$data['workspace_id']) {
                         // Fallback to user's workspace_id if session is not set
-                        $data['workspace_id'] = auth()->user()?->workspace_id;
+                        $data['workspace_id'] = Auth::user()?->workspace_id;
                     }
                     
                     // Set team_id from session if available (can be null for all teams)
@@ -37,12 +40,17 @@ class ListNoticeBoards extends ListRecords
         ];
     }
 
-    protected function getTableQuery(): Builder
+    protected function getBaseNoticeQuery(): Builder
     {
-        $workspaceId = session('workspace_id') ?? auth()->user()?->workspace_id;
-        
+        $workspaceId = session('workspace_id') ?? Auth::user()?->workspace_id;
+
         return parent::getTableQuery()
             ->when($workspaceId, fn ($query) => $query->where('workspace_id', $workspaceId));
+    }
+
+    protected function getTableQuery(): Builder
+    {
+        return $this->getBaseNoticeQuery();
     }
 }
 

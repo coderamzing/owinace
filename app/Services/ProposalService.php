@@ -15,100 +15,225 @@ class ProposalService
         $this->openAIService = $openAIService;
     }
 
-    /**
-     * Match portfolio entries to job description using semantic similarity.
-     *
-     * @param string $jobDescription
-     * @param int $teamId
-     * @param float $threshold
-     * @return string
-     */
-    public function matchPortfolio(string $jobDescription, int $teamId, float $threshold = 0.40): string
+    public function generateProposal(
+        string $jobDescription, 
+        int $teamId, 
+        string $type = 'intermediate', 
+        int $words = 180
+    ): array
     {
-        // Extract keywords from job description
-        $jobKeywords = $this->openAIService->extractKeywords($jobDescription);
-        $jobKeywordsText = implode(' ', $jobKeywords);
+        $portfolioMatches = $this->matchJobWithPortfolios(
+            $teamId, 
+            $jobDescription
+        );
 
-        // Load portfolio entries
-        $portfolioEntries = Portfolio::where('team_id', $teamId)
-            ->where('is_active', true)
-            ->get(['id', 'keywords', 'description']);
+        $portfolioText = $this->buildPortfolioText($portfolioMatches);
 
-        if ($portfolioEntries->isEmpty()) {
-            return '';
-        }
+        //dd($portfolioText);
 
-        // Prepare portfolio data
-        $portfolioKeywordTexts = [];
-        $portfolioDescriptions = [];
+        $prompt = $this->buildPrompt($jobDescription, $portfolioText, $type, $words);
 
-        foreach ($portfolioEntries as $entry) {
-            $keywords = $entry->keywords ? explode(',', $entry->keywords) : [];
-            $keywordText = implode(' ', array_map('strtolower', $keywords));
-            $portfolioKeywordTexts[] = $keywordText;
-            $portfolioDescriptions[] = $entry->description ?? '';
-        }
-
-        // Get embeddings
-        $jobEmbedding = $this->openAIService->getEmbedding($jobKeywordsText);
-        $portfolioEmbeddings = [];
-
-        foreach ($portfolioKeywordTexts as $text) {
-            if (!empty($text)) {
-                $portfolioEmbeddings[] = $this->openAIService->getEmbedding($text);
-            } else {
-                $portfolioEmbeddings[] = [];
-            }
-        }
-
-        // Calculate cosine similarity
-        $matchedDescriptions = [];
-        foreach ($portfolioEmbeddings as $index => $portfolioEmbedding) {
-            if (empty($portfolioEmbedding)) {
-                continue;
-            }
-
-            $similarity = $this->cosineSimilarity($jobEmbedding, $portfolioEmbedding);
-
-            if ($similarity >= $threshold) {
-                $matchedDescriptions[] = $portfolioDescriptions[$index];
-            }
-        }
-
-        return implode(', ', $matchedDescriptions);
+        return $this->openAIService->generateProposal($prompt);
     }
 
+    
     /**
-     * Calculate cosine similarity between two vectors.
-     *
-     * @param array $vectorA
-     * @param array $vectorB
-     * @return float
+     * Build the prompt based on type.
      */
-    private function cosineSimilarity(array $vectorA, array $vectorB): float
+    private function buildPrompt(string $description, string $portfolioText, string $type, int $words): string
     {
-        if (count($vectorA) !== count($vectorB)) {
-            return 0.0;
+        if ($type === 'pitch') {
+            return $this->buildPitchPrompt($description, $portfolioText, $words);
+        } elseif ($type === 'experience') {
+            return $this->buildExperiencePrompt($description, $portfolioText, $words);
+        } else {
+            return $this->buildApproachPrompt($description, $portfolioText, $words);
+        }
+    }
+    
+    public function matchJobWithPortfolios(
+        int $teamId,
+        string $jobDescription,
+        int $limit = 3
+    ) {
+        // 1️⃣ Create job embedding
+        $jobEmbedding = $this->openAIService->createEmbedding(
+            $this->buildJobSemanticText($jobDescription)
+        );
+
+        // 2️⃣ Load portfolios (already embedded)
+        $portfolios = Portfolio::where('team_id', $teamId)
+            ->where('is_active', true)
+            ->whereNotNull('embedding')
+            ->get(['id', 'title', 'keywords', 'description', 'embedding']);
+
+        // 3️⃣ Match job ↔ portfolio embeddings
+        $scored = $portfolios->map(function ($portfolio) use ($jobEmbedding) {
+            return [
+                'portfolio' => $portfolio,
+                'score' => $this->cosineSimilarity(
+                    $jobEmbedding,
+                    $portfolio->embedding
+                ),
+            ];
+        });
+
+        // 4️⃣ Sort & return best matches
+        return $scored
+            ->sortByDesc('score')
+            ->take($limit)
+            ->values();
+    }
+
+    private function buildPortfolioText(Collection $matches): string
+    {
+        if ($matches->isEmpty()) {
+            return 'No portfolio items available yet.';
         }
 
-        $dotProduct = 0.0;
+        return $matches
+            ->map(function (array $match, int $index) {
+                /** @var \App\Models\Portfolio $portfolio */
+                $portfolio = $match['portfolio'];
+                $parts = [];
+
+                $parts[] = ($index + 1) . ". {$portfolio->title}";
+
+                if (!empty($portfolio->keywords)) {
+                    $parts[] = "Keywords: " . implode(', ', $portfolio->keywords);
+                }
+
+                $description = trim((string) $portfolio->description);
+                if ($description !== '') {
+                    $parts[] = "Description: {$description}";
+                }
+
+                return implode(' | ', $parts);
+            })
+            ->implode("\n");
+    }
+
+    private function buildJobSemanticText(string $jobDescription): string
+    {
+        return trim(strip_tags($jobDescription));
+    }
+
+    private function cosineSimilarity(array $a, array $b): float
+    {
+        $dot = 0.0;
         $normA = 0.0;
         $normB = 0.0;
 
-        for ($i = 0; $i < count($vectorA); $i++) {
-            $dotProduct += $vectorA[$i] * $vectorB[$i];
-            $normA += $vectorA[$i] * $vectorA[$i];
-            $normB += $vectorB[$i] * $vectorB[$i];
+        foreach ($a as $i => $v) {
+            $dot += $v * $b[$i];
+            $normA += $v * $v;
+            $normB += $b[$i] * $b[$i];
         }
 
-        $normA = sqrt($normA);
-        $normB = sqrt($normB);
+        return $dot / (sqrt($normA) * sqrt($normB));
+    }
 
-        if ($normA == 0 || $normB == 0) {
-            return 0.0;
-        }
+    private function buildPitchPrompt(string $description, string $portfolioText, int $words): string
+    {
+        return "Write a personalized Upwork proposal of {$words} words.
+    
+        Job:
+        {$description}
+        
+        Relevant example from my work:
+        {$portfolioText}
+        
+        Instructions:
+        
+        - Start with a strong hook that clearly shows you understand the client's problem. No greetings.
+        
+        - Immediately propose a clear, practical solution approach (what you would do).
+        
+        - Use ONE strong, relevant example from the portfolio to support the solution (rephrase naturally; include links only if present).
+        
+        - Outline a simple 3–4 step execution plan focused on outcomes, not theory.
+        
+        - Keep the tone confident, practical, and friendly — like a problem-solver, not a salesperson.
+        
+        - End with a clear call-to-action and optionally up to 2–3 short, relevant questions.
+        
+        - Use short paragraphs; light formatting (bullets, **bold**, icons) is allowed.
+        
+        - Avoid repeating or copying job text; sound human, decisive, and tailored.
+        
+        Output format (STRICT):
+        Return ONLY valid JSON with keys \"title\" and \"content\".
+        No markdown. No code fences. No explanations.";
+    }
 
-        return $dotProduct / ($normA * $normB);
+    private function buildExperiencePrompt(string $description, string $portfolioText, int $words): string
+    {
+        return "Write a {$words}-word Upwork proposal that positions me as an experienced and reliable professional.
+    
+        Client requirements:
+        {$description}
+        
+        Relevant experience:
+        {$portfolioText}
+        
+        Guidelines:
+        
+        - Start confidently with understanding + credibility. No greetings.
+        
+        - Tone: experienced freelancer — calm, assured, professional, and friendly.
+        
+        - Emphasize depth of experience, similar projects, and proven results.
+        
+        - Clearly connect past experience to the client’s specific needs and goals.
+        
+        - Structure:
+        Intro → Understanding of needs → Relevant experience & proof → How I’ll apply it here → Why I’m a safe choice → CTA
+        
+        - Use light formatting (**bold**, • bullets, ✅ icons) to improve readability.
+        
+        - Optionally include up to 2–3 thoughtful, relevant questions.
+        
+        - Avoid buzzwords and exaggeration; focus on clarity, trust, and competence.
+        
+        Output format (STRICT):
+        Return ONLY valid JSON with keys \"title\" and \"content\".
+        No markdown. No code fences. No explanations.";
+    }
+
+    private function buildApproachPrompt(string $description, string $portfolioText, int $words): string
+    {
+        return "Write a {$words}-word Upwork proposal focused on my approach and thinking process.
+    
+        Client goal:
+        {$description}
+        
+        Relevant background (use only where helpful):
+        {$portfolioText}
+        
+        Guidelines:
+        
+        - Start by reframing the client’s problem in your own words to show deep understanding. No greetings.
+        
+        - Tone: consultant-level — thoughtful, confident, and clear.
+        
+        - Identify key challenges, risks, or decisions the client may be facing.
+        
+        - Explain your proposed approach or strategy step-by-step, including reasoning and trade-offs.
+        
+        - Reference experience only where it strengthens the approach (do not over-list achievements).
+        
+        - Structure:
+        Understanding → Key challenges → Proposed approach → Why this approach works → Why I’m a good fit → CTA
+        
+        - Use light formatting (**bold**, • bullets, ✅ icons) for clarity.
+        
+        - Optionally include up to 2–3 sharp, insight-driven questions.
+        
+        - Keep language concise, logical, and original; avoid generic advice.
+        
+        Output format (STRICT):
+        Return ONLY valid JSON with keys \"title\" and \"content\".
+        No markdown. No code fences. No explanations.";
     }
 }
 

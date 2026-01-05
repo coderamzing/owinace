@@ -2,7 +2,6 @@
 
 namespace App\Filament\Resources\Contacts\Schemas;
 
-use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Schema;
 
@@ -43,12 +42,6 @@ class ContactForm
                     ->url()
                     ->maxLength(200)
                     ->columnSpanFull(),
-                
-                Select::make('team_id')
-                    ->label('Team')
-                    ->relationship('team', 'name')
-                    ->searchable()
-                    ->nullable(),
             ]);
     }
 }

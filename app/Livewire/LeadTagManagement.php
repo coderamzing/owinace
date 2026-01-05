@@ -2,6 +2,7 @@
 
 namespace App\Livewire;
 
+use App\Models\Lead;
 use App\Models\LeadTag;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
@@ -94,6 +95,12 @@ class LeadTagManagement extends Component
     {
         $teamId = session('team_id');
         $tag = LeadTag::where('team_id', $teamId)->findOrFail($id);
+
+        if ($tag->leads()->where('team_id', $teamId)->exists()) {
+            session()->flash('error', 'Cannot delete this tag because it is linked to existing leads.');
+            return;
+        }
+
         $tag->delete();
         session()->flash('message', 'Lead Tag deleted successfully.');
         $this->resetPage();

@@ -18,7 +18,16 @@ class ViewLead extends ViewRecord
             EditAction::make()
                 ->modalHeading('Edit Lead')
                 ->modalSubmitActionLabel('Save')
-                ->slideOver(),
+                ->slideOver()
+                ->mutateFormDataUsing(function (array $data): array {
+                    // Auto-set team_id from session
+                    $teamId = session('team_id');
+                    if ($teamId) {
+                        $data['team_id'] = $teamId;
+                    }
+                    
+                    return $data;
+                }),
         ];
     }
 }

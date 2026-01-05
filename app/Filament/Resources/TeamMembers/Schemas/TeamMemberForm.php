@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\TeamMembers\Schemas;
 
 use App\Models\Team;
+use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Schema;
@@ -19,6 +20,7 @@ class TeamMemberForm
                         Team::where('workspace_id', session('workspace_id'))
                             ->pluck('name', 'id')
                     )
+                    ->default(fn () => session('team_id'))
                     ->required(),
                 Select::make('role')
                     ->label('Role')
@@ -37,6 +39,9 @@ class TeamMemberForm
                     ->label('Name')
                     ->required()
                     ->maxLength(255),
+                Checkbox::make('send_welcome_email')
+                    ->label('Send welcome email with generated password')
+                    ->default(false),
             ]);
     }
 }

@@ -18,6 +18,8 @@ class NoticeBoardResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedClipboardDocumentList;
 
+    protected static ?int $navigationSort = 7;
+
     public static function form(Schema $schema): Schema
     {
         return NoticeBoardForm::configure($schema);

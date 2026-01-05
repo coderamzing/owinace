@@ -9,6 +9,7 @@ use App\Models\NotificationPreference;
 use App\Models\User;
 use Illuminate\Support\Collection;
 use Spatie\Permission\Models\Role;
+use App\Models\Team;
 
 class NotificationService
 {
@@ -16,51 +17,66 @@ class NotificationService
      * Notify a single employee
      * Uses employee-specific notification types from config
      */
-    public function notifyMember(int $employeeId, string $notificationType, array $data): void
+    public function notifyMember(int $memberId, string $notificationType, array $data): void
     {
-        $employee = Employee::find($employeeId);
+        $member = User::find($memberId);
         
-        if (!$employee || !$employee->user) {
+        if (!$member) {
             return;
         }
 
-        $user = $employee->user;
-        
-        // Get employee notification config
-        $notificationConfig = NotificationPreference::getNotificationConfig($notificationType, 'employee');
+        $user = $member;
 
-        if (!$notificationConfig) {
-            return;
-        }
+        InAppNotificationQueue::dispatch(
+            userId: $user->id,
+            title: $data['subject'],
+            content: $data['content'] ?? '',
+            url: $data['url'] ?? null
+        );
 
-        // // Check if user has the required permission
-        // if (!$user->hasPermissionTo($notificationConfig['permission'], 'web')) {
-        //     return;
-        // }
-
-        // Get user's notification preference
-        $preference = $this->getPreference($user, $notificationType, $notificationConfig['permission']);
-
-        // Send in-app notification if enabled
-        if ($preference->in_app_enabled) {
-            InAppNotificationQueue::dispatch(
-                userId: $user->id,
-                title: $data['title'] ?? $notificationConfig['label'],
-                content: $data['content'] ?? '',
-                url: $data['url'] ?? null
-            );
-        }
-
-        // Send email if enabled
-        if ($preference->email_enabled && $user->email) {
-            $this->sendEmailNotification(
-                user: $user,
-                notificationType: $notificationType,
-                subject: $data['title'] ?? $notificationConfig['label'],
-                data: $data ?? []
-            );
-        }
+        $this->sendEmailNotification(
+            user: $user,
+            notificationType: $notificationType,
+            subject: $data['subject'],
+            data: $data ?? []
+        );
     }
+
+    /**
+     * Send email notification
+     * Uses EmailTemplateService to get template from config
+     */
+    protected function sendEmailNotification(
+        User $user,
+        string $notificationType,
+        string $subject,
+        array $data
+    ): void {
+        $templates = [
+            'team.welcome' => 'emails.team-welcome',
+        ];
+        EmailQueue::dispatch(
+            to: $user->email,
+            subject: $subject,
+            message: $data['content'] ?? '',
+            template: $templates[$notificationType] ?? '',
+            data: $data
+        );
+    }
+
+    public function enrichData(array $data): array
+    {
+        if(isset($data['user_id'])) {
+            $member = User::findOrFail($data['user_id']);
+            $data = array_merge($data, ['user' => $member->toArray()]);
+        }
+        if(isset($data['team_id'])) {
+            $team = Team::findOrFail($data['team_id']);
+            $data = array_merge($data, ['team' => $team->toArray()]);
+        }
+        return $data;
+    }
+
 
     /**
      * Notify all employees in a workspace who have the required permission and preference enabled
@@ -78,35 +94,35 @@ class NotificationService
         $requiredPermission = $notificationConfig['permission'];
 
         // Get all employees in the workspace
-        $employees = Employee::where('workspace_id', $workspaceId)
+        $members = Employee::where('workspace_id', $workspaceId)
             ->where('status', 'working')
             ->with('user')
             ->get();
 
-        if ($employees->isEmpty()) {
+        if ($members->isEmpty()) {
             return;
         }
 
         // Filter employees by notification preferences
-        $employeesToNotify = $employees->filter(function ($employee) use ($notificationType, $requiredPermission) {
-            if (!$employee->user) {
+        $membersToNotify = $members->filter(function ($member) use ($notificationType, $requiredPermission) {
+            if (!$member->user) {
                 return false;
             }
 
-            $preference = $this->getPreference($employee->user, $notificationType, $requiredPermission);
+            $preference = $this->getPreference($member->user, $notificationType, $requiredPermission);
 
             // Only notify if at least one channel is enabled
             return $preference->email_enabled || $preference->in_app_enabled;
         });
 
         // Send notifications to filtered employees
-        foreach ($employeesToNotify as $employee) {
-            $preference = $this->getPreference($employee->user, $notificationType, $requiredPermission);
+        foreach ($membersToNotify as $member) {
+            $preference = $this->getPreference($member->user, $notificationType, $requiredPermission);
 
             // Send in-app notification if enabled
             if ($preference->in_app_enabled) {
                 InAppNotificationQueue::dispatch(
-                    userId: $employee->user->id,
+                    userId: $member->user->id,
                     title: $data['title'] ?? $notificationConfig['label'],
                     content: $data['content'] ?? '',
                     url: $data['url'] ?? null
@@ -114,9 +130,9 @@ class NotificationService
             }
 
             // Send email if enabled
-            if ($preference->email_enabled && $employee->user->email) {
+            if ($preference->email_enabled && $member->user->email) {
                 $this->sendEmailNotification(
-                    user: $employee->user,
+                    user: $member->user,
                     notificationType: $notificationType,
                     subject: $data['title'] ?? $notificationConfig['label'],
                     data: $data ?? []
@@ -216,36 +232,7 @@ class NotificationService
         );
     }
 
-    /**
-     * Send email notification
-     * Uses EmailTemplateService to get template from config
-     */
-    protected function sendEmailNotification(
-        User $user,
-        string $notificationType,
-        string $subject,
-        array $data
-    ): void {
-        // Get template from config using EmailTemplateService
-        $template = EmailTemplateService::getTemplate($notificationType);
-
-        EmailQueue::dispatch(
-            to: $user->email,
-            subject: $subject,
-            template: $template,
-            data: array_merge($data, [
-                'user_name' => $user->name,
-            ])
-        );
-    }
-
-    public function enrichData(array $data): array
-    {
-        if(isset($data['employee_id'])) {
-            $employee = Employee::findOrFail($data['employee_id']);
-            $data = array_merge($data, ['employee' => $employee->toArray()]);
-        }
-        return $data;
-    }
+    
+   
 }
 

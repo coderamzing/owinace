@@ -4,7 +4,6 @@ namespace App\Filament\Resources\Leads\Schemas;
 
 use App\Models\LeadKanban;
 use App\Models\LeadSource;
-use App\Models\Team;
 use App\Models\User;
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\Select;
@@ -12,6 +11,7 @@ use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Schema;
+use Illuminate\Database\Eloquent\Builder;
 
 class LeadForm
 {
@@ -29,19 +29,6 @@ class LeadForm
                     ->label('Description')
                     ->rows(3)
                     ->columnSpanFull(),
-                
-                Select::make('team_id')
-                    ->label('Team')
-                    ->options(function () {
-                        $workspaceId = session('workspace_id');
-                        if (!$workspaceId) {
-                            return [];
-                        }
-                        return Team::where('workspace_id', $workspaceId)
-                            ->pluck('name', 'id');
-                    })
-                    ->searchable()
-                    ->required(),
                 
                 Select::make('kanban_id')
                     ->label('Status')
@@ -70,6 +57,23 @@ class LeadForm
                             ->pluck('name', 'id');
                     })
                     ->searchable(),
+
+                Select::make('tags')
+                    ->label('Tags')
+                    ->relationship(
+                        name: 'tags',
+                        titleAttribute: 'name',
+                        modifyQueryUsing: function (Builder $query) {
+                            $teamId = session('team_id');
+                            if ($teamId) {
+                                $query->where('team_id', $teamId);
+                            }
+                        },
+                    )
+                    ->multiple()
+                    ->preload()
+                    ->searchable()
+                    ->columnSpanFull(),
                 
                 Select::make('assigned_member_id')
                     ->label('Assigned To')

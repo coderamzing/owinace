@@ -18,12 +18,12 @@ class ListContacts extends ListRecords
                 ->modalSubmitActionLabel('Create')
                 ->slideOver()
                 ->mutateFormDataUsing(function (array $data): array {
-                    // Set team_id from session if available
                     $teamId = session('team_id');
-                    if ($teamId && !isset($data['team_id'])) {
+
+                    if ($teamId) {
                         $data['team_id'] = $teamId;
                     }
-                    
+
                     return $data;
                 }),
         ];

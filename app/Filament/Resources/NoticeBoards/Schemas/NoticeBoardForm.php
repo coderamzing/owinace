@@ -3,8 +3,8 @@
 namespace App\Filament\Resources\NoticeBoards\Schemas;
 
 use Filament\Forms\Components\DateTimePicker;
+use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Select;
-use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Schema;
@@ -22,9 +22,22 @@ class NoticeBoardForm
                     ->required()
                     ->maxLength(255)
                     ->columnSpanFull(),
-                Textarea::make('description')
+                RichEditor::make('description')
                     ->label('Description')
-                    ->rows(4)
+                    ->placeholder('Add details, links, or formatting for this notice...')
+                    ->toolbarButtons([
+                        'bold',
+                        'italic',
+                        'underline',
+                        'strike',
+                        'bulletList',
+                        'orderedList',
+                        'link',
+                        'blockquote',
+                        'codeBlock',
+                        'undo',
+                        'redo',
+                    ])
                     ->columnSpanFull(),
                 Select::make('status')
                     ->label('Status')

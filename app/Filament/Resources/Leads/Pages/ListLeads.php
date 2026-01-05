@@ -21,9 +21,9 @@ class ListLeads extends ListRecords
                 ->mutateFormDataUsing(function (array $data): array {
                     $data['created_by_id'] = auth()->id();
                     
-                    // Set team_id from session if available
+                    // Auto-set team_id from session
                     $teamId = session('team_id');
-                    if ($teamId && !isset($data['team_id'])) {
+                    if ($teamId) {
                         $data['team_id'] = $teamId;
                     }
                     

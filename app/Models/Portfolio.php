@@ -3,10 +3,13 @@
 namespace App\Models;
 
 use App\Models\Scopes\TeamScope;
+use App\Services\OpenAIService;
 use App\Traits\TeamTraits;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 
 class Portfolio extends Model
 {
@@ -22,6 +25,7 @@ class Portfolio extends Model
         'keywords',
         'title',
         'description',
+        'embedding',
         'is_active',
         'sort_order',
         'created_by_id',
@@ -37,7 +41,46 @@ class Portfolio extends Model
     {
         return [
             'is_active' => 'boolean',
+            'keywords' => 'array',
+            'embedding' => 'array',
         ];
+    }
+
+    protected static function booted(): void
+    {
+        static::addGlobalScope(new TeamScope);
+        
+        static::saving(function (Portfolio $portfolio): void {
+            $portfolio->updateEmbedding();
+        });
+    }
+
+    /**
+     * Build semantic text and refresh the embedding field.
+     */
+    protected function updateEmbedding(): void
+    {
+        $keywordsValue = $this->keywords;
+        $keywordsArray = is_array($keywordsValue)
+            ? $keywordsValue
+            : array_filter(array_map('trim', explode(',', (string) $keywordsValue)));
+
+        $semanticText = implode(' | ', [
+            "Title: {$this->title}",
+            'Keywords: ' . implode(', ', $keywordsArray),
+            'Summary: ' . Str::limit(strip_tags((string) $this->description), 300),
+        ]);
+
+        try {
+            /** @var OpenAIService $openAI */
+            $openAI = app(OpenAIService::class);
+            $this->embedding = $openAI->createEmbedding($semanticText);
+        } catch (\Throwable $exception) {
+            Log::warning('Failed to create portfolio embedding', [
+                'portfolio_id' => $this->id,
+                'message' => $exception->getMessage(),
+            ]);
+        }
     }
 
     /**

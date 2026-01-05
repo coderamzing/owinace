@@ -2,6 +2,7 @@
 
 namespace App\Livewire;
 
+use App\Models\Lead;
 use App\Models\LeadSource;
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -93,6 +94,12 @@ class LeadSourceManagement extends Component
     {
         $teamId = session('team_id');
         $source = LeadSource::where('team_id', $teamId)->findOrFail($id);
+
+        if (Lead::where('team_id', $teamId)->where('source_id', $source->id)->exists()) {
+            session()->flash('error', 'Cannot delete this source because it is linked to existing leads.');
+            return;
+        }
+
         $source->delete();
         session()->flash('message', 'Lead Source deleted successfully.');
         $this->resetPage();

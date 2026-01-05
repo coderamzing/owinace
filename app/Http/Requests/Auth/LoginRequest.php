@@ -52,7 +52,11 @@ class LoginRequest extends FormRequest
         // Check if user's email is verified
         $user = Auth::user();
         if ($user && ! $user->hasVerifiedEmail()) {
+            $email = $user->email;
             Auth::logout();
+            
+            // Store email in session for resend verification
+            session(['unverified_email' => $email]);
             
             throw ValidationException::withMessages([
                 'email' => __('Please verify your email address before logging in.'),

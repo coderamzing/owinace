@@ -18,6 +18,8 @@ use Filament\Pages\Page;
 use Illuminate\Support\Facades\Session;
 use Carbon\Carbon;
 use Livewire\Attributes\On;
+use Filament\Support\Icons\Heroicon;
+use BackedEnum;
 
 class AnalyticsDashboard extends Page
 {
@@ -25,9 +27,11 @@ class AnalyticsDashboard extends Page
 
     protected static ?string $navigationLabel = 'Dashboard';
 
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedBriefcase;
+
     protected static ?int $navigationSort = 1;
 
-    protected static ?string $title = 'Analytics Dashboard';
+    protected static ?string $title = '';
 
     protected static ?string $slug = 'dashboard';
 
@@ -165,7 +169,7 @@ class AnalyticsDashboard extends Page
             LeadQualityWidget::class,
             LeadConversionFunnelWidget::class,
             RecentLeadsWidget::class,
-            TeamActivityWidget::class,
+            //TeamActivityWidget::class,
         ];
     }
 }

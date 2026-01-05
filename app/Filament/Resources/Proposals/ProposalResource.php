@@ -18,6 +18,8 @@ class ProposalResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedDocumentText;
 
+    protected static ?int $navigationSort = 8;
+
     public static function form(Schema $schema): Schema
     {
         return ProposalForm::configure($schema);
@@ -39,6 +41,7 @@ class ProposalResource extends Resource
     {
         return [
             'index' => ListProposals::route('/'),
+            'view' => Pages\ViewProposal::route('/{record}'),
         ];
     }
 }

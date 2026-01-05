@@ -6,6 +6,7 @@ use App\Models\Scopes\TeamScope;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use App\Traits\TeamTraits;
 
 class LeadKanban extends Model
@@ -49,5 +50,13 @@ class LeadKanban extends Model
     public function team(): BelongsTo
     {
         return $this->belongsTo(Team::class, 'team_id');
+    }
+
+    /**
+     * Leads currently in this kanban stage.
+     */
+    public function leads(): HasMany
+    {
+        return $this->hasMany(Lead::class, 'kanban_id');
     }
 }

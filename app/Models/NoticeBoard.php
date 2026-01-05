@@ -12,6 +12,7 @@ class NoticeBoard extends Model
     use TeamTraits;
 
     protected $fillable = [
+        'workspace_id',
         'team_id',
         'title',
         'description',

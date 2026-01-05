@@ -108,4 +108,12 @@ class Lead extends Model
     {
         return $this->belongsToMany(Contact::class, 'lead_contact');
     }
+
+    /**
+     * Tags assigned to the lead.
+     */
+    public function tags(): BelongsToMany
+    {
+        return $this->belongsToMany(LeadTag::class, 'lead_lead_tag', 'lead_id', 'lead_tag_id');
+    }
 }

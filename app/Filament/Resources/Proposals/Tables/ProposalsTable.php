@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Proposals\Tables;
 
+use Filament\Actions\DeleteAction;
 use Filament\Actions\EditAction;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
@@ -44,6 +45,12 @@ class ProposalsTable
                     ->modalHeading('Edit Proposal')
                     ->modalSubmitActionLabel('Save')
                     ->slideOver(),
+                DeleteAction::make()
+                    ->requiresConfirmation()
+                    ->modalHeading('Delete Proposal')
+                    ->modalDescription('This will permanently remove the proposal.')
+                    ->modalSubmitActionLabel('Delete')
+                    ->color('danger'),
             ])
             ->bulkActions([]);
     }

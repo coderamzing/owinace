@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Portfolios\Tables;
 
+use Filament\Actions\DeleteAction;
 use Filament\Actions\EditAction;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
@@ -43,6 +44,12 @@ class PortfoliosTable
                     ->modalHeading('Edit Portfolio')
                     ->modalSubmitActionLabel('Save')
                     ->slideOver(),
+                DeleteAction::make()
+                    ->requiresConfirmation()
+                    ->modalHeading('Delete Portfolio')
+                    ->modalDescription('This will permanently remove the portfolio.')
+                    ->modalSubmitActionLabel('Delete')
+                    ->color('danger'),
             ])
             ->bulkActions([]);
     }
