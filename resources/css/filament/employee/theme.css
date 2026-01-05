@@ -1,0 +1,609 @@
+/* Import Inter font from Google Fonts - must be first */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+@import '../../../../vendor/filament/filament/resources/css/theme.css';
+
+@source '../../../../app/Filament/**/*';
+@source '../../../../resources/views/filament/**/*';
+
+/* ============================================
+   GLOBAL STYLES - Premium Modern Design
+   ============================================ */
+:root {
+    --primary-gradient: linear-gradient(135deg, #0F766E 0%, #14B8A6 100%);
+    --secondary-gradient: linear-gradient(135deg, #10B981 0%, #34D399 100%);
+    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+* {
+    /* Animations removed for better performance */
+}
+
+/* Force square borders on all elements */
+*,
+*::before,
+*::after {
+    border-radius: 0 !important;
+}
+
+/* Allow specific exceptions if needed (like scrollbar thumb can stay rounded) */
+::-webkit-scrollbar-thumb {
+    border-radius: 0 !important;
+}
+
+
+body,
+.fi-layout {
+    @apply bg-gradient-to-br from-slate-50 via-blue-50/30 to-teal-50/20 text-slate-900;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-feature-settings: "tnum" 0, "lnum" 0;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* Main content width - Full width */
+main.fi-main,
+.fi-main.fi-width-7xl,
+.fi-main[class*="fi-width"] {
+    max-width: 100% !important;
+    width: 100% !important;
+}
+
+/* ============================================
+   TOPBAR - Premium Header Design
+   ============================================ */
+.fi-topbar {
+    @apply bg-white/95 backdrop-blur-xl shadow-lg border-b border-slate-200/60;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.98) 0%, rgba(255, 255, 255, 0.95) 100%);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+}
+
+.fi-topbar-item-label {
+    @apply font-medium text-slate-700;
+}
+
+.fi-topbar-item-icon {
+    @apply text-slate-600;
+}
+
+/* ============================================
+   SIDEBAR COLLAPSE BUTTON - Menu Bars Icon
+   ============================================ */
+.fi-topbar-close-collapse-sidebar-btn {
+    position: relative;
+}
+
+.fi-topbar-close-collapse-sidebar-btn svg,
+.fi-topbar-close-collapse-sidebar-btn .fi-icon {
+    display: none !important;
+}
+
+.fi-topbar-close-collapse-sidebar-btn::before {
+    content: '';
+    display: block;
+    width: 20px;
+    height: 2px;
+    background-color: currentColor;
+    box-shadow: 
+        0 -6px 0 currentColor,
+        0 6px 0 currentColor;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+/* ============================================
+   SIDEBAR - Modern Navigation
+   ============================================ */
+.fi-sidebar {
+    @apply border-r border-slate-700/50;
+    box-shadow: 4px 0 24px rgba(0, 0, 0, 0.12);
+}
+
+.fi-sidebar-header {
+    @apply border-b border-slate-700/50;
+    padding: 1.5rem 1.25rem;
+}
+
+.fi-sidebar-nav {
+    @apply px-3 py-4;
+}
+
+.fi-sidebar-item {
+    @apply text-slate-300 font-medium;
+    border-radius: 0;
+    position: relative;
+    margin-bottom: 0 !important;
+    padding-inline: 0 !important;
+    padding-block: 0 !important;
+}
+
+.fi-sidebar-item:hover {
+    @apply bg-slate-700/50 text-white;
+    box-shadow: 0 4px 12px rgba(15, 118, 110, 0.15);
+}
+
+.fi-sidebar-item-active {
+    @apply bg-gradient-to-r from-teal-600 to-emerald-600 text-white shadow-lg;
+    box-shadow: 0 4px 14px rgba(15, 118, 110, 0.4);
+}
+
+.fi-sidebar-item-active::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 4px;
+    height: 60%;
+    @apply bg-white;
+    border-radius: 0;
+}
+
+.fi-sidebar-item-icon {
+    @apply text-slate-400;
+}
+
+.fi-sidebar-item-active .fi-sidebar-item-icon {
+    @apply text-white;
+}
+
+.fi-sidebar-group-label {
+    @apply text-slate-400 text-xs font-semibold uppercase tracking-wider px-4 py-2 mb-2;
+    letter-spacing: 0.1em;
+}
+
+/* ============================================
+   CARDS & PANELS - Premium Card Design
+   ============================================ */
+.fi-section,
+.fi-panel,
+.fi-widget,
+.fi-stats-overview-widget,
+.fi-resource-relation-manager {
+    @apply bg-white border border-slate-200/60;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.98) 0%, rgba(255, 255, 255, 0.95) 100%);
+    backdrop-filter: blur(10px);
+    border-radius: 0;
+    box-shadow: none !important;
+}
+
+.fi-section:hover,
+.fi-panel:hover,
+.fi-widget:hover {
+    box-shadow: none !important;
+}
+
+.fi-section-header {
+    @apply border-b border-slate-200/60 px-6 py-4;
+}
+
+.fi-section-header-heading {
+    @apply text-xl font-bold bg-gradient-to-r from-slate-900 to-slate-700 bg-clip-text text-transparent;
+}
+
+/* ============================================
+   BUTTONS - Premium Button Styles
+   ============================================ */
+.fi-btn {
+    @apply font-semibold;
+    border-radius: 0;
+}
+
+.fi-btn-primary,
+button.fi-btn.fi-btn-color-primary {
+    background: var(--primary-gradient);
+    @apply text-white shadow-lg hover:shadow-xl;
+    border: none;
+    padding: 0.625rem 1.5rem;
+    font-weight: 600;
+    letter-spacing: 0.025em;
+}
+
+.fi-btn-primary:hover,
+button.fi-btn.fi-btn-color-primary:hover {
+    box-shadow: 0 10px 20px rgba(15, 118, 110, 0.3);
+}
+
+.fi-btn-secondary,
+button.fi-btn.fi-btn-color-secondary {
+    @apply border-2 bg-white text-emerald-600 border-emerald-600 shadow-md;
+    padding: 0.625rem 1.5rem;
+    font-weight: 600;
+}
+
+.fi-btn-secondary:hover,
+button.fi-btn.fi-btn-color-secondary:hover {
+    @apply bg-emerald-50 border-emerald-700 text-emerald-700;
+    box-shadow: 0 8px 16px rgba(16, 185, 129, 0.2);
+}
+
+.fi-btn-success {
+    background: linear-gradient(135deg, #059669 0%, #10B981 100%);
+    @apply text-white shadow-lg;
+}
+
+.fi-btn-danger {
+    background: linear-gradient(135deg, #DC2626 0%, #EF4444 100%);
+    @apply text-white shadow-lg;
+}
+
+.fi-btn-warning {
+    background: linear-gradient(135deg, #D97706 0%, #F59E0B 100%);
+    @apply text-white shadow-lg;
+}
+
+.fi-btn-info {
+    background: linear-gradient(135deg, #2563EB 0%, #3B82F6 100%);
+    @apply text-white shadow-lg;
+}
+
+/* ============================================
+   INPUTS & FORMS - Modern Form Design
+   ============================================ */
+.fi-input,
+.fi-select,
+.fi-textarea {
+    @apply border-2 border-slate-300 bg-white text-slate-900;
+    @apply focus:border-teal-500 focus:ring-4 focus:ring-teal-500/20;
+    padding: 0.75rem 1rem;
+    font-size: 0.9375rem;
+    border-radius: 0;
+}
+
+.fi-input:hover,
+.fi-select:hover,
+.fi-textarea:hover {
+    @apply border-slate-400;
+}
+
+.fi-input:focus,
+.fi-select:focus,
+.fi-textarea:focus {
+    @apply border-teal-500 shadow-lg;
+}
+
+.fi-input::placeholder,
+.fi-textarea::placeholder {
+    @apply text-slate-400;
+}
+
+.fi-input-wrp {
+    border-radius: 0;
+}
+
+.fi-input-wrp-label {
+    @apply text-slate-700 font-semibold mb-2;
+    font-size: 0.875rem;
+    letter-spacing: 0.025em;
+}
+
+/* ============================================
+   TABLES - Premium Table Design
+   ============================================ */
+.fi-ta-table {
+    @apply border-0 overflow-hidden bg-white shadow-lg;
+    border-collapse: separate;
+    border-spacing: 0;
+    border-radius: 0;
+}
+
+.fi-ta-table > thead > tr {
+    background: linear-gradient(135deg, #0F766E 0%, #14B8A6 100%) !important;
+}
+
+.fi-ta-table > thead > tr > th,
+.fi-ta-header-cell {
+    color: #ffffff !important;
+    background: transparent !important;
+}
+
+.fi-ta-table thead th {
+    @apply font-bold py-2 px-3 text-sm uppercase tracking-wider;
+    color: #ffffff !important;
+    letter-spacing: 0.05em;
+    border: none;
+}
+
+.fi-ta-table thead th {
+    color: #ffffff !important;
+}
+
+.fi-ta-table thead th:first-child {
+    border-top-left-radius: 0;
+}
+
+.fi-ta-table thead th:last-child {
+    border-top-right-radius: 0;
+}
+
+.fi-ta-table tbody tr {
+    @apply border-b border-slate-100 transition-all duration-150;
+}
+
+/* Reduce overall table spacing for compact layout */
+.fi-ta-table {
+    font-size: 0.875rem; /* Slightly smaller font for more compact look */
+}
+
+.fi-ta-table thead th {
+    font-size: 0.75rem; /* Smaller header font */
+}
+
+.fi-ta-table tbody td {
+    font-size: 0.875rem; /* Consistent smaller font */
+}
+
+.fi-ta-table tbody tr:hover {
+    @apply bg-gradient-to-r from-teal-50/50 to-emerald-50/50;
+    transform: scale(1.01);
+    box-shadow: 0 4px 12px rgba(15, 118, 110, 0.08);
+}
+
+.fi-ta-table tbody td {
+    @apply py-2 px-3 text-slate-700;
+    border: none;
+}
+
+.fi-ta-table tbody tr:last-child td:first-child {
+    border-bottom-left-radius: 0;
+}
+
+.fi-ta-table tbody tr:last-child td:last-child {
+    border-bottom-right-radius: 0;
+}
+
+/* ============================================
+   BADGES & STATUS PILLS - Modern Badges
+   ============================================ */
+.fi-badge {
+    @apply px-3 py-1.5 text-xs font-bold uppercase tracking-wider;
+    letter-spacing: 0.05em;
+    border-radius: 0;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.fi-badge-color-success {
+    background: linear-gradient(135deg, #059669 0%, #10B981 100%);
+    @apply text-white;
+}
+
+.fi-badge-color-warning {
+    background: linear-gradient(135deg, #D97706 0%, #F59E0B 100%);
+    @apply text-white;
+}
+
+.fi-badge-color-danger {
+    background: linear-gradient(135deg, #DC2626 0%, #EF4444 100%);
+    @apply text-white;
+}
+
+.fi-badge-color-info {
+    background: linear-gradient(135deg, #2563EB 0%, #3B82F6 100%);
+    @apply text-white;
+}
+
+.fi-badge-color-gray {
+    @apply bg-slate-200 text-slate-700;
+}
+
+/* ============================================
+   MODALS & DIALOGS - Premium Modal Design
+   ============================================ */
+.fi-modal {
+    @apply shadow-2xl;
+    border-radius: 0;
+}
+
+.fi-modal-header {
+    @apply border-b border-slate-200/60 px-6 py-4;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.98) 0%, rgba(255, 255, 255, 0.95) 100%);
+}
+
+.fi-modal-heading {
+    @apply text-2xl font-bold bg-gradient-to-r from-slate-900 to-slate-700 bg-clip-text text-transparent;
+}
+
+/* ============================================
+   STATS WIDGETS - Premium Stats Cards
+   ============================================ */
+.fi-stats-overview-widget {
+    @apply border-0 overflow-hidden;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.98) 0%, rgba(255, 255, 255, 0.95) 100%);
+    border-radius: 0;
+    box-shadow: none !important;
+}
+
+.fi-stats-overview-stat {
+    @apply p-6;
+    border-radius: 0;
+}
+
+.fi-stats-overview-stat:hover {
+    box-shadow: none !important;
+}
+
+.fi-stats-overview-stat-label {
+    @apply text-slate-600 font-semibold text-sm uppercase tracking-wider;
+}
+
+.fi-stats-overview-stat-value {
+    @apply text-3xl font-bold bg-gradient-to-r from-teal-600 to-emerald-600 bg-clip-text text-transparent;
+    margin-top: 0.5rem;
+}
+
+/* ============================================
+   NAVIGATION GROUPS - Enhanced Group Headers
+   ============================================ */
+.fi-sidebar-group {
+    margin-bottom: 0 !important;
+}
+
+/* ============================================
+   PAGE HEADERS - Premium Headings
+   ============================================ */
+.fi-header-heading {
+    @apply text-3xl font-bold bg-gradient-to-r from-slate-900 via-teal-700 to-emerald-600 bg-clip-text text-transparent;
+    letter-spacing: -0.025em;
+}
+
+.fi-header-subheading {
+    @apply text-slate-600 mt-2;
+}
+
+/* ============================================
+   SELECTS & DROPDOWNS - Modern Dropdowns
+   ============================================ */
+.fi-select-option {
+    @apply px-4 py-2;
+    border-radius: 0;
+}
+
+.fi-select-option:hover {
+    @apply bg-teal-50 text-teal-700;
+}
+
+.fi-select-option[data-selected="true"] {
+    @apply bg-gradient-to-r from-teal-500 to-emerald-500 text-white;
+}
+
+/* ============================================
+   CHECKBOXES & RADIOS - Modern Inputs
+   ============================================ */
+.fi-checkbox input:checked {
+    @apply bg-teal-600 border-teal-600;
+}
+
+.fi-radio input:checked {
+    @apply bg-teal-600 border-teal-600;
+}
+
+/* ============================================
+   TOAST NOTIFICATIONS - Premium Notifications
+   ============================================ */
+.fi-notification {
+    @apply shadow-2xl border-0;
+    border-radius: 0;
+    backdrop-filter: blur(12px);
+}
+
+.fi-notification-success {
+    background: linear-gradient(135deg, rgba(5, 150, 105, 0.95) 0%, rgba(16, 185, 129, 0.95) 100%);
+    @apply text-white;
+}
+
+.fi-notification-danger {
+    background: linear-gradient(135deg, rgba(220, 38, 38, 0.95) 0%, rgba(239, 68, 68, 0.95) 100%);
+    @apply text-white;
+}
+
+.fi-notification-warning {
+    background: linear-gradient(135deg, rgba(217, 119, 6, 0.95) 0%, rgba(245, 158, 11, 0.95) 100%);
+    @apply text-white;
+}
+
+.fi-notification-info {
+    background: linear-gradient(135deg, rgba(37, 99, 235, 0.95) 0%, rgba(59, 130, 246, 0.95) 100%);
+    @apply text-white;
+}
+
+/* ============================================
+   TABS - Modern Tab Design
+   ============================================ */
+.fi-tabs-item {
+    @apply px-6 py-3 font-semibold;
+    border-radius: 0;
+}
+
+.fi-tabs-item-active {
+    @apply bg-gradient-to-r from-teal-500 to-emerald-500 text-white shadow-lg;
+}
+
+/* ============================================
+   LOADING STATES - Smooth Loading
+   ============================================ */
+.fi-loading-indicator {
+    @apply text-teal-600;
+}
+
+/* ============================================
+   SCROLLBARS - Custom Scrollbar
+   ============================================ */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    @apply bg-slate-100 rounded-full;
+}
+
+::-webkit-scrollbar-thumb {
+    @apply bg-gradient-to-b from-teal-500 to-emerald-500;
+    border-radius: 0;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    @apply from-teal-600 to-emerald-600;
+}
+
+/* ============================================
+   ANIMATIONS - Removed for better performance
+   ============================================ */
+
+/* ============================================
+   RESPONSIVE IMPROVEMENTS
+   ============================================ */
+@media (max-width: 768px) {
+    .fi-sidebar {
+        @apply shadow-2xl;
+    }
+    
+    .fi-section,
+    .fi-panel {
+        border-radius: 0;
+    }
+}
+
+/* ============================================
+   BRAND LOGO & HEADER
+   ============================================ */
+.fi-brand {
+    @apply px-4 py-3;
+}
+
+.fi-brand-logo {
+    @apply h-10 w-auto;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+}
+
+/* ============================================
+   DASHBOARD SPECIFIC STYLES
+   ============================================ */
+.fi-dashboard {
+    @apply space-y-6;
+}
+
+/* ============================================
+   FORM SECTIONS - Enhanced Sections
+   ============================================ */
+.fi-section-content {
+    @apply p-6;
+}
+
+/* ============================================
+   ACTION BUTTONS IN TABLES
+   ============================================ */
+.fi-ta-action {
+    @apply px-2 py-1 text-xs font-medium;
+    border-radius: 0;
+}
+
+.fi-ta-action:hover {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
