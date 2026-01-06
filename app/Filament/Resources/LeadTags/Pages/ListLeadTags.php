@@ -3,12 +3,14 @@
 namespace App\Filament\Resources\LeadTags\Pages;
 
 use App\Filament\Resources\LeadTags\LeadTagResource;
+use App\Filament\Resources\BaseListRecords;
 use Filament\Actions\CreateAction;
-use Filament\Resources\Pages\ListRecords;
 
-class ListLeadTags extends ListRecords
+class ListLeadTags extends BaseListRecords
 {
     protected static string $resource = LeadTagResource::class;
+    
+    protected string $searchPlaceholder = 'Search tags by name...';
 
     protected function getHeaderActions(): array
     {

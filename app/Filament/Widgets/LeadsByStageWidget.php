@@ -13,7 +13,7 @@ class LeadsByStageWidget extends ChartWidget
 {
     protected static ?int $sort = 3;
     
-    protected int | string | array $columnSpan = '1/2';
+    protected int | string | array $columnSpan = 6;
 
     public function getHeading(): string
     {

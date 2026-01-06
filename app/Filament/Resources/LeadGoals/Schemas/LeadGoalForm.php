@@ -18,11 +18,9 @@ class LeadGoalForm
                 Select::make('goal_type')
                     ->label('Goal Type')
                     ->options([
-                        'revenue' => 'Revenue',
-                        'leads' => 'Leads',
-                        'conversions' => 'Conversions',
-                        'calls' => 'Calls',
-                        'meetings' => 'Meetings',
+                        'lead_generation' => 'Lead Generation Goal',
+                        'conversion' => 'Conversion Goal',
+                        'open_leads' => 'Open Leads Goal',
                     ])
                     ->required()
                     ->searchable(),
@@ -30,11 +28,7 @@ class LeadGoalForm
                 Select::make('period')
                     ->label('Period')
                     ->options([
-                        'daily' => 'Daily',
-                        'weekly' => 'Weekly',
                         'monthly' => 'Monthly',
-                        'quarterly' => 'Quarterly',
-                        'yearly' => 'Yearly',
                     ])
                     ->required()
                     ->searchable(),
@@ -44,6 +38,8 @@ class LeadGoalForm
                     ->numeric()
                     ->prefix('$')
                     ->step(0.01)
+                    ->minValue(0)
+                    ->maxValue(999999.99)
                     ->required(),
                 
                 TextInput::make('current_value')
@@ -51,6 +47,8 @@ class LeadGoalForm
                     ->numeric()
                     ->prefix('$')
                     ->step(0.01)
+                    ->minValue(0)
+                    ->maxValue(999999.99)
                     ->default(0)
                     ->required(),
                 
@@ -70,6 +68,7 @@ class LeadGoalForm
                 Textarea::make('description')
                     ->label('Description')
                     ->rows(3)
+                    ->maxLength(2000)
                     ->columnSpanFull(),
                 
                 Toggle::make('is_active')

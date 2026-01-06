@@ -3,17 +3,19 @@
 namespace App\Filament\Resources\TeamMembers\Pages;
 
 use App\Filament\Resources\TeamMembers\TeamMemberResource;
+use App\Filament\Resources\BaseListRecords;
 use App\Jobs\NotificationQueue;
 use App\Models\User;
 use Filament\Actions\CreateAction;
 use Filament\Notifications\Notification;
-use Filament\Resources\Pages\ListRecords;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 
-class ListTeamMembers extends ListRecords
+class ListTeamMembers extends BaseListRecords
 {
     protected static string $resource = TeamMemberResource::class;
+    
+    protected string $searchPlaceholder = 'Search members by name, email...';
 
     protected ?string $generatedPassword = null;
     protected bool $sendWelcomeEmail = false;

@@ -13,6 +13,8 @@ use Carbon\Carbon;
 
 class MemberPerformanceWidget extends BaseWidget
 {
+    protected int | string | array $columnSpan = 12;
+    
     protected static ?string $heading = 'Member Performance';
 
     protected static ?int $sort = 5;

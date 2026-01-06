@@ -16,16 +16,26 @@ class LeadTagForm
         return $schema
             ->components([
                 TextInput::make('name')
-                    ->required(),
+                    ->label('Name')
+                    ->required()
+                    ->maxLength(100),
                 Textarea::make('description')
+                    ->label('Description')
+                    ->maxLength(2000)
                     ->columnSpanFull(),
                 ColorPicker::make('color')
+                    ->label('Color')
                     ->required(),
                 TextInput::make('sort_order')
+                    ->label('Sort Order')
                     ->required()
-                    ->numeric(),
+                    ->numeric()
+                    ->default(0)
+                    ->minValue(0),
                 Toggle::make('is_active')
-                    ->required(),
+                    ->label('Active')
+                    ->required()
+                    ->default(true),
             ]);
     }
 }

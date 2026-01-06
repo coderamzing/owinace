@@ -294,5 +294,78 @@ class MyAnalytics extends Page
         // Reverse to show most recent first
         return array_reverse($options, true);
     }
+
+    public function getCurrentPeriodLabel(): string
+    {
+        if (!$this->selectedPeriod) {
+            return Carbon::now()->format('F Y');
+        }
+        return Carbon::parse($this->selectedPeriod . '-01')->format('F Y');
+    }
+
+    public function goToPreviousMonth(): void
+    {
+        if (!$this->selectedPeriod) {
+            $this->selectedPeriod = Carbon::now()->format('Y-m');
+        }
+
+        $current = Carbon::parse($this->selectedPeriod . '-01');
+        $previous = $current->copy()->subMonth();
+
+        // Check if previous month is within valid range
+        $team = $this->getTeam();
+        $minDate = $team && $team->created_at 
+            ? Carbon::parse($team->created_at)->startOfMonth()
+            : Carbon::now()->startOfMonth();
+
+        if ($previous->gte($minDate)) {
+            $this->selectedPeriod = $previous->format('Y-m');
+        }
+    }
+
+    public function goToNextMonth(): void
+    {
+        if (!$this->selectedPeriod) {
+            $this->selectedPeriod = Carbon::now()->format('Y-m');
+        }
+
+        $current = Carbon::parse($this->selectedPeriod . '-01');
+        $next = $current->copy()->addMonth();
+        $maxDate = Carbon::now()->endOfMonth();
+
+        if ($next->lte($maxDate)) {
+            $this->selectedPeriod = $next->format('Y-m');
+        }
+    }
+
+    public function canGoToPreviousMonth(): bool
+    {
+        if (!$this->selectedPeriod) {
+            return false;
+        }
+
+        $current = Carbon::parse($this->selectedPeriod . '-01');
+        $previous = $current->copy()->subMonth();
+
+        $team = $this->getTeam();
+        $minDate = $team && $team->created_at 
+            ? Carbon::parse($team->created_at)->startOfMonth()
+            : Carbon::now()->startOfMonth();
+
+        return $previous->gte($minDate);
+    }
+
+    public function canGoToNextMonth(): bool
+    {
+        if (!$this->selectedPeriod) {
+            return false;
+        }
+
+        $current = Carbon::parse($this->selectedPeriod . '-01');
+        $next = $current->copy()->addMonth();
+        $maxDate = Carbon::now()->endOfMonth();
+
+        return $next->lte($maxDate);
+    }
 }
 

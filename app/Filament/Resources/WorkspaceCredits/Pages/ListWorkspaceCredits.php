@@ -3,11 +3,13 @@
 namespace App\Filament\Resources\WorkspaceCredits\Pages;
 
 use App\Filament\Resources\WorkspaceCredits\WorkspaceCreditResource;
-use Filament\Resources\Pages\ListRecords;
+use App\Filament\Resources\BaseListRecords;
 
-class ListWorkspaceCredits extends ListRecords
+class ListWorkspaceCredits extends BaseListRecords
 {
     protected static string $resource = WorkspaceCreditResource::class;
+    
+    protected string $searchPlaceholder = 'Search credit history...';
 
     protected function getHeaderActions(): array
     {

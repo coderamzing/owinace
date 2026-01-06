@@ -2,9 +2,7 @@
 
 namespace App\Filament\Resources\Contacts\Tables;
 
-use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
-use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
@@ -105,11 +103,6 @@ class ContactsTable
                     ->modalSubmitActionLabel('Delete')
                     ->visible(fn ($record) => self::hasPermissionTo('contact.delete'))
                     ->color('danger'),
-            ])
-            ->toolbarActions([
-                BulkActionGroup::make([
-                    DeleteBulkAction::make(),
-                ]),
             ]);
     }
 }

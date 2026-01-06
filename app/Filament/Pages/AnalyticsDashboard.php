@@ -161,6 +161,11 @@ class AnalyticsDashboard extends Page
         $this->dispatch('$refresh');
     }
 
+    public function getColumns(): int | string | array
+    {
+        return 12; // 12-column grid system
+    }
+
     protected function getWidgets(): array
     {
         return [

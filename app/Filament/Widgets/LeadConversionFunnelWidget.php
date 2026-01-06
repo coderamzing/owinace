@@ -10,6 +10,8 @@ use Carbon\Carbon;
 
 class LeadConversionFunnelWidget extends ChartWidget
 {
+    protected int | string | array $columnSpan = 6;
+
     protected static ?int $sort = 9;
 
     public function getHeading(): string

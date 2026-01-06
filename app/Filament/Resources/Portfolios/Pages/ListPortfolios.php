@@ -3,12 +3,14 @@
 namespace App\Filament\Resources\Portfolios\Pages;
 
 use App\Filament\Resources\Portfolios\PortfolioResource;
+use App\Filament\Resources\BaseListRecords;
 use Filament\Actions\CreateAction;
-use Filament\Resources\Pages\ListRecords;
 
-class ListPortfolios extends ListRecords
+class ListPortfolios extends BaseListRecords
 {
     protected static string $resource = PortfolioResource::class;
+    
+    protected string $searchPlaceholder = 'Search portfolios by title, keywords...';
 
     protected function getHeaderActions(): array
     {

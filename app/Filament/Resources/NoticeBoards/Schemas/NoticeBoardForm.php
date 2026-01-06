@@ -25,6 +25,7 @@ class NoticeBoardForm
                 RichEditor::make('description')
                     ->label('Description')
                     ->placeholder('Add details, links, or formatting for this notice...')
+                    ->maxLength(2000)
                     ->toolbarButtons([
                         'bold',
                         'italic',

@@ -1,14 +1,6 @@
 <x-filament-panels::page>
 
     <div class="space-y-6">
-        {{-- Header --}}
-        <div class="bg-white dark:bg-gray-800 shadow-sm border border-gray-200 dark:border-gray-700 rounded-lg p-6">
-            <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-2">Settings</h2>
-            <p class="text-gray-600 dark:text-gray-400">
-                Manage your workspace settings including sources, tags, kanban boards, teams, and members from one central location.
-            </p>
-        </div>
-
         {{-- Settings Cards Grid --}}
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             @foreach($this->getSettingsCards() as $card)
@@ -21,6 +13,30 @@
                         'info' => 'bg-info-100 dark:bg-info-900/20 text-info-600 dark:text-info-400',
                         'gray' => 'bg-gray-100 dark:bg-gray-900/20 text-gray-600 dark:text-gray-400',
                     ];
+                    $bgClasses = [
+                        'primary' => 'bg-primary-50 dark:bg-primary-900/20',
+                        'success' => 'bg-success-50 dark:bg-success-900/20',
+                        'warning' => 'bg-warning-50 dark:bg-warning-900/20',
+                        'danger' => 'bg-danger-50 dark:bg-danger-900/20',
+                        'info' => 'bg-info-50 dark:bg-info-900/20',
+                        'gray' => 'bg-gray-50 dark:bg-gray-900/20',
+                    ];
+                    $borderClasses = [
+                        'primary' => 'border-primary-200 dark:border-primary-700',
+                        'success' => 'border-success-200 dark:border-success-700',
+                        'warning' => 'border-warning-200 dark:border-warning-700',
+                        'danger' => 'border-danger-200 dark:border-danger-700',
+                        'info' => 'border-info-200 dark:border-info-700',
+                        'gray' => 'border-gray-300 dark:border-gray-600',
+                    ];
+                    $hoverBorderClasses = [
+                        'primary' => 'hover:border-primary-400 dark:hover:border-primary-500',
+                        'success' => 'hover:border-success-400 dark:hover:border-success-500',
+                        'warning' => 'hover:border-warning-400 dark:hover:border-warning-500',
+                        'danger' => 'hover:border-danger-400 dark:hover:border-danger-500',
+                        'info' => 'hover:border-info-400 dark:hover:border-info-500',
+                        'gray' => 'hover:border-gray-400 dark:hover:border-gray-500',
+                    ];
                     $textColorClasses = [
                         'primary' => 'text-primary-600 dark:text-primary-400',
                         'success' => 'text-success-600 dark:text-success-400',
@@ -30,11 +46,14 @@
                         'gray' => 'text-gray-600 dark:text-gray-400',
                     ];
                     $iconBgClass = $colorClasses[$card['color']] ?? $colorClasses['primary'];
+                    $cardBgClass = $bgClasses[$card['color']] ?? $bgClasses['primary'];
+                    $borderClass = $borderClasses[$card['color']] ?? $borderClasses['primary'];
+                    $hoverBorderClass = $hoverBorderClasses[$card['color']] ?? $hoverBorderClasses['primary'];
                     $textColorClass = $textColorClasses[$card['color']] ?? $textColorClasses['primary'];
                 @endphp
                 <a 
                     href="{{ $card['url'] }}" 
-                    class="group relative bg-white dark:bg-gray-800 shadow-sm border border-gray-200 dark:border-gray-700 rounded-lg p-6 hover:shadow-lg transition-all duration-200 hover:border-primary-500 dark:hover:border-primary-400"
+                    class="group relative {{ $cardBgClass }} border {{ $borderClass }} {{ $hoverBorderClass }} rounded-lg p-6 transition-all duration-200"
                 >
                     {{-- Icon --}}
                     <div class="mb-4">
@@ -72,7 +91,7 @@
         </div>
 
         {{-- Quick Stats or Additional Info --}}
-        <div class="bg-white dark:bg-gray-800 shadow-sm border border-gray-200 dark:border-gray-700 rounded-lg p-6">
+        <div class="bg-gray-50 dark:bg-gray-900/50 border border-gray-300 dark:border-gray-600 rounded-lg p-6">
             <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Quick Access</h3>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div class="flex items-center space-x-3">

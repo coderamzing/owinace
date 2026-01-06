@@ -14,19 +14,29 @@ class LeadKanbanForm
         return $schema
             ->components([
                 TextInput::make('name')
+                    ->label('Name')
                     ->required()
                     ->maxLength(100),
                 TextInput::make('code')
+                    ->label('Code')
                     ->maxLength(100),
                 ColorPicker::make('color')
+                    ->label('Color')
                     ->required(),
                 TextInput::make('sort_order')
+                    ->label('Sort Order')
                     ->required()
-                    ->numeric(),
+                    ->numeric()
+                    ->default(0)
+                    ->minValue(0),
                 Toggle::make('is_active')
-                    ->required(),
+                    ->label('Active')
+                    ->required()
+                    ->default(true),
                 Toggle::make('is_system')
-                    ->required(),
+                    ->label('System')
+                    ->required()
+                    ->default(false),
             ]);
     }
 }

@@ -6,9 +6,7 @@ use App\Mail\WelcomeTeamMemberMail;
 use App\Models\User;
 use Filament\Actions\Action;
 use Filament\Actions\ActionGroup;
-use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
-use Filament\Actions\DeleteBulkAction;
 use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
 use Filament\Tables\Columns\TextColumn;
@@ -120,11 +118,6 @@ class TeamMembersTable
                                 $record->user->delete();
                             }
                         }),
-                ]),
-            ])
-            ->toolbarActions([
-                BulkActionGroup::make([
-                    DeleteBulkAction::make(),
                 ]),
             ]);
     }

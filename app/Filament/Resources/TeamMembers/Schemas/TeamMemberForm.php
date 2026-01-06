@@ -34,7 +34,7 @@ class TeamMemberForm
                     ->label('Email')
                     ->email()
                     ->required()
-                    ->maxLength(255),
+                    ->maxLength(254),
                 TextInput::make('name')
                     ->label('Name')
                     ->required()

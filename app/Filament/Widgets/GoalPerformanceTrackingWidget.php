@@ -12,6 +12,8 @@ use Carbon\Carbon;
 
 class GoalPerformanceTrackingWidget extends BaseWidget
 {
+    protected int | string | array $columnSpan = 12;
+
     protected static ?string $heading = 'Goal Performance Tracking';
 
     protected static ?int $sort = 6;
@@ -41,13 +43,11 @@ class GoalPerformanceTrackingWidget extends BaseWidget
             ->columns([
                 TextColumn::make('goal_type')
                     ->label('Goal Type')
-                    ->sortable()
-                    ->searchable(),
+                    ->sortable(),
 
                 TextColumn::make('fullname')
                     ->label('Goal Name')
-                    ->sortable()
-                    ->searchable(),
+                    ->sortable(),
 
                 TextColumn::make('target_value')
                     ->label('Target')

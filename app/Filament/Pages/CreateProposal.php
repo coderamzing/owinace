@@ -66,6 +66,7 @@ class CreateProposal extends Page implements HasForms
                     ->label('')
                     ->placeholder('Enter your proposal description...')
                     ->required()
+                    ->minLength(100)
                     ->rows(8)
                     ->columnSpanFull()
                     ->extraAttributes(['class' => 'text-lg']),

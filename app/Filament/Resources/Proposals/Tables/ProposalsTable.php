@@ -17,10 +17,11 @@ class ProposalsTable
         return $table
             ->columns([
                 TextColumn::make('title')
+                    ->limit(60)
                     ->searchable()
                     ->sortable(),
                 TextColumn::make('keywords')
-                    ->limit(50)
+                    ->limit(40)
                     ->searchable(),
                 TextColumn::make('sort_order')
                     ->numeric()

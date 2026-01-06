@@ -28,6 +28,15 @@ Route::get('/dashboard', function () {
     return redirect('/admin'); // Redirect to Filament admin panel
 })->middleware(['auth', 'verified'])->name('dashboard');
 
+// Temporary route to clear opcache - REMOVE AFTER USE
+Route::get('/clear-opcache-temp', function () {
+    if (function_exists('opcache_reset')) {
+        opcache_reset();
+        return 'OPcache cleared successfully!';
+    }
+    return 'OPcache not available';
+});
+
 // Team invitation routes
 Route::get('/team-invitations/{token}', [\App\Http\Controllers\TeamInvitationController::class, 'show'])->name('team-invitations.show');
 Route::post('/team-invitations/{token}/accept', [\App\Http\Controllers\TeamInvitationController::class, 'accept'])->name('team-invitations.accept');

@@ -30,6 +30,7 @@ class LeadForm
                 Textarea::make('description')
                     ->label('Description')
                     ->rows(3)
+                    ->maxLength(2000)
                     ->columnSpanFull(),
                 
                 Select::make('kanban_id')
@@ -93,19 +94,25 @@ class LeadForm
                     ->label('Expected Value')
                     ->numeric()
                     ->prefix('$')
-                    ->step(0.01),
+                    ->step(0.01)
+                    ->minValue(0)
+                    ->maxValue(999999.99),
                 
                 TextInput::make('actual_value')
                     ->label('Actual Value')
                     ->numeric()
                     ->prefix('$')
-                    ->step(0.01),
+                    ->step(0.01)
+                    ->minValue(0)
+                    ->maxValue(999999.99),
                 
                 TextInput::make('cost')
                     ->label('Cost')
                     ->numeric()
                     ->prefix('$')
-                    ->step(0.01),
+                    ->step(0.01)
+                    ->minValue(0)
+                    ->maxValue(999999.99),
                 
                 DateTimePicker::make('next_follow_up')
                     ->label('Next Follow Up')
@@ -118,12 +125,13 @@ class LeadForm
                 TextInput::make('url')
                     ->label('URL')
                     ->url()
-                    ->maxLength(255)
+                    ->maxLength(500)
                     ->columnSpanFull(),
                 
                 Textarea::make('notes')
                     ->label('Notes')
                     ->rows(4)
+                    ->maxLength(2000)
                     ->columnSpanFull(),
                 
                 Toggle::make('is_archived')

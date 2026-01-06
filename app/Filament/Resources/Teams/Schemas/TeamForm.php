@@ -19,6 +19,7 @@ class TeamForm
                 Textarea::make('description')
                     ->label('Description')
                     ->rows(3)
+                    ->maxLength(2000)
                     ->columnSpanFull(),
             ]);
     }

@@ -71,6 +71,11 @@ class LeadKanbanManagement extends Component
             return;
         }
 
+        // Auto-generate code from name if code is empty
+        if (empty($this->code)) {
+            $this->code = $this->generateCodeFromName($this->name);
+        }
+
         $data = [
             'name' => $this->name,
             'color' => $this->color,
@@ -92,6 +97,29 @@ class LeadKanbanManagement extends Component
 
         $this->closeModal();
         $this->resetPage();
+    }
+
+    /**
+     * Generate a code from the name (slug format)
+     */
+    private function generateCodeFromName(string $name): string
+    {
+        // Convert to lowercase
+        $code = strtolower($name);
+        
+        // Replace spaces with underscores
+        $code = str_replace(' ', '_', $code);
+        
+        // Remove special characters except underscores and dashes
+        $code = preg_replace('/[^a-z0-9_\-]/', '', $code);
+        
+        // Replace multiple underscores/dashes with single ones
+        $code = preg_replace('/[_\-]+/', '_', $code);
+        
+        // Trim underscores from start and end
+        $code = trim($code, '_-');
+        
+        return $code;
     }
 
     public function delete($id)

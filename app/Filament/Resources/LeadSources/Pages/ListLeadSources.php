@@ -3,12 +3,14 @@
 namespace App\Filament\Resources\LeadSources\Pages;
 
 use App\Filament\Resources\LeadSources\LeadSourceResource;
+use App\Filament\Resources\BaseListRecords;
 use Filament\Actions\CreateAction;
-use Filament\Resources\Pages\ListRecords;
 
-class ListLeadSources extends ListRecords
+class ListLeadSources extends BaseListRecords
 {
     protected static string $resource = LeadSourceResource::class;
+    
+    protected string $searchPlaceholder = 'Search sources by name...';
 
     protected function getHeaderActions(): array
     {

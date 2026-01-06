@@ -7,138 +7,175 @@
 
     <div class="flex flex-col gap-6">
         <!-- Today's Follow-ups -->
-        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
-            <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between">
-                <h2 class="text-lg font-semibold text-gray-900 dark:text-gray-100">Today's Follow-ups</h2>
-                <span class="bg-blue-500 text-white px-3 py-1 rounded-full text-sm font-medium">
+        <div class="bg-primary-50 dark:bg-primary-900/20 border border-primary-200 dark:border-primary-700 rounded-lg overflow-hidden">
+            <div class="px-6 py-4 bg-white dark:bg-primary-900/30 dark:border-primary-700 flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 bg-primary-100 dark:bg-primary-900/50 rounded-lg flex items-center justify-center">
+                        <x-filament::icon icon="heroicon-o-calendar" class="w-5 h-5 text-primary-600 dark:text-primary-400" />
+                    </div>
+                    <h2 class="text-lg font-bold text-gray-900 dark:text-gray-100">Today's Follow-ups</h2>
+                </div>
+                <span class="bg-primary-500 text-white px-3 py-1.5 rounded-full text-sm font-bold shadow-sm">
                     {{ $todayFollowUps->count() }}
                 </span>
             </div>
             <div class="p-6">
                 @if($todayFollowUps->count() > 0)
-                    @foreach($todayFollowUps as $lead)
-                        <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-4 mb-3 border-l-4 border-blue-500 transition-all duration-200 hover:bg-gray-100 dark:hover:bg-gray-600 hover:shadow-md">
-                            <div class="flex items-start justify-between mb-2">
-                                <a 
-                                    href="{{ \App\Filament\Resources\Leads\LeadResource::getUrl('view', ['record' => $lead->id]) }}"
-                                    class="text-base font-semibold text-gray-900 dark:text-gray-100 flex-1 hover:text-primary-600 dark:hover:text-primary-400"
-                                >
-                                    {{ $lead->title }}
-                                </a>
-                                <span class="text-sm font-medium text-blue-500 dark:text-blue-400 whitespace-nowrap ml-4">
-                                    {{ $lead->next_follow_up->format('h:i A') }}
-                                </span>
-                            </div>
-                            @if($lead->description)
-                                <p class="text-sm text-gray-600 dark:text-gray-400 mb-2">
-                                    {{ Str::limit($lead->description, 150) }}
-                                </p>
-                            @endif
-                            <div class="flex items-center gap-3 flex-wrap mt-2">
-                                @if($lead->source)
-                                    <span 
-                                        class="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium" 
-                                        style="background-color: {{ $lead->source->color }}20; color: {{ $lead->source->color }}"
+                    <div class="space-y-3">
+                        @foreach($todayFollowUps as $lead)
+                            <div class="bg-white dark:bg-gray-800 rounded-lg p-4 border-l-4 transition-all duration-200 hover:shadow-lg group" style="border-left-color: {{ $lead->source->color ?? '#3b82f6' }}">
+                                <div class="flex items-start justify-between mb-2">
+                                    <a 
+                                        href="{{ \App\Filament\Resources\Leads\LeadResource::getUrl('view', ['record' => $lead->id]) }}"
+                                        class="text-base font-semibold text-gray-900 dark:text-gray-100 flex-1 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors"
                                     >
-                                        {{ $lead->source->name }}
-                                    </span>
+                                        {{ $lead->title }}
+                                    </a>
+                                    <div class="flex items-center gap-2 ml-4">
+                                        <x-filament::icon icon="heroicon-o-clock" class="w-4 h-4 text-primary-500" />
+                                        <span class="text-sm font-bold text-primary-600 dark:text-primary-400 whitespace-nowrap">
+                                            {{ $lead->next_follow_up->format('h:i A') }}
+                                        </span>
+                                    </div>
+                                </div>
+                                @if($lead->description)
+                                    <p class="text-sm text-gray-600 dark:text-gray-400 mb-3 leading-relaxed">
+                                        {{ Str::limit($lead->description, 150) }}
+                                    </p>
                                 @endif
-                                @if($lead->kanban)
-                                    <span class="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium bg-gray-200 dark:bg-gray-600 text-gray-700 dark:text-gray-300">
-                                        {{ $lead->kanban->name }}
-                                    </span>
-                                @endif
-                                @if($lead->expected_value)
-                                    <span class="text-sm font-semibold text-green-600 dark:text-green-400">
-                                        ${{ number_format($lead->expected_value, 0) }}
-                                    </span>
-                                @endif
+                                <div class="flex items-center gap-2 flex-wrap">
+                                    @if($lead->source)
+                                        <span 
+                                            class="inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-semibold shadow-sm" 
+                                            style="background-color: {{ $lead->source->color }}20; color: {{ $lead->source->color }}; border: 1px solid {{ $lead->source->color }}40"
+                                        >
+                                            <x-filament::icon icon="heroicon-o-tag" class="w-3 h-3 mr-1" />
+                                            {{ $lead->source->name }}
+                                        </span>
+                                    @endif
+                                    @if($lead->kanban)
+                                        <span class="inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-semibold bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-gray-600">
+                                            <x-filament::icon icon="heroicon-o-squares-2x2" class="w-3 h-3 mr-1" />
+                                            {{ $lead->kanban->name }}
+                                        </span>
+                                    @endif
+                                    @if($lead->expected_value)
+                                        <span class="inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-bold bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400 border border-green-200 dark:border-green-700">
+                                            <x-filament::icon icon="heroicon-o-currency-dollar" class="w-3 h-3 mr-1" />
+                                            ${{ number_format($lead->expected_value, 0) }}
+                                        </span>
+                                    @endif
+                                </div>
                             </div>
-                        </div>
-                    @endforeach
+                        @endforeach
+                    </div>
                 @else
-                    <div class="text-center py-12 px-6 text-gray-500 dark:text-gray-400">
-                        <svg class="w-12 h-12 mx-auto mb-4 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-                        </svg>
-                        <p>No follow-ups scheduled for today</p>
+                    <div class="text-center py-16 px-6">
+                        <div class="w-16 h-16 bg-primary-100 dark:bg-primary-900/50 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <x-filament::icon icon="heroicon-o-calendar" class="w-8 h-8 text-primary-400 dark:text-primary-500" />
+                        </div>
+                        <p class="text-gray-600 dark:text-gray-400 font-medium">No follow-ups scheduled for today</p>
+                        <p class="text-sm text-gray-500 dark:text-gray-500 mt-1">You're all caught up! 🎉</p>
                     </div>
                 @endif
             </div>
         </div>
 
         <!-- Upcoming Follow-ups -->
-        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
-            <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between">
-                <h2 class="text-lg font-semibold text-gray-900 dark:text-gray-100">Upcoming Follow-ups</h2>
-                <span class="bg-blue-500 text-white px-3 py-1 rounded-full text-sm font-medium">
+        <div class="bg-info-50 dark:bg-info-900/20 border border-info-200 dark:border-info-700 rounded-lg overflow-hidden">
+            <div class="px-6 py-4 bg-white dark:bg-info-900/30 dark:border-info-700 flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 bg-info-100 dark:bg-info-900/50 rounded-lg flex items-center justify-center">
+                        <x-filament::icon icon="heroicon-o-calendar-days" class="w-5 h-5 text-info-600 dark:text-info-400" />
+                    </div>
+                    <h2 class="text-lg font-bold text-gray-900 dark:text-gray-100">Upcoming Follow-ups</h2>
+                </div>
+                <span class="bg-info-500 text-white px-3 py-1.5 rounded-full text-sm font-bold shadow-sm">
                     {{ $upcomingFollowUps->flatten()->count() }}
                 </span>
             </div>
             <div class="p-6">
                 @if($upcomingFollowUps->count() > 0)
-                    @foreach($upcomingFollowUps as $date => $leads)
-                        <div class="mb-6">
-                            <div class="flex items-center justify-between mb-4 pb-3 border-b-2 border-gray-200 dark:border-gray-700">
-                                <div>
-                                    <div class="text-base font-semibold text-gray-900 dark:text-gray-100">
-                                        {{ \Carbon\Carbon::parse($date)->format('l, F j, Y') }}
+                    <div class="space-y-6">
+                        @foreach($upcomingFollowUps as $date => $leads)
+                            <div class="bg-white dark:bg-gray-800 rounded-lg p-5 border border-gray-200 dark:border-gray-700">
+                                <div class="flex items-center gap-3 mb-4 pb-4 border-b-2 border-info-200 dark:border-info-700">
+                                    <div class="w-12 h-12 bg-info-100 dark:bg-info-900/50 rounded-lg flex flex-col items-center justify-center">
+                                        <span class="text-xs font-semibold text-info-600 dark:text-info-400">
+                                            {{ \Carbon\Carbon::parse($date)->format('M') }}
+                                        </span>
+                                        <span class="text-lg font-bold text-info-600 dark:text-info-400">
+                                            {{ \Carbon\Carbon::parse($date)->format('d') }}
+                                        </span>
                                     </div>
-                                    <div class="text-sm text-gray-600 dark:text-gray-400">
-                                        {{ $leads->count() }} {{ Str::plural('follow-up', $leads->count()) }}
+                                    <div class="flex-1">
+                                        <div class="text-base font-bold text-gray-900 dark:text-gray-100">
+                                            {{ \Carbon\Carbon::parse($date)->format('l, F j, Y') }}
+                                        </div>
+                                        <div class="text-sm text-gray-600 dark:text-gray-400 flex items-center gap-1">
+                                            <x-filament::icon icon="heroicon-o-bell" class="w-3 h-3" />
+                                            {{ $leads->count() }} {{ Str::plural('follow-up', $leads->count()) }}
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div>
-                                @foreach($leads as $lead)
-                                    <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-4 mb-3 border-l-4 border-blue-500 transition-all duration-200 hover:bg-gray-100 dark:hover:bg-gray-600 hover:shadow-md">
-                                        <div class="flex items-start justify-between mb-2">
-                                            <a 
-                                                href="{{ \App\Filament\Resources\Leads\LeadResource::getUrl('view', ['record' => $lead->id]) }}"
-                                                class="text-base font-semibold text-gray-900 dark:text-gray-100 flex-1 hover:text-primary-600 dark:hover:text-primary-400"
-                                            >
-                                                {{ $lead->title }}
-                                            </a>
-                                            <span class="text-sm font-medium text-blue-500 dark:text-blue-400 whitespace-nowrap ml-4">
-                                                {{ $lead->next_follow_up->format('h:i A') }}
-                                            </span>
-                                        </div>
-                                        @if($lead->description)
-                                            <p class="text-sm text-gray-600 dark:text-gray-400 mb-2">
-                                                {{ Str::limit($lead->description, 150) }}
-                                            </p>
-                                        @endif
-                                        <div class="flex items-center gap-3 flex-wrap mt-2">
-                                            @if($lead->source)
-                                                <span 
-                                                    class="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium" 
-                                                    style="background-color: {{ $lead->source->color }}20; color: {{ $lead->source->color }}"
+                                <div class="space-y-3">
+                                    @foreach($leads as $lead)
+                                        <div class="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-4 border-l-4 transition-all duration-200 hover:shadow-md group" style="border-left-color: {{ $lead->source->color ?? '#3b82f6' }}">
+                                            <div class="flex items-start justify-between mb-2">
+                                                <a 
+                                                    href="{{ \App\Filament\Resources\Leads\LeadResource::getUrl('view', ['record' => $lead->id]) }}"
+                                                    class="text-base font-semibold text-gray-900 dark:text-gray-100 flex-1 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors"
                                                 >
-                                                    {{ $lead->source->name }}
-                                                </span>
+                                                    {{ $lead->title }}
+                                                </a>
+                                                <div class="flex items-center gap-2 ml-4">
+                                                    <x-filament::icon icon="heroicon-o-clock" class="w-4 h-4 text-info-500" />
+                                                    <span class="text-sm font-bold text-info-600 dark:text-info-400 whitespace-nowrap">
+                                                        {{ $lead->next_follow_up->format('h:i A') }}
+                                                    </span>
+                                                </div>
+                                            </div>
+                                            @if($lead->description)
+                                                <p class="text-sm text-gray-600 dark:text-gray-400 mb-3 leading-relaxed">
+                                                    {{ Str::limit($lead->description, 150) }}
+                                                </p>
                                             @endif
-                                            @if($lead->kanban)
-                                                <span class="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium bg-gray-200 dark:bg-gray-600 text-gray-700 dark:text-gray-300">
-                                                    {{ $lead->kanban->name }}
-                                                </span>
-                                            @endif
-                                            @if($lead->expected_value)
-                                                <span class="text-sm font-semibold text-green-600 dark:text-green-400">
-                                                    ${{ number_format($lead->expected_value, 0) }}
-                                                </span>
-                                            @endif
+                                            <div class="flex items-center gap-2 flex-wrap">
+                                                @if($lead->source)
+                                                    <span 
+                                                        class="inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-semibold shadow-sm" 
+                                                        style="background-color: {{ $lead->source->color }}20; color: {{ $lead->source->color }}; border: 1px solid {{ $lead->source->color }}40"
+                                                    >
+                                                        <x-filament::icon icon="heroicon-o-tag" class="w-3 h-3 mr-1" />
+                                                        {{ $lead->source->name }}
+                                                    </span>
+                                                @endif
+                                                @if($lead->kanban)
+                                                    <span class="inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-semibold bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-gray-600">
+                                                        <x-filament::icon icon="heroicon-o-squares-2x2" class="w-3 h-3 mr-1" />
+                                                        {{ $lead->kanban->name }}
+                                                    </span>
+                                                @endif
+                                                @if($lead->expected_value)
+                                                    <span class="inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-bold bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400 border border-green-200 dark:border-green-700">
+                                                        <x-filament::icon icon="heroicon-o-currency-dollar" class="w-3 h-3 mr-1" />
+                                                        ${{ number_format($lead->expected_value, 0) }}
+                                                    </span>
+                                                @endif
+                                            </div>
                                         </div>
-                                    </div>
-                                @endforeach
+                                    @endforeach
+                                </div>
                             </div>
-                        </div>
-                    @endforeach
+                        @endforeach
+                    </div>
                 @else
-                    <div class="text-center py-12 px-6 text-gray-500 dark:text-gray-400">
-                        <svg class="w-12 h-12 mx-auto mb-4 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-                        </svg>
-                        <p>No upcoming follow-ups scheduled</p>
+                    <div class="text-center py-16 px-6">
+                        <div class="w-16 h-16 bg-info-100 dark:bg-info-900/50 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <x-filament::icon icon="heroicon-o-calendar-days" class="w-8 h-8 text-info-400 dark:text-info-500" />
+                        </div>
+                        <p class="text-gray-600 dark:text-gray-400 font-medium">No upcoming follow-ups scheduled</p>
+                        <p class="text-sm text-gray-500 dark:text-gray-500 mt-1">Schedule follow-ups to stay on top of your leads</p>
                     </div>
                 @endif
             </div>

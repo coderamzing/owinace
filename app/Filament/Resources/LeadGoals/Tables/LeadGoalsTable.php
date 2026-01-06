@@ -17,12 +17,16 @@ class LeadGoalsTable
                     ->searchable()
                     ->sortable()
                     ->badge()
+                    ->formatStateUsing(fn (string $state): string => match ($state) {
+                        'lead_generation' => 'Lead Generation Goal',
+                        'conversion' => 'Conversion Goal',
+                        'open_leads' => 'Open Leads Goal',
+                        default => ucfirst($state),
+                    })
                     ->color(fn (string $state): string => match ($state) {
-                        'revenue' => 'success',
-                        'leads' => 'info',
-                        'conversions' => 'warning',
-                        'calls' => 'primary',
-                        'meetings' => 'danger',
+                        'lead_generation' => 'info',
+                        'conversion' => 'success',
+                        'open_leads' => 'warning',
                         default => 'gray',
                     }),
                 TextColumn::make('period')

@@ -21,6 +21,10 @@ class LeadKanban extends Page
     
     // Track pagination for each kanban column
     public $kanbanPages = [];
+    
+    // Track selected lead for sidebar
+    public $selectedLeadId = null;
+    public $showSidebar = false;
 
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-squares-2x2';
     
@@ -65,6 +69,36 @@ class LeadKanban extends Page
     public function updatedSourceFilter()
     {
         $this->resetPagination();
+    }
+
+    public function openLeadSidebar($leadId)
+    {
+        $this->selectedLeadId = $leadId;
+        $this->showSidebar = true;
+    }
+
+    public function closeSidebar()
+    {
+        $this->showSidebar = false;
+        $this->selectedLeadId = null;
+    }
+
+    public function getSelectedLead()
+    {
+        if (!$this->selectedLeadId) {
+            return null;
+        }
+
+        $teamId = session('team_id');
+        
+        if (!$teamId) {
+            return null;
+        }
+
+        return Lead::where('team_id', $teamId)
+            ->where('id', $this->selectedLeadId)
+            ->with(['assignedMember', 'source', 'kanban', 'tags', 'contacts', 'createdBy', 'conversionBy'])
+            ->first();
     }
 
     #[On('lead-moved')]

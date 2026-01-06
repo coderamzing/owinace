@@ -4,18 +4,20 @@ namespace App\Filament\Resources\Teams\Pages;
 
 use App\Filament\Resources\TeamMembers\Schemas\TeamMemberForm;
 use App\Filament\Resources\Teams\TeamResource;
+use App\Filament\Resources\BaseListRecords;
 use App\Models\TeamMember;
 use App\Models\User;
 use Filament\Actions;
-use Filament\Resources\Pages\ListRecords;
 use Filament\Schemas\Schema;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 
-class ListTeams extends ListRecords
+class ListTeams extends BaseListRecords
 {
     protected static string $resource = TeamResource::class;
+    
+    protected string $searchPlaceholder = 'Search teams by name...';
 
     protected function getHeaderActions(): array
     {

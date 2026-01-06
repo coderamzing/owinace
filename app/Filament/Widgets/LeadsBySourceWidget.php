@@ -13,7 +13,7 @@ class LeadsBySourceWidget extends ChartWidget
 {
     protected static ?int $sort = 4;
     
-    protected int | string | array $columnSpan = '1/2';
+    protected int | string | array $columnSpan = 6;
 
     public function getHeading(): string
     {

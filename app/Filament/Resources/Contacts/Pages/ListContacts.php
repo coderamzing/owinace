@@ -3,18 +3,21 @@
 namespace App\Filament\Resources\Contacts\Pages;
 
 use App\Filament\Resources\Contacts\ContactResource;
+use App\Filament\Resources\BaseListRecords;
 use Filament\Actions\Action;
 use Filament\Actions\CreateAction;
-use Filament\Resources\Pages\ListRecords;
 use App\Traits\HasPermission;
 
-class ListContacts extends ListRecords
+class ListContacts extends BaseListRecords
 {
     use HasPermission;
     
     protected static ?string $permission = 'contact.list';
     
     protected static string $resource = ContactResource::class;
+    
+    // Custom search placeholder for this table
+    protected string $searchPlaceholder = 'Search by name, email, company...';
 
     protected function getHeaderActions(): array
     {

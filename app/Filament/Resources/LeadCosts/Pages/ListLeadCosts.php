@@ -3,12 +3,14 @@
 namespace App\Filament\Resources\LeadCosts\Pages;
 
 use App\Filament\Resources\LeadCosts\LeadCostResource;
+use App\Filament\Resources\BaseListRecords;
 use Filament\Actions\CreateAction;
-use Filament\Resources\Pages\ListRecords;
 
-class ListLeadCosts extends ListRecords
+class ListLeadCosts extends BaseListRecords
 {
     protected static string $resource = LeadCostResource::class;
+    
+    protected string $searchPlaceholder = 'Search costs by name, amount...';
 
     protected function getHeaderActions(): array
     {

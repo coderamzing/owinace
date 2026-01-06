@@ -26,6 +26,8 @@ class LeadCostForm
                     ->numeric()
                     ->prefix('$')
                     ->step(0.01)
+                    ->minValue(0)
+                    ->maxValue(999999.99)
                     ->required(),
                 
                 Select::make('source_id')

@@ -14,17 +14,24 @@ class ProposalForm
         return $schema
             ->components([
                 TextInput::make('title')
+                    ->label('Title')
                     ->required()
                     ->maxLength(255),
                 Textarea::make('description')
+                    ->label('Description')
                     ->required()
+                    ->minLength(100)
+                    ->maxLength(2000)
                     ->columnSpanFull(),
                 Textarea::make('job_description')
                     ->label('Job Description')
                     ->nullable()
+                    ->maxLength(2000)
                     ->columnSpanFull(),
                 Textarea::make('keywords')
+                    ->label('Keywords')
                     ->required()
+                    ->maxLength(2000)
                     ->columnSpanFull(),
                 TextInput::make('sort_order')
                     ->required()

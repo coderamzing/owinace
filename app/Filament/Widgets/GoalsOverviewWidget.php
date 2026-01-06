@@ -16,6 +16,8 @@ class GoalsOverviewWidget extends StatsOverviewWidget
 
     protected static ?int $sort = 1;
 
+    protected int | string | array $columnSpan = 12;
+
     protected function getStats(): array
     {
         $teamId = Session::get('team_id');

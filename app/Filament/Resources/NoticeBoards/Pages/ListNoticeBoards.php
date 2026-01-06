@@ -3,16 +3,17 @@
 namespace App\Filament\Resources\NoticeBoards\Pages;
 
 use App\Filament\Resources\NoticeBoards\NoticeBoardResource;
+use App\Filament\Resources\BaseListRecords;
 use Filament\Actions;
-use Filament\Resources\Pages\ListRecords;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\Builder;
 
-class ListNoticeBoards extends ListRecords
+class ListNoticeBoards extends BaseListRecords
 {
     protected static string $resource = NoticeBoardResource::class;
 
-    protected string $view = 'filament.resources.notice-boards.list-notice-boards';
+    // Custom search placeholder for notice boards
+    protected string $searchPlaceholder = 'Search notices by title, description...';
 
     protected function getHeaderActions(): array
     {

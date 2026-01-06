@@ -17,7 +17,7 @@ class RecentLeadsWidget extends BaseWidget
 
     protected static ?int $sort = 7;
 
-    protected int | string | array $columnSpan = 'full';
+    protected int | string | array $columnSpan = 6;
 
     public function table(Table $table): Table
     {
@@ -33,12 +33,11 @@ class RecentLeadsWidget extends BaseWidget
                     ->where('team_id', $teamId)
                     ->with(['source', 'kanban', 'assignedMember'])
                     ->orderBy('created_at', 'desc')
-                    ->limit(10)
+                    ->limit(8)
             )
             ->columns([
                 TextColumn::make('name')
                     ->label('Lead Name')
-                    ->searchable()
                     ->sortable(),
 
                 TextColumn::make('source.name')
