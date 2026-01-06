@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Leads\Schemas;
 
+use App\Models\Contact;
 use App\Models\LeadKanban;
 use App\Models\LeadSource;
 use App\Models\User;
@@ -10,6 +11,7 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
+use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Illuminate\Database\Eloquent\Builder;
 
@@ -127,6 +129,85 @@ class LeadForm
                 Toggle::make('is_archived')
                     ->label('Archived')
                     ->default(false),
+                
+                // Contact Section (Optional)
+                Section::make('Contact Information (Optional)')
+                    ->description('Link existing contacts or create a new one for this lead.')
+                    ->schema([
+                        Select::make('existing_contact_ids')
+                            ->label('Link Existing Contacts')
+                            ->options(function () {
+                                $teamId = session('team_id');
+                                if (!$teamId) {
+                                    return [];
+                                }
+                                return Contact::where('team_id', $teamId)
+                                    ->get()
+                                    ->mapWithKeys(function ($contact) {
+                                        $label = collect([
+                                            $contact->first_name,
+                                            $contact->last_name,
+                                            $contact->email ? "({$contact->email})" : null,
+                                            $contact->company ? "- {$contact->company}" : null,
+                                        ])->filter()->join(' ');
+                                        return [$contact->id => $label];
+                                    });
+                            })
+                            ->multiple()
+                            ->searchable()
+                            ->preload()
+                            ->columnSpanFull()
+                            ->helperText('Select one or more existing contacts to link to this lead, or create a new one below.')
+                            ->reactive(),
+                        
+                        TextInput::make('contact_first_name')
+                            ->label('First Name')
+                            ->maxLength(255)
+                            ->disabled(fn (callable $get) => !empty($get('existing_contact_ids')))
+                            ->dehydrated(fn (callable $get) => empty($get('existing_contact_ids'))),
+                        
+                        TextInput::make('contact_last_name')
+                            ->label('Last Name')
+                            ->maxLength(255)
+                            ->disabled(fn (callable $get) => !empty($get('existing_contact_ids')))
+                            ->dehydrated(fn (callable $get) => empty($get('existing_contact_ids'))),
+                        
+                        TextInput::make('contact_email')
+                            ->label('Email')
+                            ->email()
+                            ->maxLength(254)
+                            ->disabled(fn (callable $get) => !empty($get('existing_contact_ids')))
+                            ->dehydrated(fn (callable $get) => empty($get('existing_contact_ids'))),
+                        
+                        TextInput::make('contact_phone_number')
+                            ->label('Phone Number')
+                            ->tel()
+                            ->maxLength(20)
+                            ->disabled(fn (callable $get) => !empty($get('existing_contact_ids')))
+                            ->dehydrated(fn (callable $get) => empty($get('existing_contact_ids'))),
+                        
+                        TextInput::make('contact_company')
+                            ->label('Company')
+                            ->maxLength(255)
+                            ->disabled(fn (callable $get) => !empty($get('existing_contact_ids')))
+                            ->dehydrated(fn (callable $get) => empty($get('existing_contact_ids'))),
+                        
+                        TextInput::make('contact_job_title')
+                            ->label('Job Title')
+                            ->maxLength(255)
+                            ->disabled(fn (callable $get) => !empty($get('existing_contact_ids')))
+                            ->dehydrated(fn (callable $get) => empty($get('existing_contact_ids'))),
+                        
+                        TextInput::make('contact_website')
+                            ->label('Website')
+                            ->url()
+                            ->maxLength(200)
+                            ->columnSpanFull()
+                            ->disabled(fn (callable $get) => !empty($get('existing_contact_ids')))
+                            ->dehydrated(fn (callable $get) => empty($get('existing_contact_ids'))),
+                    ])
+                    ->columns(2)
+                    ->columnSpanFull(),
             ]);
     }
 }

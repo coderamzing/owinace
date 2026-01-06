@@ -8,6 +8,22 @@ Route::get('/', function () {
     return view('home');
 })->name('home');
 
+Route::get('/how-it-works', function () {
+    return view('how-it-works');
+})->name('how-it-works');
+
+Route::get('/contact', function () {
+    return view('contact');
+})->name('contact');
+
+Route::get('/privacy-policy', function () {
+    return view('privacy-policy');
+})->name('privacy-policy');
+
+Route::get('/terms', function () {
+    return view('terms');
+})->name('terms');
+
 Route::get('/dashboard', function () {
     return redirect('/admin'); // Redirect to Filament admin panel
 })->middleware(['auth', 'verified'])->name('dashboard');

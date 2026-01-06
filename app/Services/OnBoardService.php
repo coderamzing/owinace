@@ -55,6 +55,7 @@ class OnBoardService
                 'trial_end' => now()->addDays(14),
                 'expire_at' => now()->addDays(30),
                 'start_at' => now(),
+                'tier_id' => 1,
             ]);
 
         

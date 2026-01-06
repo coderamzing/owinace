@@ -238,6 +238,7 @@ return [
         'contact.list',
         'contact.delete',
         'contact.edit',
+        'contact.import',
 
         //leads
         'leads.my',
@@ -284,6 +285,7 @@ return [
                 'contact.list',
                 'contact.edit',
                 'contact.view',
+                'contact.import',
             ]
         ]
     ],

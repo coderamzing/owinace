@@ -1,4 +1,6 @@
 /* Import Inter font from Google Fonts - must be first */
+/* To change font: Replace 'Inter' with your desired Google Font name in both lines */
+/* Popular options: Poppins, Roboto, Montserrat, Open+Sans, Lato, Nunito, Work+Sans */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
 
 @import '../../../../vendor/filament/filament/resources/css/theme.css';
@@ -20,6 +22,7 @@
 
 * {
     /* Animations removed for better performance */
+    font-family: var(--font-family);
 }
 
 /* Force square borders on all elements */

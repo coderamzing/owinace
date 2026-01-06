@@ -32,14 +32,11 @@ class AuthenticatedSessionController extends Controller
         $user = Auth::user();
         if ($user && $user->workspace_id) {
             session(['workspace_id' => $user->workspace_id]);
-            
-            // Set first team_id of the workspace
             $firstTeam = \App\Models\Team::where('workspace_id', $user->workspace_id)->first();
             if ($firstTeam) {
                 session(['team_id' => $firstTeam->id]);
             }
         }
-
         return redirect()->intended(route('dashboard', absolute: false));
     }
 

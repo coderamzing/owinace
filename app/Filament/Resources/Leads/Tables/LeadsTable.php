@@ -65,6 +65,7 @@ class LeadsTable
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
+            ->defaultSort('created_at', 'desc')
             ->filters([
                 Filter::make('search')
                     ->label('Full Text')

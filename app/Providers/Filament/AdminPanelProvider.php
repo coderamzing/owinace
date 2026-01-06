@@ -31,16 +31,17 @@ class AdminPanelProvider extends PanelProvider
             ->id('admin')
             ->path('admin')
             ->colors([
-                'primary' => Color::hex('#0F766E'), // Rich teal
-                'secondary' => Color::hex('#10B981'), // Emerald green
+                'primary' => Color::hex('#F37B7F'), // Coral pink
+                'secondary' => Color::hex('#272E3F'), // Dark navy
                 'success' => Color::hex('#059669'),
                 'warning' => Color::hex('#F59E0B'),
                 'danger' => Color::hex('#EF4444'),
                 'info' => Color::hex('#3B82F6'),
             ])
+            ->font('Inter') // Add your Google Font name here
             ->brandName(env('APP_NAME', 'Owinace'))
-            ->brandLogo(asset('logo.png'))
-            ->favicon(asset('favicon.png'))
+            ->brandLogo(asset('images/logo.png'))
+            ->favicon(asset('images/favicon.png'))
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\Filament\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\Filament\Pages')
             ->pages([

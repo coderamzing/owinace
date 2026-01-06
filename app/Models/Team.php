@@ -46,12 +46,4 @@ class Team extends Model
     {
         return $this->hasMany(TeamMember::class, 'team_id');
     }
-
-    /**
-     * Get the invitations for the team.
-     */
-    public function invitations(): HasMany
-    {
-        return $this->hasMany(TeamInvitation::class, 'team_id');
-    }
 }

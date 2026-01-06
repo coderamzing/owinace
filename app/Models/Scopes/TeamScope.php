@@ -33,7 +33,7 @@ class TeamScope implements Scope
     protected function getTeamId(): ?int
     {
         // Get team_id from session
-        $teamId = Session::get('team_id');
+        $teamId = Session::get('team_id', -1);
         
         return $teamId;
     }

@@ -46,6 +46,7 @@ class ContactResource extends Resource
     {
         return [
             'index' => ListContacts::route('/'),
+            'import' => \App\Filament\Resources\Contacts\Pages\ImportContacts::route('/import'),
         ];
     }
 }

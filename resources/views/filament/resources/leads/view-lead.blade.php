@@ -172,6 +172,74 @@
             </div>
         </div>
 
+        {{-- Contacts --}}
+        @if($record->contacts->count() > 0)
+            <div class="bg-white dark:bg-gray-800 shadow-sm border border-gray-200 dark:border-gray-700 rounded-lg p-6">
+                <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Contacts</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    @foreach($record->contacts as $contact)
+                        <div class="border border-gray-200 dark:border-gray-600 rounded-lg p-4 hover:shadow-md transition-shadow">
+                            <div class="flex items-start">
+                                <div class="flex-shrink-0">
+                                    <div class="w-10 h-10 rounded-full bg-primary-100 dark:bg-primary-900 flex items-center justify-center">
+                                        <x-filament::icon icon="heroicon-o-user" class="w-5 h-5 text-primary-600 dark:text-primary-400" />
+                                    </div>
+                                </div>
+                                <div class="ml-3 flex-1">
+                                    @if($contact->first_name || $contact->last_name)
+                                        <h4 class="text-sm font-semibold text-gray-900 dark:text-white">
+                                            {{ trim($contact->first_name . ' ' . $contact->last_name) }}
+                                        </h4>
+                                    @endif
+                                    @if($contact->job_title)
+                                        <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">{{ $contact->job_title }}</p>
+                                    @endif
+                                    @if($contact->company)
+                                        <p class="text-xs text-gray-600 dark:text-gray-300 mt-1 flex items-center">
+                                            <x-filament::icon icon="heroicon-o-building-office" class="w-3 h-3 mr-1" />
+                                            {{ $contact->company }}
+                                        </p>
+                                    @endif
+                                    @if($contact->email)
+                                        <p class="text-xs text-primary-600 dark:text-primary-400 mt-1 flex items-center">
+                                            <x-filament::icon icon="heroicon-o-envelope" class="w-3 h-3 mr-1" />
+                                            <a href="mailto:{{ $contact->email }}" class="hover:underline truncate">{{ $contact->email }}</a>
+                                        </p>
+                                    @endif
+                                    @if($contact->phone_number)
+                                        <p class="text-xs text-gray-600 dark:text-gray-300 mt-1 flex items-center">
+                                            <x-filament::icon icon="heroicon-o-phone" class="w-3 h-3 mr-1" />
+                                            <a href="tel:{{ $contact->phone_number }}" class="hover:underline">{{ $contact->phone_number }}</a>
+                                        </p>
+                                    @endif
+                                    @if($contact->website)
+                                        <p class="text-xs text-primary-600 dark:text-primary-400 mt-1 flex items-center">
+                                            <x-filament::icon icon="heroicon-o-globe-alt" class="w-3 h-3 mr-1" />
+                                            <a href="{{ $contact->website }}" target="_blank" class="hover:underline truncate">{{ $contact->website }}</a>
+                                        </p>
+                                    @endif
+                                </div>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+            </div>
+        @endif
+
+        {{-- Tags --}}
+        @if($record->tags->count() > 0)
+            <div class="bg-white dark:bg-gray-800 shadow-sm border border-gray-200 dark:border-gray-700 rounded-lg p-6">
+                <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Tags</h3>
+                <div class="flex flex-wrap gap-2">
+                    @foreach($record->tags as $tag)
+                        <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium" style="background-color: {{ $tag->color }}20; color: {{ $tag->color }}">
+                            {{ $tag->name }}
+                        </span>
+                    @endforeach
+                </div>
+            </div>
+        @endif
+
         {{-- Team & Ownership --}}
         <div class="bg-white dark:bg-gray-800 shadow-sm border border-gray-200 dark:border-gray-700 rounded-lg p-6">
             <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Team & Ownership</h3>

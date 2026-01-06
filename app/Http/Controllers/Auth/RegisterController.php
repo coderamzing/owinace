@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\View\View;
+use Illuminate\Support\Facades\Log;
 
 class RegisterController extends Controller
 {
@@ -70,6 +71,7 @@ class RegisterController extends Controller
             // Don't auto-login - user must verify email first
             return redirect()->route('login')->with('status', 'Thanks for signing up! Please check your email to verify your account before logging in.');
         } catch (\Exception $e) {
+            Log::error("RegisterController: ".$e->getMessage());
             return redirect()->back()
                 ->withErrors(['error' => $e->getMessage()])
                 ->withInput();
