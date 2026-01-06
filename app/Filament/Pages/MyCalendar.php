@@ -22,11 +22,16 @@ class MyCalendar extends Page
 
     protected static ?int $navigationSort = 2;
 
-    protected static ?string $title = 'My Calendar';
+    protected static ?string $title = null;
 
     protected static ?string $slug = 'my-calendar';
 
     protected string $view = 'filament.pages.my-calendar';
+
+    public function getHeading(): ?string
+    {
+        return null;
+    }
 
     public function getUpcomingFollowUps()
     {
