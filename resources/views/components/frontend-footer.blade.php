@@ -1,7 +1,7 @@
 <footer class="bg-gradient-to-br from-indigo-900 via-purple-900 to-indigo-800 text-white">
     <div class="footer-content">
         <!-- Main Content -->
-        <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div class="container mx-auto px-6 sm:px-6 lg:px-8 py-12">
             <div class="grid grid-cols-1 md:grid-cols-12 gap-6 lg:gap-8">
                 <!-- Brand Section -->
                 <div class="md:col-span-5">
