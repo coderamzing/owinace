@@ -36,7 +36,7 @@
     }
     .banner-section{
         min-height: 80vh;
-        margin-bottom: 15.625rem;
+        margin-bottom: 20.625rem;
         padding-bottom: 12.5rem;
     }
     .home-banner-heading{
@@ -44,8 +44,9 @@
     }
     .home-banner-image{
         position: absolute;
-        left: 5%;
+        left: 50%;
         margin-top: 3.125rem;
+        transform: translate(-50%, 0px);
     }
     @media (max-width: 991.98px) {
         .navbar{
@@ -87,7 +88,7 @@
 <!-- Software features -->
 <div class="py-16 w-full overflow-hidden features-div">
     <div class="container mx-auto px-4">
-        <div class="flex flex-wrap gap-2">
+        <div class="flex flex-wrap">
             <div class="w-full">
                 <h1 class="font-bold mb-8 text-4xl">Sales lead tracking software features</h1>
             </div>
@@ -145,7 +146,7 @@
                 <h3 class="text-3xl md:text-4xl mb-8 text-center">With intelligent lead tracking, complete contact profiles, and built-in engagement tools, Owinace ensures no opportunity slips through and every deal progresses smoothly.</h3>
             </div>
         </div>
-        <div class="flex flex-wrap gap-6">
+        <div class="flex flex-wrap">
             <div class="w-full lg:w-1/2 xl:w-1/3" data-aos="fade-up" data-aos-delay="200">
                 <div class="lg:pr-4">
                     <span class="text-xl font-light">01.</span>
@@ -213,7 +214,7 @@
 <!-- how help section -->
 <div class="py-16 w-full overflow-hidden how-help-section" >
     <div class="container mx-auto px-4">
-        <div class="flex flex-wrap justify-center items-center gap-8">
+        <div class="flex flex-wrap justify-center items-center">
             <div class="w-full xl:w-1/2" data-aos="fade-right">
                 <h2 class="mt-4 font-bold text-3xl">Why Lead Tracking Software Matters for Your Business?</h2>
                 <p class="mt-4">Lead tracking software gives you complete visibility into your sales pipeline. It helps you understand how prospects move through each stage, what they're interested in, and when they're ready to convert—allowing your team to take smarter, faster actions.</p>
@@ -291,8 +292,8 @@
                 <h1 class="font-bold text-4xl">Lead Tracking Strategy</h1>
             </div>
         </div>
-        <div class="flex flex-wrap mb-12 items-center gap-8">
-            <div class="w-full lg:w-1/2" data-aos="fade-right">
+        <div class="flex flex-wrap mb-12 items-center ">
+            <div class="w-full lg:w-1/2 pr-0 md:pr-8" data-aos="fade-right">
                 <img src="{{ asset('images/analysis.png') }}" alt="strategy1" class="w-full max-w-full"/>
             </div>
             <div class="w-full lg:w-1/2" data-aos="fade-left">
@@ -302,19 +303,19 @@
                 <p>Give your leads the attention they deserve with intelligent analytics that strengthen your sales pipeline and boost overall growth.</p>
             </div>
         </div>
-        <div class="flex flex-wrap mb-12 items-center gap-8">
+        <div class="flex flex-wrap mb-12 items-center">
             <div class="w-full lg:w-1/2 order-2 lg:order-1" data-aos="fade-left">
                 <h2 class="mb-4 font-bold text-3xl">Streamline your goals and performance with a unified workflow</h2>
                 <p class="mb-4">Switching between multiple tools to manage goals, performance and costs creates unnecessary delays and confusion.</p>
                 <p class="mb-4">A Kanban-based workflow helps you set clear objectives, track performance metrics, and maintain full visibility of project costs as tasks move through each stage. With organized boards, real-time status updates and automated insights, teams can prioritize work efficiently, reduce bottlenecks and stay aligned on targets.</p>
                 <p>Simplify goal tracking, cost control and performance management with a cohesive, Kanban-driven system.</p>
             </div>
-            <div class="w-full lg:w-1/2 order-1 lg:order-2" data-aos="fade-right">
+            <div class="w-full lg:w-1/2 order-1 lg:order-2 pl-0 md:pl-8" data-aos="fade-right">
                 <img src="{{ asset('images/goal.png') }}" alt="goal" class="w-full max-w-full"/>
             </div>
         </div>
-        <div class="flex flex-wrap mb-12 items-center gap-8">
-            <div class="w-full lg:w-1/2" data-aos="fade-right">
+        <div class="flex flex-wrap mb-12 items-center">
+            <div class="w-full lg:w-1/2 md:pr-8 pr-0" data-aos="fade-right">
                 <img src="{{ asset('images/cover.png') }}" alt="cover" class="w-full max-w-full"/>
             </div>
             <div class="w-full lg:w-1/2" data-aos="fade-left">
@@ -362,7 +363,7 @@
                 <p class="text-xl text-gray-600">Generate complete lead profiles in seconds and experience noticeably higher response and conversion rates.</p>
             </div>
         </div>
-        <div class="flex flex-wrap gap-6 justify-center">
+        <div class="flex flex-wrap justify-center">
             <div class="w-full lg:w-1/3 md:w-1/2 p-2" data-aos="fade-up">
                 <div class="text-center p-6">
                     <div class="bg-indigo-100 rounded-full inline-flex items-center justify-center mb-6" style="width: 5rem; height: 5rem;">
@@ -399,7 +400,7 @@
 <!-- Start: Team Collaboration -->
 <div class="py-16 w-full overflow-hidden" id="team-collaboration">
     <div class="container mx-auto px-4">
-        <div class="flex flex-wrap items-center gap-8">
+        <div class="flex flex-wrap items-center">
             <div class="w-full lg:w-1/2" data-aos="fade-right">
                 <h2 class="text-4xl font-bold mb-6">Collaborate with Your Team</h2>
                 <p class="text-xl text-gray-600 mb-6">Create teams, invite members, and work together on proposals. Perfect for agencies, freelancers, and growing businesses.</p>
