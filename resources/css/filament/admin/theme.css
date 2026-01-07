@@ -182,3 +182,29 @@ table tbody tr:nth-child(even) > td.fi-ta-cell-notice-card ~ td{
 .analytics-dashboard div:nth-child(7){
     border: 1px solid #e3e3e3;
 }
+
+.filter-section input,
+.filter-section select{
+    border: 1px solid #e3e3e3;
+    padding: 6px 12px;
+}
+
+
+/* Dark theme */
+
+:where(.dark, .dark *) nav.fi-sidebar-nav,
+:where(.dark, .dark *) .fi-ta-filters-above-content-ctn {
+    background: #000;
+}
+:where(.dark, .dark *) .fi-main{
+    background-color: #1b1718;
+}
+
+:where(.dark, .dark *) .filter-form .fi-input,
+:where(.dark, .dark *) .fi-input{
+    background-color: #242427;
+}
+
+:where(.dark, .dark *) .fi-logo{
+    filter: invert(1);
+}
