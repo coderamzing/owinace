@@ -16,7 +16,6 @@ class LeadAttachmentManagement extends Component
     public $uploading = false;
     public $uploadProgress = 0;
 
-    protected $listeners = ['refreshAttachments' => '$refresh'];
 
     public function mount(Lead $lead)
     {
@@ -25,24 +24,34 @@ class LeadAttachmentManagement extends Component
 
     public function updatedAttachment()
     {
-        $this->validate([
-            'attachment' => 'required|file|max:2048', // 2MB in kilobytes
-        ], [
-            'attachment.max' => 'The attachment must not be larger than 2MB.',
-            'attachment.required' => 'Please select a file to upload.',
-        ]);
+        try {
+            $this->validate([
+                'attachment' => 'required|file|max:2048', // 2MB in kilobytes
+            ], [
+                'attachment.max' => 'The attachment must not be larger than 2MB.',
+                'attachment.required' => 'Please select a file to upload.',
+            ]);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            \Filament\Notifications\Notification::make()
+                ->danger()
+                ->title('Validation Error')
+                ->body($e->validator->errors()->first())
+                ->send();
+            
+            $this->reset('attachment');
+        }
     }
 
     public function uploadAttachment()
     {
-        $this->validate([
-            'attachment' => 'required|file|max:2048', // 2MB in kilobytes
-        ], [
-            'attachment.max' => 'The attachment must not be larger than 2MB.',
-            'attachment.required' => 'Please select a file to upload.',
-        ]);
-
         try {
+            $this->validate([
+                'attachment' => 'required|file|max:2048', // 2MB in kilobytes
+            ], [
+                'attachment.max' => 'The attachment must not be larger than 2MB.',
+                'attachment.required' => 'Please select a file to upload.',
+            ]);
+
             $this->uploading = true;
 
             // Add the file to the media collection
@@ -52,24 +61,40 @@ class LeadAttachmentManagement extends Component
                 ->toMediaCollection('attachments');
 
             // Reset the upload field
-            $this->attachment = null;
+            $this->reset('attachment');
             $this->uploading = false;
 
-            // Show success notification
-            $this->dispatch('notify', [
-                'type' => 'success',
-                'message' => 'Attachment uploaded successfully!'
-            ]);
+            // Show success notification using Filament's notification system
+            \Filament\Notifications\Notification::make()
+                ->success()
+                ->title('Success!')
+                ->body('Attachment uploaded successfully!')
+                ->send();
 
-            // Refresh the component
-            $this->dispatch('refreshAttachments');
-
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            $this->uploading = false;
+            
+            \Filament\Notifications\Notification::make()
+                ->danger()
+                ->title('Validation Error')
+                ->body($e->validator->errors()->first())
+                ->send();
+                
         } catch (\Exception $e) {
             $this->uploading = false;
-            $this->dispatch('notify', [
-                'type' => 'error',
-                'message' => 'Failed to upload attachment: ' . $e->getMessage()
+            
+            // Log the error
+            \Log::error('Lead attachment upload failed: ' . $e->getMessage(), [
+                'lead_id' => $this->lead->id,
+                'exception' => $e,
             ]);
+            
+            // Show error notification
+            \Filament\Notifications\Notification::make()
+                ->danger()
+                ->title('Upload Failed')
+                ->body($e->getMessage())
+                ->send();
         }
     }
 
@@ -81,18 +106,17 @@ class LeadAttachmentManagement extends Component
             if ($media) {
                 $media->delete();
                 
-                $this->dispatch('notify', [
-                    'type' => 'success',
-                    'message' => 'Attachment deleted successfully!'
-                ]);
-
-                $this->dispatch('refreshAttachments');
+                \Filament\Notifications\Notification::make()
+                    ->success()
+                    ->title('Attachment deleted successfully!')
+                    ->send();
             }
         } catch (\Exception $e) {
-            $this->dispatch('notify', [
-                'type' => 'error',
-                'message' => 'Failed to delete attachment: ' . $e->getMessage()
-            ]);
+            \Filament\Notifications\Notification::make()
+                ->danger()
+                ->title('Delete Failed')
+                ->body($e->getMessage())
+                ->send();
         }
     }
 
@@ -105,10 +129,11 @@ class LeadAttachmentManagement extends Component
                 return response()->download($media->getPath(), $media->file_name);
             }
         } catch (\Exception $e) {
-            $this->dispatch('notify', [
-                'type' => 'error',
-                'message' => 'Failed to download attachment: ' . $e->getMessage()
-            ]);
+            \Filament\Notifications\Notification::make()
+                ->danger()
+                ->title('Download Failed')
+                ->body($e->getMessage())
+                ->send();
         }
     }
 

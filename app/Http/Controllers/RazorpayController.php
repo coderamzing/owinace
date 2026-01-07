@@ -73,6 +73,7 @@ class RazorpayController extends Controller
                 'notes' => $notes,
             ]);
 
+            // Keep using the public-facing checkout page for tier purchases
             return view('razorpay.checkout', [
                 'order' => $order,
                 'key_id' => $razorpayKeyId,
@@ -151,6 +152,22 @@ class RazorpayController extends Controller
                 'notes' => $notes,
             ]);
 
+            // If this is an AJAX/JSON request (e.g., from the Filament Add Credit page),
+            // return the minimal data needed to open the Razorpay modal on the same page.
+            if ($request->wantsJson()) {
+                return response()->json([
+                    'order_id' => $order->id,
+                    'amount' => $amountPaise,
+                    'currency' => 'USD',
+                    'key_id' => $razorpayKeyId,
+                    'credits' => $credits,
+                    'success_url' => route('razorpay.success'),
+                    'cancel_url' => route('razorpay.cancel'),
+                    'name' => config('app.name'),
+                ]);
+            }
+
+            // Fallback: redirect to the existing (non-AJAX) checkout page.
             return view('razorpay.checkout', [
                 'order' => $order,
                 'key_id' => $razorpayKeyId,

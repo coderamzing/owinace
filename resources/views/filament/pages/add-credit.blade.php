@@ -84,7 +84,7 @@
                         </p>
 
                         <!-- Purchase Button -->
-                        <form action="{{ route('razorpay.create-credit-order') }}" method="POST">
+                        <form action="{{ route('razorpay.create-credit-order') }}" method="POST" class="js-credit-form">
                             @csrf
                             <input type="hidden" name="credits" value="{{ $package['credits'] }}">
                             <input type="hidden" name="amount" value="{{ $package['price'] }}">
@@ -113,3 +113,75 @@
         @endif
     </div>
 </x-filament-panels::page>
+
+@push('scripts')
+    <script src="https://checkout.razorpay.com/v1/magic-checkout.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const forms = document.querySelectorAll('.js-credit-form');
+            const csrfToken = '{{ csrf_token() }}';
+
+            forms.forEach((form) => {
+                form.addEventListener('submit', async function (event) {
+                    event.preventDefault();
+
+                    const formData = new FormData(form);
+
+                    try {
+                        const response = await fetch(form.action, {
+                            method: 'POST',
+                            headers: {
+                                'X-CSRF-TOKEN': csrfToken,
+                                'Accept': 'application/json',
+                            },
+                            body: formData,
+                        });
+
+                        if (!response.ok) {
+                            throw new Error('Failed to create payment order. Please try again.');
+                        }
+
+                        const data = await response.json();
+
+                        const options = {
+                            key: data.key_id,
+                            order_id: data.order_id,
+                            name: data.name || '{{ config('app.name') }}',
+                            amount: data.amount,
+                            currency: data.currency || 'USD',
+                            one_click_checkout: true,
+                            show_coupons: false,
+                            handler: function (res) {
+                                window.location.href = data.success_url + '?payment_id=' + res.razorpay_payment_id;
+                            },
+                            prefill: {
+                                @if(Auth::user())
+                                name: "{{ Auth::user()->name }}",
+                                email: "{{ Auth::user()->email }}",
+                                @else
+                                name: "",
+                                email: "",
+                                @endif
+                            },
+                            notes: {
+                                address: "{{ config('app.name') }}"
+                            },
+                            theme: { color: "#8165D5" },
+                            modal: {
+                                ondismiss: function () {
+                                    window.location.href = data.cancel_url;
+                                }
+                            }
+                        };
+
+                        const rzp = new Razorpay(options);
+                        rzp.open();
+                    } catch (error) {
+                        console.error(error);
+                        alert(error.message || 'Something went wrong. Please try again.');
+                    }
+                });
+            });
+        });
+    </script>
+@endpush

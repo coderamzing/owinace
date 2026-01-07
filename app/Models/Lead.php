@@ -121,24 +121,10 @@ class Lead extends Model implements HasMedia
 
     /**
      * Register media collections for the lead.
+     * Note: File size validation (2MB max) is handled in LeadAttachmentManagement Livewire component
      */
     public function registerMediaCollections(): void
     {
-        $this->addMediaCollection('attachments')
-            ->maxFileSize(2 * 1024 * 1024) // 2MB max size
-            ->acceptsMimeTypes([
-                'application/pdf',
-                'application/msword',
-                'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-                'application/vnd.ms-excel',
-                'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-                'image/jpeg',
-                'image/png',
-                'image/gif',
-                'image/webp',
-                'text/plain',
-                'application/zip',
-                'application/x-rar-compressed',
-            ]);
+        $this->addMediaCollection('attachments');
     }
 }

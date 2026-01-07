@@ -1,19 +1,19 @@
-<div class="space-y-4">
+<div class="space-y-4" wire:key="attachment-manager-{{ $lead->id }}">
     {{-- Upload Section --}}
     <div class="border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg p-6 hover:border-primary-500 dark:hover:border-primary-400 transition-colors">
         <div class="flex flex-col items-center justify-center space-y-3">
             <x-filament::icon icon="heroicon-o-cloud-arrow-up" class="w-10 h-10 text-gray-400 dark:text-gray-500" />
             
             <div class="text-center">
-                <label for="attachment-upload" class="cursor-pointer">
+                <label for="attachment-upload-{{ $lead->id }}" class="cursor-pointer">
                     <span class="inline-flex items-center px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white rounded-lg transition-colors">
                         <x-filament::icon icon="heroicon-o-paper-clip" class="w-5 h-5 mr-2" />
                         Choose File
                     </span>
                     <input 
                         type="file" 
-                        id="attachment-upload"
-                        wire:model="attachment" 
+                        id="attachment-upload-{{ $lead->id }}"
+                        wire:model.live="attachment" 
                         class="hidden"
                         accept=".pdf,.doc,.docx,.xls,.xlsx,.jpg,.jpeg,.png,.gif,.webp,.txt,.zip,.rar"
                     />
@@ -190,20 +190,4 @@
         </div>
     @endif
 </div>
-
-{{-- Notification Script --}}
-@script
-<script>
-    $wire.on('notify', (event) => {
-        const notification = event[0];
-        
-        if (window.Filament) {
-            window.Filament.notifications?.notify({
-                title: notification.message,
-                status: notification.type,
-            });
-        }
-    });
-</script>
-@endscript
 
