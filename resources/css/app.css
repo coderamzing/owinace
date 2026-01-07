@@ -39,4 +39,11 @@
 body{
     font-family: "Raleway", sans-serif;
 }
+
+.fi-pagination{
+    display: flex !important;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+}
    

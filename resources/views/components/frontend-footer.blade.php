@@ -6,10 +6,10 @@
                 <!-- Brand Section -->
                 <div class="md:col-span-5">
                     <div class="mb-4">
-                        <h4 class="font-bold mb-3 text-xl">
+                        <h4 class="font-bold mb-3 text-[40px] mb-4">
                             <i class="fas fa-rocket mr-2"></i>Owinace
                         </h4>
-                        <p class="text-gray-300 mb-4 leading-relaxed">
+                        <p class="text-gray-300 mb-4 text-[16px] leading-[2]">
                             Owinace's AI-powered platform instantly generates personalized, high-quality proposals, while seamlessly managing leads, tracking team performance with analytics, monitoring costs via a 
                             flexible credit system, and maintaining detailed client records—delivering a complete, efficient, and intelligent sales workflow in one powerful platform.
                         </p>

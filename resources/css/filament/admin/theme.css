@@ -121,3 +121,64 @@ INPUTS & FORMS - Modern Form Design
 .fi-wi-table:hover {
     box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04) !important;
 }
+
+/* Custom CSS */
+
+.fi-pagination,
+.filter-form > .fi-sc{
+    display: flex !important;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+}
+
+.filter-form > .fi-sc{
+    width: 90%;
+}
+
+.filter-form .fi-ta-filters-actions-ctn{
+    width: 8%
+}
+
+.filter-form .fi-input{
+    padding: 6px 12px;
+}
+
+.filter-form .fi-sc > .fi-grid-col:nth-child(2),
+.filter-form .fi-sc > .fi-grid-col:nth-child(3),
+.filter-form .fi-sc > .fi-grid-col:nth-child(4) {
+    width: calc(23.33% - 10px);
+}
+.filter-form > .fi-sc.lg\:fi-grid-cols > .fi-grid-col:nth-child(1) {
+    width: calc(30% - 10px);
+}
+
+.items-end{
+    align-items: end !important;
+}
+
+.notice-description{
+    text-wrap: wrap;
+}
+.fi-ta-cell-notice-card button{
+    pointer-events: none;
+}
+
+table tbody tr:nth-child(even) > td.fi-ta-cell-notice-card,
+table tbody tr:nth-child(even) > td.fi-ta-cell-notice-card ~ td{
+    background: #68656514;
+}
+
+.analytics-border > div,
+.analytics-border > div:hover,
+.analytics-dashboard div:nth-child(6) div,
+.analytics-dashboard div:nth-child(7) div,
+.analytics-dashboard div:nth-child(6) div:hover,
+.analytics-dashboard div:nth-child(7) div:hover {
+    box-shadow: none !important;
+}
+
+.analytics-dashboard div:nth-child(6),
+.analytics-dashboard div:nth-child(7){
+    border: 1px solid #e3e3e3;
+}

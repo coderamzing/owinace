@@ -35,7 +35,7 @@
             </div>
         @endif
     </div>
-
+    <div class = "flex justify-between items-end gap-4 filter-form">
     {{ $form }}
 
     @if ($applyAction->isVisible() || $resetActionPosition === FiltersResetActionPosition::Footer)
@@ -54,4 +54,5 @@
             @endif
         </div>
     @endif
+    </div>
 </div>

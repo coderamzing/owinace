@@ -38,7 +38,7 @@
                                focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 
                                bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100
                                transition-all duration-200 outline-none"
-                        placeholder="{{ $searchPlaceholder ?? 'Search by name, email, company...' }}"
+                        
                         autocomplete="off"
                     />
                     

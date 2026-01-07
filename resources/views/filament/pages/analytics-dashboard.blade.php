@@ -52,7 +52,7 @@
 
         {{-- Widgets --}}
         @if(method_exists($this, 'getWidgets'))
-            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 analytics-dashboard">
                 @foreach($this->getWidgets() as $widget)
                     @php
                         $widgetClass = is_string($widget) ? $widget : get_class($widget);
@@ -73,7 +73,7 @@
                         $colSpanClass = match($columnSpan) {
                             'full' => 'lg:col-span-12',
                             12 => 'lg:col-span-12',
-                            6 => 'lg:col-span-6',
+                            6 => 'lg:col-span-6 border border-[#e3e3e3] analytics-border',
                             4 => 'lg:col-span-4',
                             3 => 'lg:col-span-3',
                             2 => 'lg:col-span-2',
