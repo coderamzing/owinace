@@ -7,7 +7,6 @@ use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
-use Filament\Pages\Dashboard;
 use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
@@ -69,14 +68,16 @@ class AdminPanelProvider extends PanelProvider
                     ->icon('heroicon-o-user')
                     ->url(fn () => Profile::getUrl()),
                     
-                \Filament\Navigation\MenuItem::make()
-                    ->label('Notification Preferences')
-                    ->icon('heroicon-o-bell')
-                    ->url(fn () => route('filament.admin.pages.notification-preferences')),
+                // \Filament\Navigation\MenuItem::make()
+                //     ->label('Notification Preferences')
+                //     ->icon('heroicon-o-bell')
+                //     ->url(fn () => route('filament.admin.pages.notification-preferences')),
             ])
             ->authMiddleware([
                 Authenticate::class,
             ])
+            ->databaseNotifications()
+            ->databaseNotificationsPolling('30s')
             ->renderHook(
                 PanelsRenderHook::USER_MENU_BEFORE,
                 fn (): View => view('filament.hooks.team-switcher'),

@@ -3,20 +3,18 @@
 namespace App\Jobs;
 
 use App\Models\User;
-use App\Notifications\CustomDatabaseNotification;
+use Filament\Notifications\Notification;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-use Filament\Notifications\Notification as FilamentNotification;
-use Filament\Actions\Action;
 
 /**
  * In-App Notification Queue Job
  * 
  * This is used internally by NotificationService to send in-app notifications.
- * For general use, use NotificationQueue instead which handles permissions and preferences.
+ * Uses Filament's built-in database notification system.
  */
 class InAppNotificationQueue implements ShouldQueue
 {
@@ -47,17 +45,14 @@ class InAppNotificationQueue implements ShouldQueue
         $user = User::find($this->userId);
         
         if ($user) {
-            $notification = FilamentNotification::make()
-            ->title($this->title)
-            ->body($this->content);
-            if ($this->url) {
-                $notification->actions([
-                    Action::make('view')
-                        ->button()
-                        ->url($this->url)
-                        ->markAsRead(),
-                ]);
-            }
+            // Use Filament's built-in database notification system
+            $notification = Notification::make()
+                ->title($this->title)
+                ->body($this->content)
+                ->info();
+            
+            // Send to database (appears in Filament's notification bell icon)
+            $notification->sendToDatabase($user);
         }
     }
 }

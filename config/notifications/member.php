@@ -13,6 +13,12 @@ return [
         'module' => 'lead',
     ],
 
+    'lead.followup_reminder' => [
+        'label' => 'Daily Follow-up Reminder',
+        'permission' => 'lead.view',
+        'module' => 'lead',
+    ],
+
     'goal.summary' => [
         'label' => 'Lead Goal Summary',
         'permission' => 'leadgoal.view',

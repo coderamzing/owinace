@@ -83,12 +83,24 @@ class CreateProposal extends Page implements HasForms
                 Radio::make('type')
                     ->label('Proposal Type')
                     ->options([
-                        'pitch' => 'PITCH',
-                        'intermediate' => 'EXPERIENCE',
-                        'professional' => 'APPROACH',
+                        'beginner' => '🌱 Beginner',
+                        'intermediate' => '💼 Intermediate',
+                        'professional' => '⭐ Professional',
+                        'pitch' => '🎯 Pitch',
+                        'experience' => '🏆 Experience',
+                        'approach' => '🧠 Approach',
                     ])
-                    ->default('intermediate')
+                    ->descriptions([
+                        'beginner' => 'Friendly & eager tone',
+                        'intermediate' => 'Professional & balanced',
+                        'professional' => 'Executive-level polish',
+                        'pitch' => 'Solution-focused',
+                        'experience' => 'Proven results',
+                        'approach' => 'Strategic thinking',
+                    ])
                     ->inline()
+                    ->inlineLabel(false)
+                    ->default('intermediate')
                     ->required(),
             ])
             ->statePath('data');

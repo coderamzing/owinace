@@ -28,6 +28,16 @@ return Application::configure(basePath: dirname(__DIR__))
         $schedule->command('analytics:daily-lead')
             ->dailyAt('00:00')
             ->timezone('UTC');
+
+        // Daily follow-up reminder - run at midnight UTC
+        $schedule->command('reminder:daily-followup')
+            ->dailyAt('00:00')
+            ->timezone('UTC');
+
+        // Weekly summary - run every Monday at midnight UTC
+        $schedule->command('summary:weekly')
+            ->weeklyOn(1, '00:00')
+            ->timezone('UTC');
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //

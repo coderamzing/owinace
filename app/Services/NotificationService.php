@@ -54,6 +54,9 @@ class NotificationService
     ): void {
         $templates = [
             'team.welcome' => 'emails.team-welcome',
+            'lead.won' => 'emails.lead-won',
+            'team.weekly_summary' => 'emails.weekly-summary',
+            'lead.followup_reminder' => 'emails.daily-followup-reminder',
         ];
         EmailQueue::dispatch(
             to: $user->email,
@@ -232,6 +235,55 @@ class NotificationService
         );
     }
 
+    /**
+     * Notify all admins of a team
+     * Sends notifications to team members with admin role
+     */
+    public function notifyAdmin(int $teamId, string $notificationType, array $data): void
+    {
+        $team = Team::find($teamId);
+
+        // Get all admin members of the team
+        $adminMembers = $team->members()
+            ->withoutTeam() // Remove global scope since relationship already scopes by team_id
+            ->where(function($query) {
+                $query->where('role', 'admin')
+                      ->orWhere('role', 'owner')
+                      ->orWhereNull('role'); // Treat null role as admin by default
+            })
+            ->where('status', 'active')
+            ->with('user')
+            ->get();
+
+        if ($adminMembers->isEmpty()) {
+            return;
+        }
+
+        // Send notifications to all admin members
+        foreach ($adminMembers as $member) {
+            if (!$member->user) {
+                continue;
+            }
+
+            // Send in-app notification
+            InAppNotificationQueue::dispatch(
+                userId: $member->user->id,
+                title: $data['title'] ?? $data['subject'] ?? 'Team Notification',
+                content: $data['content'] ?? '',
+                url: $data['url'] ?? null
+            );
+
+            // Send email if user has email
+            if ($member->user->email) {
+                $this->sendEmailNotification(
+                    user: $member->user,
+                    notificationType: $notificationType,
+                    subject: $data['subject'] ?? $data['title'] ?? 'Team Notification',
+                    data: $data ?? []
+                );
+            }
+        }
+    }
     
    
 }

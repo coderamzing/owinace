@@ -18,5 +18,11 @@ return [
         'permission' => 'leadgoal.view',
         'module' => 'leadgoal',
     ],
+
+    'team.weekly_summary' => [
+        'label' => 'Weekly Summary',
+        'permission' => 'team.view',
+        'module' => 'team',
+    ],
 ];
 

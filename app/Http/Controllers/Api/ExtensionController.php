@@ -88,6 +88,7 @@ class ExtensionController extends Controller
                 'name' => $team->name,
                 'sources' => $sources,
                 'stages' => $stages,
+                'coverletter_types' => ProposalService::$coverletterTypes,
             ];
         });
 

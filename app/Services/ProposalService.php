@@ -10,6 +10,15 @@ class ProposalService
 {
     protected OpenAIService $openAIService;
 
+    public static array $coverletterTypes = [
+        'beginner', 
+        'intermediate', 
+        'professional',
+        'pitch',
+        'experience',
+        'approach',
+    ];
+
     public function __construct(OpenAIService $openAIService)
     {
         $this->openAIService = $openAIService;
@@ -42,13 +51,15 @@ class ProposalService
      */
     private function buildPrompt(string $description, string $portfolioText, string $type, int $words): string
     {
-        if ($type === 'pitch') {
-            return $this->buildPitchPrompt($description, $portfolioText, $words);
-        } elseif ($type === 'experience') {
-            return $this->buildExperiencePrompt($description, $portfolioText, $words);
-        } else {
-            return $this->buildApproachPrompt($description, $portfolioText, $words);
-        }
+        return match ($type) {
+            'pitch' => $this->buildPitchPrompt($description, $portfolioText, $words),
+            'experience' => $this->buildExperiencePrompt($description, $portfolioText, $words),
+            'approach' => $this->buildApproachPrompt($description, $portfolioText, $words),
+            'beginner' => $this->buildBeginnerPrompt($description, $portfolioText, $words),
+            'intermediate' => $this->buildIntermediatePrompt($description, $portfolioText, $words),
+            'professional' => $this->buildProfessionalPrompt($description, $portfolioText, $words),
+            default => $this->buildApproachPrompt($description, $portfolioText, $words),
+        };
     }
     
     public function matchJobWithPortfolios(
@@ -212,7 +223,7 @@ class ProposalService
         
         Guidelines:
         
-        - Start by reframing the client’s problem in your own words to show deep understanding. No greetings.
+        - Start by reframing the client's problem in your own words to show deep understanding. No greetings.
         
         - Tone: consultant-level — thoughtful, confident, and clear.
         
@@ -223,13 +234,111 @@ class ProposalService
         - Reference experience only where it strengthens the approach (do not over-list achievements).
         
         - Structure:
-        Understanding → Key challenges → Proposed approach → Why this approach works → Why I’m a good fit → CTA
+        Understanding → Key challenges → Proposed approach → Why this approach works → Why I'm a good fit → CTA
         
         - Use light formatting (**bold**, • bullets, ✅ icons) for clarity.
         
         - Optionally include up to 2–3 sharp, insight-driven questions.
         
         - Keep language concise, logical, and original; avoid generic advice.
+        
+        Output format (STRICT):
+        Return ONLY valid JSON with keys \"title\" and \"content\".
+        No markdown. No code fences. No explanations.";
+    }
+
+    private function buildBeginnerPrompt(string $description, string $portfolioText, int $words): string
+    {
+        return "Write a personalized Upwork proposal of {$words} words.
+
+        Job:
+        {$description}
+        
+        Portfolio:
+        {$portfolioText}
+        (rephrase naturally to match the client's needs; include links if available)
+        
+        Instructions:
+        
+        - Start with an engaging first sentence showing understanding of the project. No greetings.
+        
+        - Use a friendly, approachable, confident tone; short, clear sentences.
+        
+        - Highlight the most relevant portfolio points first.
+        
+        - Outline a simple 3–4 step plan.
+        
+        - Explain why you're eager and adaptable.
+        
+        - Include a call-to-action and optionally up to 3 relevant questions.
+        
+        - Use paragraphs naturally; bullets, bold, or icons are allowed.
+        
+        - Avoid copy-pasting job text; make it sound human-written and natural.
+        
+        Output format (STRICT):
+        Return ONLY valid JSON with keys \"title\" and \"content\".
+        No markdown. No code fences. No explanations.";
+    }
+
+    private function buildIntermediatePrompt(string $description, string $portfolioText, int $words): string
+    {
+        return "Write a {$words}-word Upwork proposal that sounds professional yet friendly.
+
+        Client needs:
+        {$description}
+        
+        My experience (adapt to match):
+        {$portfolioText}
+        
+        Guidelines:
+        
+        - Start confidently; no greetings like \"Hello\" or \"Hi\".
+        
+        - Tone: mid-level freelancer — clear, friendly, assured.
+        
+        - Rephrase experience to show relevance and client benefit.
+        
+        - Structure:
+        Intro → Understanding → Simple plan → Proof → Why me → CTA → Closing
+        
+        - Use light formatting (**bold**, • bullets, ✅ icons) for readability.
+        
+        - Optionally include up to 3 short, relevant questions.
+        
+        - Keep sentences natural, concise, and varied each time.
+        
+        Output format (STRICT):
+        Return ONLY valid JSON with keys \"title\" and \"content\".
+        No markdown. No code fences. No explanations.";
+    }
+
+    private function buildProfessionalPrompt(string $description, string $portfolioText, int $words): string
+    {
+        return "Write a {$words}-word Upwork proposal that is polished, persuasive, and executive-level.
+
+        Client needs:
+        {$description}
+        
+        My experience (adapt or rephrase to match):
+        {$portfolioText}
+        
+        Guidelines:
+        
+        - Start confidently; no greetings like \"Hello\" or \"Hi\".
+        
+        - Tone: expert freelancer/consultant — formal, clear, persuasive, yet approachable.
+        
+        - Highlight achievements, proof, and results relevant to client needs.
+        
+        - Structure:
+        Intro → Deep understanding of client's goal → Detailed plan → Proof / credentials → Why I'm ideal → CTA → Closing
+        
+        - Use light formatting (**bold**, • bullets, ✅ icons) for readability.
+        
+        - Optionally include up to 3 sharp, relevant questions.
+        
+        - Keep sentences concise, confident, and unique each time.
         
         Output format (STRICT):
         Return ONLY valid JSON with keys \"title\" and \"content\".
