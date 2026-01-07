@@ -36,7 +36,7 @@
     }
     .banner-section{
         min-height: 80vh;
-        margin-bottom: 15.625rem;
+        margin-bottom: 20.625rem;
         padding-bottom: 12.5rem;
     }
     .home-banner-heading{
@@ -44,8 +44,9 @@
     }
     .home-banner-image{
         position: absolute;
-        left: 5%;
+        left: 50%;
         margin-top: 3.125rem;
+        transform: translate(-50%, 0px);
     }
     @media (max-width: 991.98px) {
         .navbar{
@@ -73,11 +74,11 @@
 <div class="w-full flex bg-gray-50 relative banner-section" id="top">
     <div class="container mx-auto px-4">
         <div class="w-full text-center relative">
-            <h1 class="text-5xl md:text-6xl font-bold home-banner-heading">Owinace — Performance-Driven Lead Management Software</h1>
-            <h2 class="text-xl font-normal leading-normal mt-4">Maximize conversions with a smarter workflow. Track lead performance, automate engagement, streamline team actions, and turn every opportunity into predictable revenue.</h2>
+            <h1 class="text-5xl md:text-[4rem] font-bold home-banner-heading">Owinace — Performance-Driven Lead Management Software</h1>
+            <h2 class="text-[1.5rem] font-normal leading-normal mt-4">Maximize conversions with a smarter workflow. Track lead performance, automate engagement, streamline team actions, and turn every opportunity into predictable revenue.</h2>
             <div class="items-center flex flex-wrap gap-2 justify-center mt-6">
                 <a href="{{ route('register') }}" aria-label="Start your free trial"
-                    class="bg-gray-900 text-white px-6 py-3 rounded-lg hover:bg-gray-800 transition-colors">Start Free Trial</a>
+                    class="bg-gray-900 text-white px-[12px] py-[6px] rounded-lg hover:bg-gray-800 transition-colors">Start Free Trial</a>
             </div>
             <img src="{{ asset('images/home-banner.png') }}" alt="home-banner" class="home-banner-image max-w-full" data-aos="fade-up"/>
         </div>
@@ -87,49 +88,49 @@
 <!-- Software features -->
 <div class="py-16 w-full overflow-hidden features-div">
     <div class="container mx-auto px-4">
-        <div class="flex flex-wrap gap-2">
+        <div class="flex flex-wrap">
             <div class="w-full">
-                <h1 class="font-bold mb-8 text-4xl">Sales lead tracking software features</h1>
+                <h1 class="font-bold mb-8 text-[2.5rem]">Sales lead tracking software features</h1>
             </div>
             <div class="w-full md:w-1/2 xl:w-1/3 p-2" data-aos="fade-up">
                 <div class="p-6 bg-gray-50 rounded-2xl">
                     <img src="{{ asset('images/settings-sliders.png') }}" alt="settings"/>
-                    <h4 class="mt-4 font-bold text-xl">Customizable CRM software</h4>
+                    <h4 class="mt-[24px] mb-[8px] font-bold text-[24px]">Customizable CRM software</h4>
                     <p class="mb-0 leading-normal text-base">Set personalized follow-ups, alerts, and workflows so your team receives timely reminders and steps, ensuring every lead and customer gets attention and no opportunity is missed.</p>
                 </div>
             </div>
             <div class="w-full md:w-1/2 xl:w-1/3 p-2" data-aos="fade-up">
                 <div class="p-6 bg-gray-50 rounded-2xl">
                     <img src="{{ asset('images/users-alt.png') }}" alt="user-alt"/>
-                    <h4 class="mt-4 font-bold text-xl">Painless lead management</h4>
+                    <h4 class="mt-[24px] mb-[8px] font-bold text-[24px]">Painless lead management</h4>
                     <p class="mb-0 leading-normal text-base">Effortlessly manage leads with organized records, full customer details, and visual progress graphs—making follow-ups simple and ensuring no lead slips through the cracks.</p>
                 </div>
             </div>
             <div class="w-full md:w-1/2 xl:w-1/3 p-2" data-aos="fade-up">
                 <div class="p-6 bg-gray-50 rounded-2xl">
                     <img src="{{ asset('images/dashboard.png') }}" alt="dashboard"/>
-                    <h4 class="mt-4 font-bold text-xl">Seamless CRM automation</h4>
+                    <h4 class="mt-[24px] mb-[8px] font-bold text-[24px]">Seamless CRM automation</h4>
                     <p class="mb-0 leading-normal text-base">Intelligent CRM automation streamlines your sales pipeline, saves time and effort, ensures every lead and opportunity is tracked, and helps your team achieve goals efficiently without missing anything.</p>
                 </div>
             </div>
             <div class="w-full md:w-1/2 xl:w-1/3 p-2" data-aos="fade-up">
                 <div class="p-6 bg-gray-50 rounded-2xl">
                     <img src="{{ asset('images/archery.png') }}" alt="archery"/>
-                    <h4 class="mt-4 font-bold text-xl">Real-time insights</h4>
+                    <h4 class="mt-[24px] mb-[8px] font-bold text-[24px]">Real-time insights</h4>
                     <p class="mb-0 leading-normal text-base">Leverage real-time lead and sales data to make informed decisions, optimize strategies, increase conversions, close deals faster, and keep your sales process running smoothly and efficiently.</p>
                 </div>
             </div>
             <div class="w-full md:w-1/2 xl:w-1/3 p-2" data-aos="fade-up">
                 <div class="p-6 bg-gray-50 rounded-2xl">
                     <img src="{{ asset('images/dashboard-monitor.png') }}" alt="dashboard-monitor"/>
-                    <h4 class="mt-4 font-bold text-xl">Easy data import</h4>
+                    <h4 class="mt-[24px] mb-[8px] font-bold text-[24px]">Easy data import</h4>
                     <p class="mb-0 leading-normal text-base">Effortlessly import all leads, contacts, and customer details into a centralized CRM, saving time, maintaining accuracy, and ensuring your team can access and act on information instantly.</p>
                 </div>
             </div>
             <div class="w-full md:w-1/2 xl:w-1/3 p-2" data-aos="fade-up">
                 <div class="p-6 bg-gray-50 rounded-2xl">
                     <img src="{{ asset('images/envelopes.png') }}" alt="envelopes"/>
-                    <h4 class="mt-4 font-bold text-xl">Simplified email marketing</h4>
+                    <h4 class="mt-[24px] mb-[8px] font-bold text-[24px]">Simplified email marketing</h4>
                     <p class="mb-0 leading-normal text-base">Create, schedule, and send targeted email campaigns effortlessly, keeping leads engaged and boosting conversions without complicated setups or technical hassles.</p>
                 </div>
             </div>
@@ -142,16 +143,16 @@
     <div class="container mx-auto px-4">
         <div class="flex flex-wrap">
             <div class="w-full" data-aos="fade-down">
-                <h3 class="text-3xl md:text-4xl mb-8 text-center">With intelligent lead tracking, complete contact profiles, and built-in engagement tools, Owinace ensures no opportunity slips through and every deal progresses smoothly.</h3>
+                <h3 class="text-3xl md:text-[2.5rem] leading-[1.2] font-[300] mb-8 text-center">With intelligent lead tracking, complete contact profiles, and built-in engagement tools, Owinace ensures no opportunity slips through and every deal progresses smoothly.</h3>
             </div>
         </div>
-        <div class="flex flex-wrap gap-6">
+        <div class="flex flex-wrap">
             <div class="w-full lg:w-1/2 xl:w-1/3" data-aos="fade-up" data-aos-delay="200">
                 <div class="lg:pr-4">
                     <span class="text-xl font-light">01.</span>
                     <div class="py-8 lg:py-12 border-t border-gray-900">
-                        <p class="uppercase mb-1 text-sm">AI Personalization</p>
-                        <h3 class="mb-0 text-2xl font-bold">Every Lead Tracked, Every Opportunity Captured</h3>
+                        <p class="uppercase mb-1 text-[16px]">AI Personalization</p>
+                        <h3 class="mb-0 text-[28px] font-[500] leading-[1.2]">Every Lead Tracked, Every Opportunity Captured</h3>
                     </div>
                     <p class="leading-normal">With intelligent lead tracking, complete contact profiles, and built-in engagement tools, Owinace ensures no opportunity slips through and every deal progresses smoothly.</p>
                     <a class="inline-flex items-center gap-2 text-indigo-600 hover:text-indigo-800" href="{{ url('/how-it-works') }}">
@@ -167,8 +168,8 @@
                 <div class="lg:pr-4 xl:pt-12 xl:mt-12">
                     <span class="text-xl font-light">02.</span>
                     <div class="py-8 lg:py-12 border-t border-gray-900">
-                        <p class="uppercase mb-1 text-sm">Job → Proposal</p>
-                        <h3 class="mb-0 text-2xl font-bold">Drop in the job description—AI crafts a proposal that stands out.</h3>
+                        <p class="uppercase mb-1 text-[16px]">Job → Proposal</p>
+                        <h3 class="mb-0 text-[28px] font-[500] leading-[1.2]">Drop in the job description—AI crafts a proposal that stands out.</h3>
                     </div>
                     <p class="leading-normal">AI reviews the requirements, identifies key skills, and generates a tailored proposal that highlights your strengths and fits the client's needs.</p>
                     <a class="inline-flex items-center gap-2 text-indigo-600 hover:text-indigo-800" href="{{ route('register') }}">
@@ -184,8 +185,8 @@
                 <div class="xl:pl-4">
                     <span class="text-xl font-light">03.</span>
                     <div class="py-8 lg:py-12 border-t border-gray-900">
-                        <p class="uppercase mb-1 text-sm">Team Collaboration</p>
-                        <h3 class="mb-0 text-2xl font-bold">Collaborate Better, Close Faster</h3>
+                        <p class="uppercase mb-1 text-[16px]">Team Collaboration</p>
+                        <h3 class="mb-0 text-[28px] font-[500] leading-[1.2]">Collaborate Better, Close Faster</h3>
                     </div>
                     <p class="leading-normal">Invite teammates, manage responsibilities, and build proposals as one unified team. Perfect for organizations that want smoother workflows and better results.</p>
                     <div class="flex flex-wrap items-start mt-2 mb-4 gap-2">
@@ -213,7 +214,7 @@
 <!-- how help section -->
 <div class="py-16 w-full overflow-hidden how-help-section" >
     <div class="container mx-auto px-4">
-        <div class="flex flex-wrap justify-center items-center gap-8">
+        <div class="flex flex-wrap justify-center items-center">
             <div class="w-full xl:w-1/2" data-aos="fade-right">
                 <h2 class="mt-4 font-bold text-3xl">Why Lead Tracking Software Matters for Your Business?</h2>
                 <p class="mt-4">Lead tracking software gives you complete visibility into your sales pipeline. It helps you understand how prospects move through each stage, what they're interested in, and when they're ready to convert—allowing your team to take smarter, faster actions.</p>
@@ -291,8 +292,8 @@
                 <h1 class="font-bold text-4xl">Lead Tracking Strategy</h1>
             </div>
         </div>
-        <div class="flex flex-wrap mb-12 items-center gap-8">
-            <div class="w-full lg:w-1/2" data-aos="fade-right">
+        <div class="flex flex-wrap mb-12 items-center ">
+            <div class="w-full lg:w-1/2 pr-0 md:pr-8" data-aos="fade-right">
                 <img src="{{ asset('images/analysis.png') }}" alt="strategy1" class="w-full max-w-full"/>
             </div>
             <div class="w-full lg:w-1/2" data-aos="fade-left">
@@ -302,19 +303,19 @@
                 <p>Give your leads the attention they deserve with intelligent analytics that strengthen your sales pipeline and boost overall growth.</p>
             </div>
         </div>
-        <div class="flex flex-wrap mb-12 items-center gap-8">
+        <div class="flex flex-wrap mb-12 items-center">
             <div class="w-full lg:w-1/2 order-2 lg:order-1" data-aos="fade-left">
                 <h2 class="mb-4 font-bold text-3xl">Streamline your goals and performance with a unified workflow</h2>
                 <p class="mb-4">Switching between multiple tools to manage goals, performance and costs creates unnecessary delays and confusion.</p>
                 <p class="mb-4">A Kanban-based workflow helps you set clear objectives, track performance metrics, and maintain full visibility of project costs as tasks move through each stage. With organized boards, real-time status updates and automated insights, teams can prioritize work efficiently, reduce bottlenecks and stay aligned on targets.</p>
                 <p>Simplify goal tracking, cost control and performance management with a cohesive, Kanban-driven system.</p>
             </div>
-            <div class="w-full lg:w-1/2 order-1 lg:order-2" data-aos="fade-right">
+            <div class="w-full lg:w-1/2 order-1 lg:order-2 pl-0 md:pl-8" data-aos="fade-right">
                 <img src="{{ asset('images/goal.png') }}" alt="goal" class="w-full max-w-full"/>
             </div>
         </div>
-        <div class="flex flex-wrap mb-12 items-center gap-8">
-            <div class="w-full lg:w-1/2" data-aos="fade-right">
+        <div class="flex flex-wrap mb-12 items-center">
+            <div class="w-full lg:w-1/2 md:pr-8 pr-0" data-aos="fade-right">
                 <img src="{{ asset('images/cover.png') }}" alt="cover" class="w-full max-w-full"/>
             </div>
             <div class="w-full lg:w-1/2" data-aos="fade-left">
@@ -362,7 +363,7 @@
                 <p class="text-xl text-gray-600">Generate complete lead profiles in seconds and experience noticeably higher response and conversion rates.</p>
             </div>
         </div>
-        <div class="flex flex-wrap gap-6 justify-center">
+        <div class="flex flex-wrap justify-center">
             <div class="w-full lg:w-1/3 md:w-1/2 p-2" data-aos="fade-up">
                 <div class="text-center p-6">
                     <div class="bg-indigo-100 rounded-full inline-flex items-center justify-center mb-6" style="width: 5rem; height: 5rem;">
@@ -399,7 +400,7 @@
 <!-- Start: Team Collaboration -->
 <div class="py-16 w-full overflow-hidden" id="team-collaboration">
     <div class="container mx-auto px-4">
-        <div class="flex flex-wrap items-center gap-8">
+        <div class="flex flex-wrap items-center">
             <div class="w-full lg:w-1/2" data-aos="fade-right">
                 <h2 class="text-4xl font-bold mb-6">Collaborate with Your Team</h2>
                 <p class="text-xl text-gray-600 mb-6">Create teams, invite members, and work together on proposals. Perfect for agencies, freelancers, and growing businesses.</p>
