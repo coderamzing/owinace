@@ -97,5 +97,72 @@ class RazorpayController extends Controller
     {
         return view('razorpay.cancel');
     }
+
+    public function createCreditOrder(Request $request)
+    {
+        $request->validate([
+            'credits' => 'required|integer|min:1',
+            'amount' => 'required|numeric|min:0',
+        ]);
+
+        if (!Auth::check()) {
+            return redirect()->route('login')
+                ->with('error', 'You must be logged in to purchase credits.');
+        }
+
+        $user = Auth::user();
+        
+        // Check if user has a workspace
+        if (!$user->workspace_id) {
+            return redirect()->back()
+                ->with('error', 'You must be part of a workspace to purchase credits.');
+        }
+        
+        $credits = $request->credits;
+        $amount = $request->amount;
+        $amountPaise = (int)($amount * 100);
+
+        // Initialize Razorpay
+        $razorpayKeyId = config('services.razorpay.key_id');
+        $razorpayKeySecret = config('services.razorpay.key_secret');
+        
+        if (!$razorpayKeyId || !$razorpayKeySecret) {
+            return redirect()->back()
+                ->with('error', 'Payment gateway is not configured.');
+        }
+
+        $api = new Api($razorpayKeyId, $razorpayKeySecret);
+
+        // Prepare notes for credit purchase
+        $notes = [
+            'type' => 'CREDIT',
+            'user_id' => (string)$user->id,
+            'workspace_id' => (string)$user->workspace_id,
+            'credits' => (string)$credits,
+            'email' => $user->email,
+            'first_name' => $user->first_name ?? '',
+            'last_name' => $user->last_name ?? '',
+        ];
+
+        try {
+            $order = $api->order->create([
+                'amount' => $amountPaise,
+                'currency' => 'USD',
+                'notes' => $notes,
+            ]);
+
+            return view('razorpay.checkout', [
+                'order' => $order,
+                'key_id' => $razorpayKeyId,
+                'callback_url' => route('razorpay.success'),
+                'tier' => null, // Not a tier purchase
+                'user' => $user,
+                'credits' => $credits,
+            ]);
+        } catch (\Exception $e) {
+            return redirect()->back()
+                ->with('error', 'Failed to create payment order: ' . $e->getMessage());
+        }
+    }
 }
 

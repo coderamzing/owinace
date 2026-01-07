@@ -9,11 +9,13 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Spatie\Permission\Traits\HasRoles;
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
 
-class User extends Authenticatable implements MustVerifyEmail
+class User extends Authenticatable implements MustVerifyEmail, HasMedia
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable, HasRoles;
+    use HasFactory, Notifiable, HasRoles, InteractsWithMedia;
 
     /**
      * The attributes that are mass assignable.
@@ -66,5 +68,37 @@ class User extends Authenticatable implements MustVerifyEmail
     public function teams(): HasMany
     {
         return $this->hasMany(TeamMember::class, 'user_id');
+    }
+
+    /**
+     * Register media collections for avatar
+     */
+    public function registerMediaCollections(): void
+    {
+        $this->addMediaCollection('avatar')
+            ->singleFile()
+            ->useDisk('public')
+            ->registerMediaConversions(function () {
+                $this->addMediaConversion('thumb')
+                    ->width(100)
+                    ->height(100)
+                    ->sharpen(10);
+            });
+    }
+
+    /**
+     * Get the user's avatar URL
+     */
+    public function getAvatarUrlAttribute(): string
+    {
+        return $this->getFirstMediaUrl('avatar') ?: asset('/images/avatars/avatar-1.png');
+    }
+
+    /**
+     * Get the user's avatar URL for Filament
+     */
+    public function getFilamentAvatarUrl(): ?string
+    {
+        return $this->getFirstMediaUrl('avatar') ?: asset('/images/avatars/avatar-1.png');
     }
 }

@@ -13,6 +13,7 @@ use App\Filament\Widgets\RevenueOverviewWidget;
 use App\Filament\Widgets\LeadConversionFunnelWidget;
 use App\Filament\Widgets\TeamActivityWidget;
 use App\Filament\Widgets\LeadQualityWidget;
+use App\Filament\Widgets\MonthlyCostPerLeadWidget;
 use App\Models\Team;
 use Filament\Pages\Page;
 use Illuminate\Support\Facades\Session;
@@ -171,6 +172,7 @@ class AnalyticsDashboard extends Page
         return [
             GoalsOverviewWidget::class,
             LeadsOverviewWidget::class,
+            MonthlyCostPerLeadWidget::class,
             LeadsByStageWidget::class,
             LeadsBySourceWidget::class,
             MemberPerformanceWidget::class,

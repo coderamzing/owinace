@@ -34,11 +34,13 @@
                 <div class="md:col-span-3">
                     <h6 class="font-bold mb-4 text-white">Navigation</h6>
                     <div class="flex flex-col space-y-3">
-                        <a href="/about-us" class="text-gray-300 hover:text-white transition-colors">About Us</a>
-                        <a href="/contact-us" class="text-gray-300 hover:text-white transition-colors">Contact</a>
-                        <a href="/how-it-works" class="text-gray-300 hover:text-white transition-colors">How It Works</a>
-                        <a href="/privacy-policy" class="text-gray-300 hover:text-white transition-colors">Privacy Policy</a>
-                        <a href="/terms-and-conditions" class="text-gray-300 hover:text-white transition-colors">Terms &amp; Conditions</a>
+                        <a href="{{ route('home') }}" class="text-gray-300 hover:text-white transition-colors">Home</a>
+                        <a href="{{ route('how-it-works') }}" class="text-gray-300 hover:text-white transition-colors">How It Works</a>
+                        <a href="{{ route('support') }}" class="text-gray-300 hover:text-white transition-colors">Support</a>
+                        <a href="{{ route('faq') }}" class="text-gray-300 hover:text-white transition-colors">FAQ</a>
+                        <a href="{{ route('privacy-policy') }}" class="text-gray-300 hover:text-white transition-colors">Privacy Policy</a>
+                        <a href="{{ route('terms') }}" class="text-gray-300 hover:text-white transition-colors">Terms &amp; Conditions</a>
+                        <a href="{{ route('refund-policy') }}" class="text-gray-300 hover:text-white transition-colors">Refund Policy</a>
                     </div>
                 </div>
 

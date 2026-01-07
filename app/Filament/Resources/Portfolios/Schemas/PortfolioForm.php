@@ -19,8 +19,8 @@ class PortfolioForm
                     ->maxLength(255),
                 Textarea::make('description')
                     ->required()
-                    ->maxLength(150)
-                    ->rule('max:150')
+                    ->maxLength(500)
+                    ->rule('max:500')
                     ->columnSpanFull(),
                 TextInput::make('scale')
                     ->required()

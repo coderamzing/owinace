@@ -5,6 +5,7 @@ namespace App\Filament\Pages;
 use App\Notifications\EmailChangeVerificationNotification;
 use BackedEnum;
 use UnitEnum;
+use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Concerns\InteractsWithForms;
@@ -66,6 +67,16 @@ class Profile extends Page implements HasForms
     {
         return $schema
             ->components([
+                SpatieMediaLibraryFileUpload::make('avatar')
+                    ->label('Avatar')
+                    ->collection('avatar')
+                    ->image()
+                    ->avatar()
+                    ->imageEditor()
+                    ->circleCropper()
+                    ->maxSize(2048)
+                    ->helperText('Upload a profile picture (max 2MB). Square images work best.')
+                    ->columnSpanFull(),
                 TextInput::make('name')
                     ->label('Name')
                     ->required()

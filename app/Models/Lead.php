@@ -7,10 +7,12 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use App\Traits\TeamTraits;
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
 
-class Lead extends Model
+class Lead extends Model implements HasMedia
 {
-    use HasFactory, TeamTraits;
+    use HasFactory, TeamTraits, InteractsWithMedia;
 
     /**
      * The attributes that are mass assignable.
@@ -115,5 +117,28 @@ class Lead extends Model
     public function tags(): BelongsToMany
     {
         return $this->belongsToMany(LeadTag::class, 'lead_lead_tag', 'lead_id', 'lead_tag_id');
+    }
+
+    /**
+     * Register media collections for the lead.
+     */
+    public function registerMediaCollections(): void
+    {
+        $this->addMediaCollection('attachments')
+            ->maxFileSize(2 * 1024 * 1024) // 2MB max size
+            ->acceptsMimeTypes([
+                'application/pdf',
+                'application/msword',
+                'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+                'application/vnd.ms-excel',
+                'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                'image/jpeg',
+                'image/png',
+                'image/gif',
+                'image/webp',
+                'text/plain',
+                'application/zip',
+                'application/x-rar-compressed',
+            ]);
     }
 }

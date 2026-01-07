@@ -34,6 +34,10 @@ class LeadKanbansTable
                     ->sortable(),
                 IconColumn::make('is_active')
                     ->boolean(),
+                IconColumn::make('is_system')
+                    ->label('System')
+                    ->boolean()
+                    ->sortable(),
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -54,6 +58,7 @@ class LeadKanbansTable
                         ->slideOver(),
                     DeleteAction::make()
                         ->requiresConfirmation()
+                        ->visible(fn (LeadKanban $record) => !$record->is_system)
                         ->action(function (LeadKanban $record) {
                             if ($record->is_system) {
                                 Notification::make()

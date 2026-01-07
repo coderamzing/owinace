@@ -6,6 +6,7 @@ use App\Models\Tier;
 use App\Models\TierOrder;
 use App\Models\User;
 use App\Models\Workspace;
+use App\Models\WorkspaceCredit;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -47,6 +48,10 @@ class RazorpayWebhookController extends Controller
 
             if ($type === 'TIER') {
                 return $this->handleTierPayment($payment, $notes);
+            }
+
+            if ($type === 'CREDIT') {
+                return $this->handleCreditPayment($payment, $notes);
             }
         }
 
@@ -168,6 +173,64 @@ class RazorpayWebhookController extends Controller
         } catch (\Exception $e) {
             DB::rollBack();
             Log::error('Error processing tier payment', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+            ]);
+            return response('Error processing payment', 500);
+        }
+    }
+
+    private function handleCreditPayment($payment, $notes)
+    {
+        try {
+            DB::beginTransaction();
+
+            $workspaceId = $notes['workspace_id'] ?? null;
+            $credits = (int)($notes['credits'] ?? 0);
+            $userId = $notes['user_id'] ?? null;
+
+            if (!$workspaceId || $credits <= 0) {
+                Log::error('Invalid credit payment data', [
+                    'workspace_id' => $workspaceId,
+                    'credits' => $credits,
+                ]);
+                return response('Invalid payment data', 400);
+            }
+
+            // Find workspace
+            $workspace = Workspace::find($workspaceId);
+            if (!$workspace) {
+                Log::error('Workspace not found for credit payment', [
+                    'workspace_id' => $workspaceId,
+                ]);
+                return response('Workspace not found', 404);
+            }
+
+            // Create credit transaction
+            $workspaceCredit = WorkspaceCredit::create([
+                'transaction_type' => 'CREDIT',
+                'credits' => $credits,
+                'transaction_id' => $payment['id'] ?? null,
+                'note' => 'Credit purchase - ' . $credits . ' credits for $' . ($payment['amount'] / 100),
+                'triggered_by_id' => $userId,
+                'workspace_id' => $workspaceId,
+            ]);
+
+            Log::info('Credits added to workspace', [
+                'workspace_id' => $workspaceId,
+                'user_id' => $userId,
+                'credits_added' => $credits,
+                'new_balance' => $workspace->totalCredits(),
+                'payment_id' => $payment['id'],
+                'amount' => $payment['amount'] / 100,
+            ]);
+
+            DB::commit();
+
+            return response('OK', 200);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error('Error processing credit payment', [
                 'error' => $e->getMessage(),
                 'trace' => $e->getTraceAsString(),
             ]);

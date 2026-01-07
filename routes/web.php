@@ -3,6 +3,7 @@
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\RazorpayController;
+use App\Http\Controllers\RazorpayWebhookController;
 
 Route::get('/', function () {
     return view('home');
@@ -23,6 +24,18 @@ Route::get('/privacy-policy', function () {
 Route::get('/terms', function () {
     return view('terms');
 })->name('terms');
+
+Route::get('/refund-policy', function () {
+    return view('refund-policy');
+})->name('refund-policy');
+
+Route::get('/support', function () {
+    return view('support');
+})->name('support');
+
+Route::get('/faq', function () {
+    return view('faq');
+})->name('faq');
 
 Route::get('/dashboard', function () {
     return redirect('/admin'); // Redirect to Filament admin panel
@@ -53,12 +66,13 @@ Route::middleware('auth')->group(function () {
 
 // Razorpay routes
 Route::post('/razorpay/create-order', [RazorpayController::class, 'createOrder'])->name('razorpay.create-order');
+Route::post('/razorpay/create-credit-order', [RazorpayController::class, 'createCreditOrder'])->name('razorpay.create-credit-order')->middleware('auth');
 Route::get('/razorpay/success', [RazorpayController::class, 'success'])->name('razorpay.success');
 Route::get('/razorpay/thanks', function () {
     return view('razorpay.thanks');
 })->name('razorpay.thanks');
 Route::get('/razorpay/cancel', [RazorpayController::class, 'cancel'])->name('razorpay.cancel');
-Route::post('/razorpay/webhook', [RazorpayController::class, 'handle'])->name('razorpay.webhook')->withoutMiddleware([\Illuminate\Foundation\Http\Middleware\VerifyCsrfToken::class]);
+Route::post('/razorpay/webhook', [RazorpayWebhookController::class, 'handle'])->name('razorpay.webhook')->withoutMiddleware([\Illuminate\Foundation\Http\Middleware\VerifyCsrfToken::class]);
 
 
 require __DIR__.'/auth.php';

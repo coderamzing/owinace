@@ -45,6 +45,36 @@ class LeadKanban extends Model
     }
 
     /**
+     * Boot the model.
+     */
+    protected static function booted(): void
+    {
+        // Prevent deletion of system kanban stages
+        static::deleting(function (LeadKanban $kanban) {
+            if ($kanban->is_system) {
+                throw new \Exception('Cannot delete system kanban stage.');
+            }
+
+            // Prevent deletion if there are leads associated
+            if ($kanban->leads()->exists()) {
+                throw new \Exception('Cannot delete kanban stage that has associated leads.');
+            }
+        });
+
+        // Prevent changing name, code, or is_system flag for system records
+        static::updating(function (LeadKanban $kanban) {
+            if ($kanban->is_system && $kanban->isDirty(['name', 'code'])) {
+                throw new \Exception('Cannot change name or code of system kanban stage.');
+            }
+
+            // Prevent changing is_system from true to false
+            if ($kanban->getOriginal('is_system') && !$kanban->is_system) {
+                throw new \Exception('Cannot change system flag once set to true.');
+            }
+        });
+    }
+
+    /**
      * Get the team that owns the lead kanban.
      */
     public function team(): BelongsTo

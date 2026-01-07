@@ -2,7 +2,9 @@
 
 namespace App\Providers\Filament;
 
+use App\Filament\Pages\AddCredit;
 use App\Filament\Pages\Profile;
+use App\Filament\Pages\SystemHealth;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -67,6 +69,16 @@ class AdminPanelProvider extends PanelProvider
                     ->label('Profile')
                     ->icon('heroicon-o-user')
                     ->url(fn () => Profile::getUrl()),
+                
+                \Filament\Navigation\MenuItem::make()
+                    ->label('Add Credits')
+                    ->icon('heroicon-o-credit-card')
+                    ->url('/admin/buy-credits'),
+                
+                \Filament\Navigation\MenuItem::make()
+                    ->label('System Health')
+                    ->icon('heroicon-o-shield-check')
+                    ->url(fn () => SystemHealth::getUrl()),
                     
                 // \Filament\Navigation\MenuItem::make()
                 //     ->label('Notification Preferences')

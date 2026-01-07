@@ -135,9 +135,13 @@
                                                 type="text"
                                                 id="name"
                                                 wire:model="name"
-                                                class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm"
+                                                {{ $is_system ? 'disabled' : '' }}
+                                                class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm {{ $is_system ? 'opacity-50 cursor-not-allowed' : '' }}"
                                                 placeholder="Enter kanban column name"
                                             >
+                                            @if($is_system)
+                                                <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">System kanban names cannot be changed</p>
+                                            @endif
                                             @error('name') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
                                         </div>
 
@@ -147,9 +151,13 @@
                                                 type="text"
                                                 id="code"
                                                 wire:model="code"
-                                                class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm"
+                                                {{ $is_system ? 'disabled' : '' }}
+                                                class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm {{ $is_system ? 'opacity-50 cursor-not-allowed' : '' }}"
                                                 placeholder="Enter code (optional)"
                                             >
+                                            @if($is_system)
+                                                <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">System kanban codes cannot be changed</p>
+                                            @endif
                                             @error('code') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
                                         </div>
 
@@ -203,7 +211,8 @@
                                                     type="checkbox"
                                                     id="is_system"
                                                     wire:model="is_system"
-                                                    class="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded"
+                                                    {{ $is_system ? 'disabled' : '' }}
+                                                    class="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded {{ $is_system ? 'opacity-50 cursor-not-allowed' : '' }}"
                                                 >
                                                 <label for="is_system" class="ml-2 block text-sm text-gray-700 dark:text-gray-300">
                                                     System

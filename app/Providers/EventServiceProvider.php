@@ -3,7 +3,9 @@
 namespace App\Providers;
 
 use App\Events\LeadWon;
+use App\Events\TeamCreated;
 use App\Listeners\SendLeadWonNotification;
+use App\Listeners\SetupTeamDefaults;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 
 class EventServiceProvider extends ServiceProvider
@@ -16,6 +18,9 @@ class EventServiceProvider extends ServiceProvider
     protected $listen = [
         LeadWon::class => [
             SendLeadWonNotification::class,
+        ],
+        TeamCreated::class => [
+            SetupTeamDefaults::class,
         ],
     ];
 

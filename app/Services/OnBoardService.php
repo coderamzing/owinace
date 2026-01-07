@@ -8,6 +8,7 @@ use App\Models\Team;
 use App\Models\TeamMember;
 use App\Models\User;
 use App\Models\Workspace;
+use App\Models\WorkspaceCredit;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
@@ -91,11 +92,18 @@ class OnBoardService
                 'joined_at' => now(),
             ]);
 
-            // Create default kanban stages for the team
-            $this->createDefaultKanbanStages($team);
+            // Add welcome credits to the workspace
+            WorkspaceCredit::create([
+                'workspace_id' => $workspace->id,
+                'transaction_type' => 'welcome_bonus',
+                'credits' => config('credit.credit_welcome', 50),
+                'note' => 'Welcome bonus credits',
+                'triggered_by_id' => $user->id,
+                'transaction_id' => null,
+            ]);
 
-            // Create default lead sources for the team
-            $this->createDefaultLeadSources($team);
+            // Note: Default kanban stages and lead sources are automatically created
+            // via the TeamObserver when the team is created
 
             // Create sample data if requested
             if ($withSampleData) {
@@ -112,17 +120,9 @@ class OnBoardService
      * @param Team $team
      * @return void
      */
-    protected function createDefaultKanbanStages(Team $team): void
+    public function createDefaultKanbanStages(Team $team): void
     {
-        $defaultStages = [
-            ['name' => 'Open', 'code' => 'OPEN', 'color' => '#0d6efd', 'sort_order' => 0, 'is_system' => true],
-            ['name' => 'New', 'code' => 'NEW', 'color' => '#6c757d', 'sort_order' => 1, 'is_system' => true],
-            ['name' => 'Contacted', 'code' => 'CONTACTED', 'color' => '#17a2b8', 'sort_order' => 2],
-            ['name' => 'Proposal Sent', 'code' => 'PROPOSAL_SENT', 'color' => '#ffc107', 'sort_order' => 3],
-            ['name' => 'Follow-up', 'code' => 'FOLLOW_UP', 'color' => '#fd7e14', 'sort_order' => 4],
-            ['name' => 'Closed Won', 'code' => 'WON', 'color' => '#28a745', 'sort_order' => 5, 'is_system' => true],
-            ['name' => 'Closed Lost', 'code' => 'LOST', 'color' => '#dc3545', 'sort_order' => 6, 'is_system' => true],
-        ];
+        $defaultStages = config('defaults.kanban_stages', []);
 
         foreach ($defaultStages as $stageData) {
             LeadKanban::create([
@@ -143,19 +143,9 @@ class OnBoardService
      * @param Team $team
      * @return void
      */
-    protected function createDefaultLeadSources(Team $team): void
+    public function createDefaultLeadSources(Team $team): void
     {
-        $defaultSources = [
-            ['name' => 'Website', 'color' => '#007bff', 'sort_order' => 1, 'description' => 'Leads from company website'],
-            ['name' => 'Referral', 'color' => '#28a745', 'sort_order' => 2, 'description' => 'Referrals from existing clients'],
-            ['name' => 'Social Media', 'color' => '#17a2b8', 'sort_order' => 3, 'description' => 'Social media platforms'],
-            ['name' => 'Email Campaign', 'color' => '#ffc107', 'sort_order' => 4, 'description' => 'Email marketing campaigns'],
-            ['name' => 'Cold Outreach', 'color' => '#6c757d', 'sort_order' => 5, 'description' => 'Direct outreach to prospects'],
-            ['name' => 'Paid Ads', 'color' => '#fd7e14', 'sort_order' => 6, 'description' => 'Paid advertising campaigns'],
-            ['name' => 'Events', 'color' => '#e83e8c', 'sort_order' => 7, 'description' => 'Trade shows and events'],
-            ['name' => 'Other', 'color' => '#6f42c1', 'sort_order' => 8, 'description' => 'Other lead sources'],
-            ['name' => 'Upwork', 'color' => '#14a800', 'sort_order' => 9, 'description' => 'Upwork'],
-        ];
+        $defaultSources = config('defaults.lead_sources', []);
 
         foreach ($defaultSources as $sourceData) {
             LeadSource::create([

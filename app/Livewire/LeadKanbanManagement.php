@@ -88,11 +88,32 @@ class LeadKanbanManagement extends Component
 
         if ($this->editingId) {
             $kanban = LeadKanban::where('team_id', $teamId)->findOrFail($this->editingId);
-            $kanban->update($data);
-            session()->flash('message', 'Lead Kanban updated successfully.');
+            
+            // Prevent editing critical fields for system records
+            if ($kanban->is_system) {
+                // Only allow certain fields to be updated
+                $data = [
+                    'color' => $this->color,
+                    'sort_order' => $this->sort_order,
+                    'is_active' => $this->is_active,
+                ];
+            }
+            
+            try {
+                $kanban->update($data);
+                session()->flash('message', 'Lead Kanban updated successfully.');
+            } catch (\Exception $e) {
+                session()->flash('error', $e->getMessage());
+                return;
+            }
         } else {
-            LeadKanban::create($data);
-            session()->flash('message', 'Lead Kanban created successfully.');
+            try {
+                LeadKanban::create($data);
+                session()->flash('message', 'Lead Kanban created successfully.');
+            } catch (\Exception $e) {
+                session()->flash('error', $e->getMessage());
+                return;
+            }
         }
 
         $this->closeModal();

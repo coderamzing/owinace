@@ -240,6 +240,15 @@
             </div>
         @endif
 
+        {{-- Attachments --}}
+        <div class="bg-white dark:bg-gray-800 shadow-sm border border-gray-200 dark:border-gray-700 rounded-lg p-6">
+            <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center">
+                <x-filament::icon icon="heroicon-o-paper-clip" class="w-5 h-5 mr-2" />
+                Attachments
+            </h3>
+            <livewire:lead-attachment-management :lead="$record" :key="'attachments-' . $record->id" />
+        </div>
+
         {{-- Team & Ownership --}}
         <div class="bg-white dark:bg-gray-800 shadow-sm border border-gray-200 dark:border-gray-700 rounded-lg p-6">
             <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Team & Ownership</h3>
