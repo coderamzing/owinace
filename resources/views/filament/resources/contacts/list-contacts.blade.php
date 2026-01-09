@@ -1,6 +1,6 @@
 <x-filament-panels::page>
     {{-- Custom search section styled like Bootstrap form-floating --}}
-    <div class="mb-5 relative px-4 py-5 rounded-2xl border-2 border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800">
+    <div class="mb-5 relative px-4 py-5 rounded-2xl border-[1px] border-gray-200 dark:border-gray-700 dark:bg-gray-800 bg-gradient-to-b from-[#a53740] to-[#872d34]">
         <div class="flex items-center">
             <div class="flex-1">
                 <div 

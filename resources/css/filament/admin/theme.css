@@ -164,9 +164,13 @@ INPUTS & FORMS - Modern Form Design
     pointer-events: none;
 }
 
-table tbody tr:nth-child(even) > td.fi-ta-cell-notice-card,
-table tbody tr:nth-child(even) > td.fi-ta-cell-notice-card ~ td{
-    background: #68656514;
+table tbody tr > td.fi-ta-cell-notice-card,
+table tbody tr > td.fi-ta-cell-notice-card ~ td{
+    background: #fff;
+}
+
+table tbody tr > td.fi-ta-cell-notice-card{
+    border-left: 4px solid #ad3a43;
 }
 
 .analytics-border > div,
@@ -183,13 +187,78 @@ table tbody tr:nth-child(even) > td.fi-ta-cell-notice-card ~ td{
     border: 1px solid #e3e3e3;
 }
 
+.filter-section{
+    background-image: linear-gradient(180deg, #a53740, #872d34);
+}
+
+.fi-ta-filters-header h2,
+.filter-form label span{
+    color: #fff !important;
+}
+
+.filter-section .fi-ta-filters .fi-ta-filters-header button{
+    padding: 4px 10px;
+    background: #fff;
+}
+
 .filter-section input,
 .filter-section select{
     border: 1px solid #e3e3e3;
     padding: 6px 12px;
 }
 
+nav.fi-sidebar-nav,
+nav.fi-topbar{
+    background: #f5f4f4;
+}
 
+.fi-sidebar-nav .fi-sidebar-nav-groups ul li.fi-active a{
+    background-color: #ad3a43 !important;
+    border-radius: 6px !important;
+}
+
+.fi-sidebar-nav .fi-sidebar-nav-groups ul li.fi-active a svg{
+    stroke: #fff;
+}
+
+.fi-sidebar-nav .fi-sidebar-nav-groups ul li.fi-active a span{
+    color: #fff;
+}
+
+.fi-ta-filters-above-content-ctn{
+    border: 1px solid #e3e3e3 !important;
+}
+
+tbody:has(td.fi-ta-cell-notice-card){
+    background: #ad3a434f;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    min-width: 100%;
+}
+table tbody tr > td.fi-ta-cell-notice-card{
+    min-width: 90%;
+}
+
+.fi-modal-footer .fi-modal-footer-actions button:nth-child(3){
+    background: #ff0606c2;
+    color: #fff;
+}
+
+.fi-modal-footer .fi-modal-footer-actions button:first-child{
+    background: #ad3a43;
+    color: #fff;
+}
+
+.lead-generation-form .fi-sc > div.fi-grid-col .fi-sc-component .fi-fo-field .fi-fo-field-label-col{
+    display: none;
+}
+
+.lead-generation-form .fi-sc div.fi-grid-col .fi-sc-component .fi-fo-field .fi-fo-field-content-col .fi-fo-radio{
+    display: flex;
+    justify-content: center;
+}
 /* Dark theme */
 
 :where(.dark, .dark *) nav.fi-sidebar-nav,
@@ -208,3 +277,4 @@ table tbody tr:nth-child(even) > td.fi-ta-cell-notice-card ~ td{
 :where(.dark, .dark *) .fi-logo{
     filter: invert(1);
 }
+

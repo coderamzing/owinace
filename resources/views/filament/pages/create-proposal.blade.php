@@ -1,14 +1,14 @@
 <x-filament-panels::page>
-    <div class="max-w-4xl mx-auto">
+    <div class="max-w-full min-w-full mx-auto">
         <!-- Simple Hero Header -->
-        <div class="mb-10 text-center">
-            <div class="w-16 h-16 bg-gradient-to-br from-purple-600 to-indigo-600 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg">
+        <div class="mb-10 text-center bg-gradient-to-b from-[#a53740] to-[#872d34] p-5 text-white">
+            <div class="w-16 h-16 bg-gradient-to-br from-[#ad3a43] to-[#7f2a31] rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg">
                 <x-filament::icon icon="heroicon-o-sparkles" class="w-9 h-9 text-white" />
             </div>
-            <h1 class="text-4xl font-extrabold text-gray-900 dark:text-white mb-3">
+            <h1 class="text-4xl font-extrabold text-white dark:text-white mb-3">
                 AI Proposal Generator
             </h1>
-            <p class="text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
+            <p class="text-lg text-white dark:text-gray-400 max-w-2xl mx-auto">
                 Create compelling cover letters in seconds using AI. Simply paste the job description and let our AI craft the perfect proposal.
             </p>
         </div>
@@ -17,16 +17,18 @@
         <form wire:submit="generate" class="space-y-10">
             <!-- Job Description -->
             <div>
-                <label class="block mb-3">
-                    <span class="text-lg font-bold text-gray-900 dark:text-white flex items-center gap-2">
+                <label class="block mb-3 text-center">
+                    <span class="text-lg font-bold text-gray-900 dark:text-white flex items-center gap-2 justify-center">
                         <x-filament::icon icon="heroicon-o-document-text" class="w-5 h-5 text-primary-600" />
                         Job Description
                     </span>
-                    <span class="text-sm text-gray-500 dark:text-gray-400 mt-1 block">
+                    <span class="text-sm text-gray-500 dark:text-gray-400 mt-1 block text-center">
                         Paste the complete job description for best results
                     </span>
                 </label>
-                {{ $this->form }}
+                <div class="lead-generation-form">
+                    {{ $this->form }}
+                </div>
             </div>
 
 
@@ -40,7 +42,7 @@
                         wire:target="generate"
                         wire:loading.attr="disabled"
                         wire:loading.class="opacity-70 cursor-not-allowed"
-                        class="min-w-xs shadow-lg hover:shadow-xl transition-all"
+                        class="min-w-xs shadow-lg hover:shadow-xl transition-all bg-[#ad3a43] text-white"
                     >
                         <span class="inline-flex items-center gap-3 px-8">
                             <x-filament::loading-indicator
@@ -75,35 +77,42 @@
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4">
-                <div class="flex gap-3">
-                    <x-filament::icon icon="heroicon-o-check-circle" class="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
+                <div class="group flex gap-3 border border-[#e3e3e3] p-4 !rounded-lg hover:bg-[#ad3a43]">
+                    <x-filament::icon 
+                        icon="heroicon-o-check-circle"
+                        class="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" 
+                    />
                     <div>
-                        <p class="text-sm font-semibold text-gray-900 dark:text-white">Include complete details</p>
-                        <p class="text-sm text-gray-600 dark:text-gray-400">Paste entire job description for best results</p>
+                        <p class="text-sm font-semibold text-gray-900 group-hover:text-white">
+                            Include complete details
+                        </p>
+                        <p class="text-sm text-gray-600 group-hover:text-white">
+                            Paste entire job description for best results
+                        </p>
                     </div>
                 </div>
 
-                <div class="flex gap-3">
+                <div class="group flex gap-3 border border-[#e3e3e3] p-4 !rounded-lg hover:bg-[#ad3a43]">
                     <x-filament::icon icon="heroicon-o-check-circle" class="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
                     <div>
-                        <p class="text-sm font-semibold text-gray-900 dark:text-white">Choose right length</p>
-                        <p class="text-sm text-gray-600 dark:text-gray-400">150 quick, 215 standard, 300 detailed</p>
+                        <p class="text-sm font-semibold text-gray-900 group-hover:text-white">Choose right length</p>
+                        <p class="text-sm text-gray-600 group-hover:text-white">150 quick, 215 standard, 300 detailed</p>
                     </div>
                 </div>
 
-                <div class="flex gap-3">
+                <div class="group flex gap-3 border border-[#e3e3e3] p-4 !rounded-lg hover:bg-[#ad3a43]">
                     <x-filament::icon icon="heroicon-o-check-circle" class="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
                     <div>
-                        <p class="text-sm font-semibold text-gray-900 dark:text-white">Match the tone</p>
-                        <p class="text-sm text-gray-600 dark:text-gray-400">PITCH for startups, EXPERIENCE for agencies</p>
+                        <p class="text-sm font-semibold text-gray-900 group-hover:text-white">Match the tone</p>
+                        <p class="text-sm text-gray-600 group-hover:text-white">PITCH for startups, EXPERIENCE for agencies</p>
                     </div>
                 </div>
 
-                <div class="flex gap-3">
+                <div class="group flex gap-3 border border-[#e3e3e3] p-4 !rounded-lg hover:bg-[#ad3a43]">
                     <x-filament::icon icon="heroicon-o-check-circle" class="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
                     <div>
-                        <p class="text-sm font-semibold text-gray-900 dark:text-white">Review before sending</p>
-                        <p class="text-sm text-gray-600 dark:text-gray-400">Always customize for each client</p>
+                        <p class="text-sm font-semibold text-gray-900 group-hover:text-white">Review before sending</p>
+                        <p class="text-sm text-gray-600 group-hover:text-white">Always customize for each client</p>
                     </div>
                 </div>
             </div>

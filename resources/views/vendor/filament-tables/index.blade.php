@@ -260,7 +260,7 @@
                             x-bind:class="{ 'fi-open': areFiltersOpen }"
                         @endif
                         @class([
-                            'fi-ta-filters-above-content-ctn',
+                            'fi-ta-filters-above-content-ctn filter-section',
                         ])
                     >
                         <x-filament-tables::filters

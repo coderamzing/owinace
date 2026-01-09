@@ -25,56 +25,74 @@
     @else
         <!-- Filters Section -->
         <div class="mb-6 bg-gray-50 dark:bg-gray-900/50 border border-gray-300 dark:border-gray-600 rounded-lg p-6 filter-section">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <!-- Full Text Search -->
+            <div class="fi-ta-filters-header flex justify-between items-center gap-4 mb-[16px]">
+                <h2 class="fi-ta-filters-heading text-white">
+                    Filters
+                </h2>
                 <div>
-                    <label for="search" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                        <x-filament::icon icon="heroicon-o-magnifying-glass" class="w-4 h-4 inline mr-1" />
-                        Search
-                    </label>
-                    <input
-                        type="text"
-                        id="search"
-                        wire:model.live.debounce.300ms="search"
-                        placeholder="Search leads by title, description..."
-                        class="w-full rounded-lg border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-300 focus:border-primary-500 focus:ring-primary-500 focus:ring-2 transition-all"
-                    >
+                    <button class="fi-color fi-color-danger fi-text-color-700 bg-[#fff] px-[10px] py-[4px] dark:fi-text-color-400 fi-link fi-size-md" type="button">   
+                        Reset
+                    </button>            
                 </div>
+            </div>
 
-                <!-- Member Filter -->
-                <div>
-                    <label for="memberFilter" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                        <x-filament::icon icon="heroicon-o-user" class="w-4 h-4 inline mr-1" />
-                        Assigned Member
-                    </label>
-                    <select
-                        id="memberFilter"
-                        wire:model.live="memberFilter"
-                        class="w-full rounded-lg border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-300 focus:border-primary-500 focus:ring-primary-500 focus:ring-2 transition-all"
-                    >
-                        <option value="">All Members</option>
-                        @foreach($members as $member)
-                            <option value="{{ $member['id'] }}">{{ $member['name'] }}</option>
-                        @endforeach
-                    </select>
+            <div class="flex justify-between items-end gap-4">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 w-[91%]">
+                    <!-- Full Text Search -->
+                    <div>
+                        <label for="search" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2 text-white">
+                            <!-- <x-filament::icon icon="heroicon-o-magnifying-glass" class="w-4 h-4 inline mr-1" /> -->
+                            Search
+                        </label>
+                        <input
+                            type="text"
+                            id="search"
+                            wire:model.live.debounce.300ms="search"
+                            placeholder="Search leads by title, description..."
+                            class="w-full rounded-lg border-gray-300 bg-[#fff] dark:border-gray-600 dark:bg-gray-800 dark:text-gray-300 focus:border-primary-500 focus:ring-primary-500 focus:ring-2 transition-all"
+                        >
+                    </div>
+
+                    <!-- Member Filter -->
+                    <div>
+                        <label for="memberFilter" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2 text-white">
+                            <!-- <x-filament::icon icon="heroicon-o-user" class="w-4 h-4 inline mr-1" /> -->
+                            Assigned Member
+                        </label>
+                        <select
+                            id="memberFilter"
+                            wire:model.live="memberFilter"
+                            class="w-full rounded-lg bg-[#fff] border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-300 focus:border-primary-500 focus:ring-primary-500 focus:ring-2 transition-all"
+                        >
+                            <option value="">All Members</option>
+                            @foreach($members as $member)
+                                <option value="{{ $member['id'] }}">{{ $member['name'] }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    <!-- Source Filter -->
+                    <div>
+                        <label for="sourceFilter" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2 text-white">
+                            <!-- <x-filament::icon icon="heroicon-o-tag" class="w-4 h-4 inline mr-1" /> -->
+                            Lead Source
+                        </label>
+                        <select
+                            id="sourceFilter"
+                            wire:model.live="sourceFilter"
+                            class="w-full rounded-lg bg-[#fff] border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-300 focus:border-primary-500 focus:ring-primary-500 focus:ring-2 transition-all"
+                        >
+                            <option value="">All Sources</option>
+                            @foreach($sources as $source)
+                                <option value="{{ $source->id }}">{{ $source->name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
                 </div>
-
-                <!-- Source Filter -->
-                <div>
-                    <label for="sourceFilter" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                        <x-filament::icon icon="heroicon-o-tag" class="w-4 h-4 inline mr-1" />
-                        Lead Source
-                    </label>
-                    <select
-                        id="sourceFilter"
-                        wire:model.live="sourceFilter"
-                        class="w-full rounded-lg border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-300 focus:border-primary-500 focus:ring-primary-500 focus:ring-2 transition-all"
-                    >
-                        <option value="">All Sources</option>
-                        @foreach($sources as $source)
-                            <option value="{{ $source->id }}">{{ $source->name }}</option>
-                        @endforeach
-                    </select>
+                <div class="fi-ta-filters-actions-ctn">
+                    <button class="fi-color fi-color-primary leading-[16px] mb-[5px] fi-bg-color-400 hover:fi-bg-color-300 dark:fi-bg-color-600 dark:hover:fi-bg-color-700 fi-text-color-950 hover:fi-text-color-800 dark:fi-text-color-0 dark:hover:fi-text-color-0 fi-btn fi-size-md  fi-ac-btn-action" type="button">                                    
+                        Apply Filters
+                    </button>     
                 </div>
             </div>
 
