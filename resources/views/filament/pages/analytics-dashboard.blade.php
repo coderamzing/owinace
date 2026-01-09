@@ -73,7 +73,7 @@
                         $colSpanClass = match($columnSpan) {
                             'full' => 'lg:col-span-12',
                             12 => 'lg:col-span-12',
-                            6 => 'lg:col-span-6 border border-[#e3e3e3] analytics-border',
+                            6 => 'lg:col-span-6',
                             4 => 'lg:col-span-4',
                             3 => 'lg:col-span-3',
                             2 => 'lg:col-span-2',

@@ -182,9 +182,18 @@ table tbody tr > td.fi-ta-cell-notice-card{
     box-shadow: none !important;
 }
 
+
+
 .analytics-dashboard div:nth-child(6),
-.analytics-dashboard div:nth-child(7){
-    border: 1px solid #e3e3e3;
+.analytics-dashboard div:nth-child(7),
+.fi-wi-table{
+    border: 0.8px solid #e3e3e3;
+}
+
+:where(.dark, .dark *) .fi-wi-table,
+:where(.dark, .dark *) .analytics-dashboard div:nth-child(6),
+:where(.dark, .dark *) .analytics-dashboard div:nth-child(7) {
+    border: 0.8px solid #e3e3e317;
 }
 
 .filter-section{
@@ -205,6 +214,10 @@ table tbody tr > td.fi-ta-cell-notice-card{
 .filter-section select{
     border: 1px solid #e3e3e3;
     padding: 6px 12px;
+}
+
+.filter-section input{
+    padding: 4px 12px;
 }
 
 nav.fi-sidebar-nav,
@@ -262,7 +275,7 @@ table tbody tr > td.fi-ta-cell-notice-card{
 /* Dark theme */
 
 :where(.dark, .dark *) nav.fi-sidebar-nav,
-:where(.dark, .dark *) .fi-ta-filters-above-content-ctn {
+:where(.dark, .dark *) nav.fi-topbar {
     background: #000;
 }
 :where(.dark, .dark *) .fi-main{
@@ -270,11 +283,28 @@ table tbody tr > td.fi-ta-cell-notice-card{
 }
 
 :where(.dark, .dark *) .filter-form .fi-input,
-:where(.dark, .dark *) .fi-input{
+:where(.dark, .dark *) .fi-input,
+:where(.dark, .dark *) .fi-select-input,
+:where(.dark, .dark *) #table-search{
     background-color: #242427;
+    border: 1px solid #fff;
 }
 
 :where(.dark, .dark *) .fi-logo{
     filter: invert(1);
+}
+
+:where(.dark, .dark *) .fi-ta-filters-above-content-ctn{
+    border: 1px solid #ffffff17 !important;
+}
+
+:where(.dark, .dark *) .fi-pagination .fi-pagination-records-per-page-select-ctn .fi-input-wrp-label{
+    color: #fff;
+    margin-bottom: 0;
+}
+
+:where(.dark, .dark *) table tbody tr > td.fi-ta-cell-notice-card,
+:where(.dark, .dark *) table tbody tr > td.fi-ta-cell-notice-card ~ td{
+    background: #242427;
 }
 

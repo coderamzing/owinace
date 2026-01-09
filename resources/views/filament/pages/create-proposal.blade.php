@@ -83,10 +83,10 @@
                         class="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" 
                     />
                     <div>
-                        <p class="text-sm font-semibold text-gray-900 group-hover:text-white">
+                        <p class="text-sm font-semibold text-gray-900 group-hover:text-white dark:text-white">
                             Include complete details
                         </p>
-                        <p class="text-sm text-gray-600 group-hover:text-white">
+                        <p class="text-sm text-gray-600 group-hover:text-white dark:text-white">
                             Paste entire job description for best results
                         </p>
                     </div>
@@ -95,24 +95,24 @@
                 <div class="group flex gap-3 border border-[#e3e3e3] p-4 !rounded-lg hover:bg-[#ad3a43]">
                     <x-filament::icon icon="heroicon-o-check-circle" class="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
                     <div>
-                        <p class="text-sm font-semibold text-gray-900 group-hover:text-white">Choose right length</p>
-                        <p class="text-sm text-gray-600 group-hover:text-white">150 quick, 215 standard, 300 detailed</p>
+                        <p class="text-sm font-semibold text-gray-900 group-hover:text-white dark:text-white">Choose right length</p>
+                        <p class="text-sm text-gray-600 group-hover:text-white dark:text-white">150 quick, 215 standard, 300 detailed</p>
                     </div>
                 </div>
 
                 <div class="group flex gap-3 border border-[#e3e3e3] p-4 !rounded-lg hover:bg-[#ad3a43]">
                     <x-filament::icon icon="heroicon-o-check-circle" class="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
                     <div>
-                        <p class="text-sm font-semibold text-gray-900 group-hover:text-white">Match the tone</p>
-                        <p class="text-sm text-gray-600 group-hover:text-white">PITCH for startups, EXPERIENCE for agencies</p>
+                        <p class="text-sm font-semibold text-gray-900 group-hover:text-white dark:text-white">Match the tone</p>
+                        <p class="text-sm text-gray-600 group-hover:text-white dark:text-white">PITCH for startups, EXPERIENCE for agencies</p>
                     </div>
                 </div>
 
                 <div class="group flex gap-3 border border-[#e3e3e3] p-4 !rounded-lg hover:bg-[#ad3a43]">
                     <x-filament::icon icon="heroicon-o-check-circle" class="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
                     <div>
-                        <p class="text-sm font-semibold text-gray-900 group-hover:text-white">Review before sending</p>
-                        <p class="text-sm text-gray-600 group-hover:text-white">Always customize for each client</p>
+                        <p class="text-sm font-semibold text-gray-900 group-hover:text-white dark:text-white">Review before sending</p>
+                        <p class="text-sm text-gray-600 group-hover:text-white dark:text-white">Always customize for each client</p>
                     </div>
                 </div>
             </div>
