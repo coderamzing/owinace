@@ -3,10 +3,11 @@
 namespace App\Filament\Resources\TeamMembers\Pages;
 
 use App\Filament\Resources\TeamMembers\TeamMemberResource;
+use App\Filament\Resources\TeamMembers\Schemas\TeamMemberForm;
 use App\Jobs\NotificationQueue;
 use App\Models\User;
-use Filament\Notifications\Notification as FilamentNotification;
 use Filament\Resources\Pages\CreateRecord;
+use Filament\Schemas\Schema;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 
@@ -17,6 +18,11 @@ class CreateTeamMember extends CreateRecord
     protected ?string $generatedPassword = null;
     protected bool $sendWelcomeEmail = false;
     protected ?string $welcomeEmail = null;
+
+    public function form(Schema $schema): Schema
+    {
+        return TeamMemberForm::createNewMemberForm($schema);
+    }
 
     protected function mutateFormDataBeforeCreate(array $data): array
     {
@@ -30,25 +36,29 @@ class CreateTeamMember extends CreateRecord
         $isUserExists = User::where('email', $data['email'])->exists();
         if ($isUserExists) {
             throw new \Illuminate\Validation\ValidationException([
-                'email' => 'A user with this email address already exists.',
+                'email' => 'A user with this email address already exists. Please use "Link Existing Member" action instead.',
             ]);
         }
 
-        // Find or create user by email
+        // Create new user
+        $userEmail = $data['email'];
         $user = User::create(
             [
-                'email' => $data['email'],
+                'email' => $userEmail,
                 'name' => $data['name'],
                 'password' => Hash::make($this->generatedPassword),
                 'workspace_id' => session('workspace_id'),
             ]
         );
 
-        // Replace name and email with user_id for TeamMember creation
+        $user->assignRole($data['role']);
+
+        // Set user_id and email for TeamMember creation
         $data['user_id'] = $user->id;
+        $data['email'] = $userEmail; // Keep email for TeamMember record
 
         unset($data['name']);
-        unset($data['email']);
+        unset($data['send_welcome_email']);
 
         // Set default status if not provided
         if (!isset($data['status'])) {
@@ -60,14 +70,12 @@ class CreateTeamMember extends CreateRecord
             $data['joined_at'] = now();
         }
 
-        // Remove transient field
-        unset($data['send_welcome_email']);
-
         return $data;
     }
 
     protected function afterCreate(): void
     {
+        // Send welcome email for new users
         if (!$this->sendWelcomeEmail || !$this->generatedPassword || !$this->welcomeEmail) {
             return;
         }

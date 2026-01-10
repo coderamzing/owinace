@@ -133,24 +133,26 @@ INPUTS & FORMS - Modern Form Design
 }
 
 .filter-form > .fi-sc{
-    width: 90%;
+    width: 87%;
 }
 
 .filter-form .fi-ta-filters-actions-ctn{
-    width: 8%
+    width: calc(100% - 87%);
 }
 
 .filter-form .fi-input{
     padding: 6px 12px;
 }
-
-.filter-form .fi-sc > .fi-grid-col:nth-child(2),
-.filter-form .fi-sc > .fi-grid-col:nth-child(3),
-.filter-form .fi-sc > .fi-grid-col:nth-child(4) {
-    width: calc(23.33% - 10px);
+.filter-form .fi-fo-field-label-col{
+    display: none;
 }
-.filter-form > .fi-sc.lg\:fi-grid-cols > .fi-grid-col:nth-child(1) {
-    width: calc(30% - 10px);
+
+.filter-form .fi-sc > .fi-grid-col {
+    flex: 1 1 auto;
+    min-width: 0;
+}
+.fi-ta-filters{
+    margin-bottom: calc(var(--spacing) * 4);
 }
 
 .items-end{

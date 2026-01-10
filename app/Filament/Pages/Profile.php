@@ -5,6 +5,8 @@ namespace App\Filament\Pages;
 use App\Notifications\EmailChangeVerificationNotification;
 use BackedEnum;
 use UnitEnum;
+use Filament\Auth\MultiFactor\Contracts\MultiFactorAuthenticationProvider;
+use Filament\Facades\Filament;
 use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\TextInput;
@@ -12,6 +14,8 @@ use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Notifications\Notification;
 use Filament\Pages\Page;
+use Filament\Schemas\Components\Component;
+use Filament\Schemas\Components\Group;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Illuminate\Support\Facades\Auth;
@@ -19,6 +23,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rules\Password;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Filament\Forms\Components\Actions\Action;
 
 class Profile extends Page implements HasForms
 {
@@ -43,6 +48,7 @@ class Profile extends Page implements HasForms
 
     public ?array $profileData = [];
     public ?array $passwordData = [];
+    public ?array $mfaData = [];
 
     public function mount(): void
     {
@@ -61,6 +67,11 @@ class Profile extends Page implements HasForms
 
         $this->profileForm->fill($this->profileData);
         $this->passwordForm->fill($this->passwordData);
+        
+        if (Filament::hasMultiFactorAuthentication()) {
+            $this->mfaForm->fill($this->mfaData);
+        }
+        $this->mfaForm->fill($this->mfaData);
     }
 
     public function profileForm(Schema $schema): Schema
@@ -126,6 +137,28 @@ class Profile extends Page implements HasForms
                     ->autocomplete('new-password'),
             ])
             ->statePath('passwordData');
+    }
+
+    /**
+     * Get the multi-factor authentication form schema.
+     */
+    public function mfaForm(Schema $schema): Schema
+    {
+        if (! Filament::hasMultiFactorAuthentication()) {
+            return $schema->components([]);
+        }
+
+        $user = Filament::auth()->user();
+
+        $components = collect(Filament::getMultiFactorAuthenticationProviders())
+            ->sort(fn ($multiFactorAuthenticationProvider): int => $multiFactorAuthenticationProvider->isEnabled($user) ? 0 : 1)
+            ->map(fn ($multiFactorAuthenticationProvider): Component => Group::make($multiFactorAuthenticationProvider->getManagementSchemaComponents())
+                ->statePath($multiFactorAuthenticationProvider->getId()))
+            ->all();
+
+        return $schema
+            ->components($components)
+            ->statePath('mfaData');
     }
 
     public function updateProfile(): void
@@ -199,4 +232,5 @@ class Profile extends Page implements HasForms
             ->body('Your password has been successfully updated.')
             ->send();
     }
+
 }

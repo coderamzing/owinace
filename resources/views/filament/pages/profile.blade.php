@@ -53,6 +53,23 @@
                 </form>
             </div>
         </div>
+
+        {{-- Multi-Factor Authentication Section --}}
+        @if(Filament\Facades\Filament::hasMultiFactorAuthentication())
+            <div class="bg-white dark:bg-gray-800 shadow-sm border border-gray-200 dark:border-gray-700 rounded-lg">
+                <div class="p-6 border-b border-gray-200 dark:border-gray-700">
+                    <h2 class="text-xl font-semibold text-gray-900 dark:text-white">
+                        Multi-Factor Authentication
+                    </h2>
+                    <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                        Add an extra layer of security to your account by enabling two-factor authentication.
+                    </p>
+                </div>
+                <div class="p-6">
+                    {{ $this->mfaForm }}
+                </div>
+            </div>
+        @endif
     </div>
 </x-filament-panels::page>
 

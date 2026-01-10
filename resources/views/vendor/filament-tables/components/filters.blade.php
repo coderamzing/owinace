@@ -11,7 +11,7 @@
 
 <div {{ $attributes->class(['fi-ta-filters']) }}>
     <div class="fi-ta-filters-header">
-        <{{ $headingTag }} class="fi-ta-filters-heading">
+        <{{ $headingTag }} class="fi-ta-filters-heading hidden">
             {{ __('filament-tables::table.filters.heading') }}
         </{{ $headingTag }}>
 

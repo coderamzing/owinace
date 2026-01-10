@@ -49,6 +49,8 @@ class LeadKanban extends Model
      */
     protected static function booted(): void
     {
+        static::addGlobalScope(new TeamScope);
+        
         // Prevent deletion of system kanban stages
         static::deleting(function (LeadKanban $kanban) {
             if ($kanban->is_system) {

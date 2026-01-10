@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use App\Models\Scopes\TeamScope;
 
 class Team extends Model
 {
@@ -45,5 +46,15 @@ class Team extends Model
     public function members(): HasMany
     {
         return $this->hasMany(TeamMember::class, 'team_id');
+    }
+
+    /**
+     * Get all members of the team, ignoring the TeamScope on TeamMember.
+     * Used for accurate member counts per team.
+     */
+    public function allMembers(): HasMany
+    {
+        return $this->hasMany(TeamMember::class, 'team_id')
+            ->withoutGlobalScope(TeamScope::class);
     }
 }

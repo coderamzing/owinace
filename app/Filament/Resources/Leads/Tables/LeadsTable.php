@@ -11,6 +11,7 @@ use Filament\Actions\EditAction;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Enums\FiltersLayout;
+use Filament\Tables\Enums\FiltersResetActionPosition;
 use Filament\Tables\Filters\Filter;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
@@ -93,7 +94,8 @@ class LeadsTable
                             : null;
                     }),
                 SelectFilter::make('assigned_member_id')
-                    ->label('Assigned Member')
+                    ->label('')
+                    ->placeholder('Assigned Member')
                     ->options(function () {
                         $teamId = session('team_id');
 
@@ -117,7 +119,8 @@ class LeadsTable
                     ->searchable()
                     ->preload(),
                 SelectFilter::make('source_id')
-                    ->label('Source')
+                    ->label('')
+                    ->placeholder('Source')
                     ->options(function () {
                         $teamId = session('team_id');
 
@@ -135,7 +138,8 @@ class LeadsTable
                     ->searchable()
                     ->preload(),
                 SelectFilter::make('kanban_id')
-                    ->label('Kanban')
+                    ->label('')
+                    ->placeholder('Kanban')
                     ->options(function () {
                         $teamId = session('team_id');
 
@@ -155,6 +159,7 @@ class LeadsTable
             ])
             ->filtersLayout(FiltersLayout::AboveContent)
             ->filtersFormColumns(3)
+            ->filtersResetActionPosition(FiltersResetActionPosition::Footer)
             ->recordActions([
                 \Filament\Actions\ViewAction::make()
                     ->visible(fn ($record) => self::hasPermissionTo('leads.view')),

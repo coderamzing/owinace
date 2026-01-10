@@ -3,14 +3,12 @@
 namespace App\Filament\Resources\Proposals\Pages;
 
 use App\Filament\Resources\Proposals\ProposalResource;
-use App\Filament\Resources\BaseListRecords;
+use Filament\Resources\Pages\ListRecords;
 use Filament\Actions\CreateAction;
 
-class ListProposals extends BaseListRecords
+class ListProposals extends ListRecords
 {
     protected static string $resource = ProposalResource::class;
-    
-    protected string $searchPlaceholder = 'Search proposals by title, keywords...';
 
     protected function getHeaderActions(): array
     {

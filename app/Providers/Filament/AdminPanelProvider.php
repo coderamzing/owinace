@@ -5,6 +5,8 @@ namespace App\Providers\Filament;
 use App\Filament\Pages\AddCredit;
 use App\Filament\Pages\Profile;
 use App\Filament\Pages\SystemHealth;
+use Filament\Auth\MultiFactor\App\AppAuthentication;
+use Filament\Auth\MultiFactor\Email\EmailAuthentication;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -52,6 +54,11 @@ class AdminPanelProvider extends PanelProvider
             ->widgets([
                 AccountWidget::class,
                 FilamentInfoWidget::class,
+            ])
+            ->multiFactorAuthentication([
+                AppAuthentication::make()
+                    ->recoverable(),
+                EmailAuthentication::make(),
             ])
             ->middleware([
                 EncryptCookies::class,
