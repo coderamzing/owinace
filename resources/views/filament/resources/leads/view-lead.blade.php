@@ -5,10 +5,10 @@
 
     <div class="space-y-6">
         {{-- Header Section --}}
-        <div class="bg-white dark:bg-gray-800 shadow-sm border border-gray-200 dark:border-gray-700 rounded-lg p-6">
+        <div class="dark:bg-gray-800 shadow-sm border border-gray-200 dark:border-gray-700 rounded-lg p-6 bg-[#ad3a432b]">
             <div class="flex items-start justify-between">
                 <div class="flex-1">
-                    <h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-2">{{ $record->title }}</h1>
+                    <h1 class="text-3xl font-bold text-[#ad3a43] dark:text-white mb-2">{{ $record->title }}</h1>
                     @if($record->description)
                         <p class="text-gray-600 dark:text-gray-400 mt-2">{{ $record->description }}</p>
                     @endif
@@ -32,8 +32,8 @@
         {{-- Lead Information Grid --}}
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {{-- Status & Source --}}
-            <div class="bg-white dark:bg-gray-800 shadow-sm border border-gray-200 dark:border-gray-700 rounded-lg p-6">
-                <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Lead Information</h3>
+            <div class="dark:bg-gray-800 shadow-sm border border-gray-200 dark:border-gray-700 rounded-lg p-6 bg-[#fff4f4]">
+                <h3 class="text-lg font-semibold text-[#d14b55] dark:text-white mb-4">Lead Information</h3>
                 <div class="space-y-4">
                     <div>
                         <label class="text-sm font-medium text-gray-500 dark:text-gray-400">Status</label>
@@ -70,8 +70,8 @@
             </div>
 
             {{-- Financial Information --}}
-            <div class="bg-white dark:bg-gray-800 shadow-sm border border-gray-200 dark:border-gray-700 rounded-lg p-6">
-                <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Financial Information</h3>
+            <div class="dark:bg-gray-800 shadow-sm border border-gray-200 dark:border-gray-700 rounded-lg p-6 bg-[#f0fbf5]">
+                <h3 class="text-lg font-semibold text-[#009d62] dark:text-white mb-4">Financial Information</h3>
                 <div class="space-y-4">
                     <div>
                         <label class="text-sm font-medium text-gray-500 dark:text-gray-400">Expected Value</label>
@@ -111,8 +111,8 @@
             </div>
 
             {{-- Timeline --}}
-            <div class="bg-white dark:bg-gray-800 shadow-sm border border-gray-200 dark:border-gray-700 rounded-lg p-6">
-                <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Timeline</h3>
+            <div class="dark:bg-gray-800 shadow-sm border border-gray-200 dark:border-gray-700 rounded-lg p-6 bg-[#f2f8ff]">
+                <h3 class="text-lg font-semibold text-[#3f7de3] dark:text-white mb-4">Timeline</h3>
                 <div class="space-y-4">
                     <div>
                         <label class="text-sm font-medium text-gray-500 dark:text-gray-400">Next Follow Up</label>

@@ -25,7 +25,7 @@
     @else
         <!-- Filters Section -->
         <div class="mb-6 bg-gray-50 dark:bg-gray-900/50 border border-gray-300 dark:border-gray-600 rounded-lg p-6 filter-section">
-            <div class="fi-ta-filters-header flex justify-between items-center gap-4 mb-[16px]">
+            <!-- <div class="fi-ta-filters-header flex justify-between items-center gap-4 mb-[16px]">
                 <h2 class="fi-ta-filters-heading text-white">
                     Filters
                 </h2>
@@ -34,16 +34,15 @@
                         Reset
                     </button>            
                 </div>
-            </div>
+            </div> -->
 
             <div class="flex justify-between items-end gap-4">
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 w-[91%]">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 w-[86%]">
                     <!-- Full Text Search -->
                     <div>
-                        <label for="search" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2 text-white">
-                            <!-- <x-filament::icon icon="heroicon-o-magnifying-glass" class="w-4 h-4 inline mr-1" /> -->
+                        <!-- <label for="search" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2 text-white">
                             Search
-                        </label>
+                        </label> -->
                         <input
                             type="text"
                             id="search"
@@ -55,10 +54,9 @@
 
                     <!-- Member Filter -->
                     <div>
-                        <label for="memberFilter" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2 text-white">
-                            <!-- <x-filament::icon icon="heroicon-o-user" class="w-4 h-4 inline mr-1" /> -->
+                        <!-- <label for="memberFilter" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2 text-white">
                             Assigned Member
-                        </label>
+                        </label> -->
                         <select
                             id="memberFilter"
                             wire:model.live="memberFilter"
@@ -73,10 +71,9 @@
 
                     <!-- Source Filter -->
                     <div>
-                        <label for="sourceFilter" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2 text-white">
-                            <!-- <x-filament::icon icon="heroicon-o-tag" class="w-4 h-4 inline mr-1" /> -->
+                        <!-- <label for="sourceFilter" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2 text-white">
                             Lead Source
-                        </label>
+                        </label> -->
                         <select
                             id="sourceFilter"
                             wire:model.live="sourceFilter"
@@ -90,9 +87,14 @@
                     </div>
                 </div>
                 <div class="fi-ta-filters-actions-ctn">
-                    <button class="fi-color fi-color-primary leading-[16px] mb-[5px] fi-bg-color-400 hover:fi-bg-color-300 dark:fi-bg-color-600 dark:hover:fi-bg-color-700 fi-text-color-950 hover:fi-text-color-800 dark:fi-text-color-0 dark:hover:fi-text-color-0 fi-btn fi-size-md  fi-ac-btn-action" type="button">                                    
+                    <button class="fi-color fi-color-primary leading-[16px] fi-bg-color-400 hover:fi-bg-color-300 dark:fi-bg-color-600 dark:hover:fi-bg-color-700 fi-text-color-950 hover:fi-text-color-800 dark:fi-text-color-0 dark:hover:fi-text-color-0 fi-btn fi-size-md  fi-ac-btn-action py-[9px]" type="button">                                    
                         Apply Filters
                     </button>     
+                </div>
+                <div>
+                    <button class="fi-color fi-color-danger fi-text-color-700 bg-[#fff] px-[10px] py-[7px] dark:fi-text-color-400 fi-link fi-size-md" type="button">   
+                        Reset
+                    </button>            
                 </div>
             </div>
 
@@ -146,7 +148,7 @@
                                         style="border-left: 2px solid {{ $lead->source->color ?? '#3b82f6' }}"
                                         onclick="if (!window.isDragging) { event.stopPropagation(); @this.openLeadSidebar({{ $lead->id }}); }"
                                     >
-                                        <div class="text-gray-900 dark:text-gray-100 mb-2 text-sm group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors">
+                                        <div class="text-[#ad3a43] dark:text-gray-100 mb-2 text-sm group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors">
                                             {{ $lead->title }}
                                         </div>
                                         
@@ -267,7 +269,7 @@
                                             @endif
                                             @if($selectedLead->source)
                                                 <span 
-                                                    class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium"
+                                                    class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium !text-[#fff] !bg-[#ff8488]"
                                                     style="background-color: {{ $selectedLead->source->color }}20; color: {{ $selectedLead->source->color }}"
                                                 >
                                                     {{ $selectedLead->source->name }}

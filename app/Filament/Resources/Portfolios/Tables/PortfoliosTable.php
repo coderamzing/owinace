@@ -18,6 +18,8 @@ class PortfoliosTable
             ->columns([
                 TextColumn::make('title')
                     ->searchable()
+                    ->color('primary')
+                    ->weight('bold')
                     ->sortable(),
                 TextColumn::make('scale')
                     ->searchable(),

@@ -18,7 +18,8 @@ class LeadSourceForm
                 TextInput::make('name')
                     ->label('Name')
                     ->required()
-                    ->maxLength(100),
+                    ->maxLength(100)
+                    ->columnSpanFull(),
                 Textarea::make('description')
                     ->label('Description')
                     ->maxLength(2000)

@@ -33,7 +33,7 @@
                     type="button"
                     wire:click="goToPreviousMonth"
                     @if(!$this->canGoToPreviousMonth()) disabled @endif
-                    class="inline-flex items-center justify-center px-4 py-2.5 text-sm font-semibold text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-800 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-primary-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                    class="inline-flex items-center justify-center px-4 py-2.5 text-sm font-semibold text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-800 rounded-lg hover:bg-[#ad3a43] hover:text-[#fff] focus:outline-none focus:ring-2 focus:ring-[#ad3a43] focus:bg-[#ad3a43] focus:text-[#fff] disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                 >
                     <x-filament::icon icon="heroicon-o-chevron-left" class="w-5 h-5 mr-1.5" />
                     Previous
@@ -43,7 +43,7 @@
                     type="button"
                     wire:click="goToNextMonth"
                     @if(!$this->canGoToNextMonth()) disabled @endif
-                    class="inline-flex items-center justify-center px-4 py-2.5 text-sm font-semibold text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-800 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-primary-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                    class="inline-flex items-center justify-center px-4 py-2.5 text-sm font-semibold text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-800 rounded-lg hover:bg-[#ad3a43] hover:text-[#fff] focus:outline-none focus:ring-2 focus:ring-[#ad3a43] focus:bg-[#ad3a43] focus:text-[#fff] disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                 >
                     Next
                     <x-filament::icon icon="heroicon-o-chevron-right" class="w-5 h-5 ml-1.5" />
@@ -59,6 +59,7 @@
                     <div>
                         <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Total Goals</p>
                         <p class="text-3xl font-bold text-gray-900 dark:text-white mt-2">{{ $goalsData['total_goals'] }}</p>
+                        <p class="text-[#d14b55] text-[12px]">Goals for this period</p>
                     </div>
                     <div class="p-3 bg-primary-100 dark:bg-primary-900/20 rounded-lg">
                         <x-filament::icon icon="heroicon-o-flag" class="w-6 h-6 text-primary-600 dark:text-primary-400" />
@@ -72,6 +73,7 @@
                     <div>
                         <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Achieved</p>
                         <p class="text-3xl font-bold text-success-600 dark:text-success-400 mt-2">{{ $goalsData['achieved'] }}</p>
+                        <p class="text-[#009d62] text-[12px]">Goals Completed</p>
                     </div>
                     <div class="p-3 bg-success-100 dark:bg-success-900/20 rounded-lg">
                         <x-filament::icon icon="heroicon-o-check-circle" class="w-6 h-6 text-success-600 dark:text-success-400" />
@@ -85,6 +87,7 @@
                     <div>
                         <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Active</p>
                         <p class="text-3xl font-bold text-primary-600 dark:text-primary-400 mt-2">{{ $goalsData['active'] }}</p>
+                        <p class="text-[#3f7de3] text-[12px]">Active Goals</p>
                     </div>
                     <div class="p-3 bg-info-100 dark:bg-info-900/20 rounded-lg">
                         <x-filament::icon icon="heroicon-o-arrow-trending-up" class="w-6 h-6 text-info-600 dark:text-info-400" />
@@ -100,6 +103,7 @@
                         <p class="text-3xl font-bold {{ $goalsData['success_rate'] >= 100 ? 'text-success-600 dark:text-success-400' : 'text-warning-600 dark:text-warning-400' }} mt-2">
                             {{ number_format($goalsData['success_rate'], 1) }}%
                         </p>
+                        <p class="text-[#009d62] text-[12px]">Overall Progress</p>
                     </div>
                     <div class="p-3 bg-success-100 dark:bg-success-900/20 rounded-lg">
                         <x-filament::icon icon="heroicon-o-chart-bar" class="w-6 h-6 text-success-600 dark:text-success-400" />
@@ -116,6 +120,7 @@
                     <div>
                         <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Total Leads</p>
                         <p class="text-2xl font-bold text-gray-900 dark:text-white mt-2">{{ $leadData['total_lead'] }}</p>
+                        <p class="text-[#d14b55] text-[12px]">Leads this period</p>
                     </div>
                     <div class="p-3 bg-primary-100 dark:bg-primary-900/20 rounded-lg">
                         <x-filament::icon icon="heroicon-o-user-group" class="w-5 h-5 text-primary-600 dark:text-primary-400" />
@@ -129,6 +134,7 @@
                     <div>
                         <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Won</p>
                         <p class="text-2xl font-bold text-success-600 dark:text-success-400 mt-2">{{ $leadData['total_won'] }}</p>
+                        <p class="text-[#009d62] text-[12px]">Converted Leads</p>
                     </div>
                     <div class="p-3 bg-success-100 dark:bg-success-900/20 rounded-lg">
                         <x-filament::icon icon="heroicon-o-trophy" class="w-5 h-5 text-success-600 dark:text-success-400" />
@@ -142,6 +148,7 @@
                     <div>
                         <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Lost</p>
                         <p class="text-2xl font-bold text-danger-600 dark:text-danger-400 mt-2">{{ $leadData['total_lost'] }}</p>
+                        <p class="text-[#d14b55] text-[12px]">Leads this period</p>
                     </div>
                     <div class="p-3 bg-danger-100 dark:bg-danger-900/20 rounded-lg">
                         <x-filament::icon icon="heroicon-o-x-circle" class="w-5 h-5 text-danger-600 dark:text-danger-400" />
@@ -155,6 +162,7 @@
                     <div>
                         <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Open</p>
                         <p class="text-2xl font-bold text-info-600 dark:text-info-400 mt-2">{{ $leadData['total_open'] }}</p>
+                        <p class="text-[#3f7de3] text-[12px]">Active Leads</p>
                     </div>
                     <div class="p-3 bg-info-100 dark:bg-info-900/20 rounded-lg">
                         <x-filament::icon icon="heroicon-o-clock" class="w-5 h-5 text-info-600 dark:text-info-400" />
@@ -168,6 +176,7 @@
                     <div>
                         <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Proposals</p>
                         <p class="text-2xl font-bold text-primary-600 dark:text-primary-400 mt-2">{{ $proposalsCount }}</p>
+                        <p class="text-[#d14b55] text-[12px]">Created this period</p>
                     </div>
                     <div class="p-3 bg-primary-100 dark:bg-primary-900/20 rounded-lg">
                         <x-filament::icon icon="heroicon-o-document-text" class="w-5 h-5 text-primary-600 dark:text-primary-400" />
@@ -178,7 +187,8 @@
 
         {{-- Goals Table --}}
         <div class="bg-gray-50 dark:bg-gray-900/50 border border-gray-300 dark:border-gray-600 rounded-lg overflow-hidden">
-            <div class="p-6 border-b-2 border-primary-200 dark:border-primary-700 bg-gradient-to-r from-primary-50 to-info-50 dark:from-primary-900/20 dark:to-info-900/20">
+
+            <div class="p-6 border-b-2 border-primary-200 dark:border-primary-700 bg-[#fff5f6] dark:bg-[#2a1a1c]">
                 <div class="flex items-center gap-3">
                     <div class="w-10 h-10 bg-primary-600 dark:bg-primary-500 rounded-lg flex items-center justify-center">
                         <x-filament::icon icon="heroicon-o-flag" class="w-6 h-6 text-white" />
@@ -294,7 +304,7 @@
         </div>
 
         {{-- Tips Section --}}
-        <div class="bg-gradient-to-br from-success-50 to-primary-50 dark:from-success-900/20 dark:to-primary-900/20 border border-success-200 dark:border-success-700 rounded-lg p-8 overflow-hidden relative">
+        <div class=" bg-[#f3faf5] dark:bg-[#232a1a] border border-success-200 dark:border-success-700 rounded-lg p-8 overflow-hidden relative">
             <div class="absolute top-0 right-0 w-64 h-64 bg-success-100 dark:bg-success-900/10 rounded-full -mr-32 -mt-32 opacity-30"></div>
             <div class="relative">
                 <div class="flex items-center gap-3 mb-6">

@@ -274,6 +274,41 @@ table tbody tr > td.fi-ta-cell-notice-card{
     display: flex;
     justify-content: center;
 }
+
+
+.my-profile-tabs nav button.fi-tabs-item{
+    background-color: #fafafa;
+    border-radius: 4px !important;
+}
+
+.my-profile-tabs nav button.fi-tabs-item svg,
+.my-profile-tabs nav button.fi-tabs-item span {
+    color: #ad3a43;
+}
+
+.my-profile-tabs nav button.fi-tabs-item.fi-active{
+    background-color: #ad3a43;
+}
+
+.my-profile-tabs nav button.fi-tabs-item.fi-active svg,
+.my-profile-tabs nav button.fi-tabs-item.fi-active span {
+    color: #fff;
+}
+
+.profile-submit-button button{
+    background: #ad3a43;
+    color: #fff;
+    border-radius: 6px !important;
+}
+
+.profile-submit-button button svg{
+    color: #fff;
+}
+
+.fi-ta-filters-actions-ctn button:nth-child(2){
+    background-color: #fff;
+}
+
 /* Dark theme */
 
 :where(.dark, .dark *) nav.fi-sidebar-nav,

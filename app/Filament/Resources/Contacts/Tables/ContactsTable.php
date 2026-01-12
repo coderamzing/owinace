@@ -21,6 +21,8 @@ class ContactsTable
                         $name = trim(($record->first_name ?? '') . ' ' . ($record->last_name ?? ''));
                         return $name ?: 'N/A';
                     })
+                    ->color('primary')
+                    ->weight('bold')
                     ->searchable(query: function ($query, $search) {
                         $query->where(function ($q) use ($search) {
                             $q->where('first_name', 'like', "%{$search}%")

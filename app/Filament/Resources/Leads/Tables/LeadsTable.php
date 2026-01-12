@@ -26,6 +26,8 @@ class LeadsTable
             ->columns([
                 TextColumn::make('title')
                     ->label('Title')
+                    ->color('primary')
+                    ->weight('bold')
                     ->sortable(),
                 TextColumn::make('kanban.name')
                     ->label('Status')

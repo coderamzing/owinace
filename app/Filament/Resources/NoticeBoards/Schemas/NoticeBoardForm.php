@@ -47,7 +47,8 @@ class NoticeBoardForm
                         'published' => 'Published',
                     ])
                     ->required()
-                    ->default('draft'),
+                    ->default('draft')
+                    ->columnSpanFull(),
                 DateTimePicker::make('published_at')
                     ->label('Published At')
                     ->native(false),

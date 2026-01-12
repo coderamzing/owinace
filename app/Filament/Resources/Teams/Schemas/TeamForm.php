@@ -15,7 +15,8 @@ class TeamForm
                 TextInput::make('name')
                     ->label('Team Name')
                     ->required()
-                    ->maxLength(255),
+                    ->maxLength(255)
+                    ->columnSpanFull(),
                 Textarea::make('description')
                     ->label('Description')
                     ->rows(3)

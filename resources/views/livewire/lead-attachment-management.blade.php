@@ -161,7 +161,7 @@
                             <a 
                                 href="{{ $media->getUrl() }}" 
                                 download="{{ $media->file_name }}"
-                                class="inline-flex items-center justify-center w-8 h-8 text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400 hover:bg-primary-50 dark:hover:bg-primary-900/20 rounded-lg transition-colors"
+                                class="inline-flex items-center justify-center w-8 h-8 text-[#ad3a43] dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400 hover:bg-primary-50 dark:hover:bg-primary-900/20 rounded-lg transition-colors"
                                 title="Download"
                             >
                                 <x-filament::icon icon="heroicon-o-arrow-down-tray" class="w-5 h-5" />
@@ -172,7 +172,7 @@
                                 type="button"
                                 wire:click="deleteAttachment({{ $media->id }})"
                                 wire:confirm="Are you sure you want to delete this attachment? This action cannot be undone."
-                                class="inline-flex items-center justify-center w-8 h-8 text-gray-600 dark:text-gray-400 hover:text-danger-600 dark:hover:text-danger-400 hover:bg-danger-50 dark:hover:bg-danger-900/20 rounded-lg transition-colors"
+                                class="inline-flex items-center justify-center w-8 h-8 text-[#f50e0e] dark:text-gray-400 hover:text-danger-600 dark:hover:text-danger-400 hover:bg-danger-50 dark:hover:bg-danger-900/20 rounded-lg transition-colors"
                                 title="Delete"
                             >
                                 <x-filament::icon icon="heroicon-o-trash" class="w-5 h-5" />

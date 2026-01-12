@@ -16,7 +16,8 @@ class ProposalForm
                 TextInput::make('title')
                     ->label('Title')
                     ->required()
-                    ->maxLength(255),
+                    ->maxLength(255)
+                    ->columnSpanFull(),
                 Textarea::make('description')
                     ->label('Description')
                     ->required()
@@ -26,17 +27,16 @@ class ProposalForm
                 Textarea::make('job_description')
                     ->label('Job Description')
                     ->nullable()
-                    ->maxLength(2000)
-                    ->columnSpanFull(),
+                    ->maxLength(2000),
                 Textarea::make('keywords')
                     ->label('Keywords')
                     ->required()
-                    ->maxLength(2000)
-                    ->columnSpanFull(),
+                    ->maxLength(2000),
                 TextInput::make('sort_order')
                     ->required()
                     ->numeric()
-                    ->default(0),
+                    ->default(0)
+                    ->columnSpanFull(),
                 Toggle::make('is_active')
                     ->required()
                     ->default(true),

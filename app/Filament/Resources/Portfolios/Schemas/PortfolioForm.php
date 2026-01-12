@@ -16,7 +16,8 @@ class PortfolioForm
             ->components([
                 TextInput::make('title')
                     ->required()
-                    ->maxLength(255),
+                    ->maxLength(255)
+                    ->columnSpanFull(),
                 Textarea::make('description')
                     ->required()
                     ->maxLength(500)
@@ -25,16 +26,16 @@ class PortfolioForm
                 TextInput::make('scale')
                     ->required()
                     ->maxLength(100),
+                TextInput::make('sort_order')
+                    ->required()
+                    ->numeric()
+                    ->default(0),
                 TagsInput::make('keywords')
                     ->required()
                     ->rules(['array', 'max:10'])
                     ->reorderable(false)
                     ->placeholder('Add up to 10 keywords')
                     ->columnSpanFull(),
-                TextInput::make('sort_order')
-                    ->required()
-                    ->numeric()
-                    ->default(0),
                 Toggle::make('is_active')
                     ->required()
                     ->default(true),

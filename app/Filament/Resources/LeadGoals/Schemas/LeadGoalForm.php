@@ -23,7 +23,8 @@ class LeadGoalForm
                         'open_leads' => 'Open Leads Goal',
                     ])
                     ->required()
-                    ->searchable(),
+                    ->searchable()
+                    ->columnSpanFull(),
                 
                 Select::make('period')
                     ->label('Period')
@@ -32,6 +33,19 @@ class LeadGoalForm
                     ])
                     ->required()
                     ->searchable(),
+
+                Select::make('member_id')
+                    ->label('Member')
+                    ->options(function () {
+                        $workspaceId = session('workspace_id');
+                        if (!$workspaceId) {
+                            return [];
+                        }
+                        return User::where('workspace_id', $workspaceId)
+                            ->pluck('name', 'id');
+                    })
+                    ->searchable()
+                    ->required(),
                 
                 TextInput::make('target_value')
                     ->label('Target Value')
@@ -52,18 +66,7 @@ class LeadGoalForm
                     ->default(0)
                     ->required(),
                 
-                Select::make('member_id')
-                    ->label('Member')
-                    ->options(function () {
-                        $workspaceId = session('workspace_id');
-                        if (!$workspaceId) {
-                            return [];
-                        }
-                        return User::where('workspace_id', $workspaceId)
-                            ->pluck('name', 'id');
-                    })
-                    ->searchable()
-                    ->required(),
+                
                 
                 Textarea::make('description')
                     ->label('Description')

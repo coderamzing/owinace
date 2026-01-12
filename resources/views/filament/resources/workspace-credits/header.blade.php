@@ -1,13 +1,13 @@
 <div class="mb-6">
     <div class="relative overflow-hidden rounded-xl bg-gradient-to-r from-primary-600 to-primary-500 dark:from-primary-700 dark:to-primary-600 shadow-lg">
-        <div class="absolute inset-0 bg-grid-white/10 [mask-image:linear-gradient(0deg,white,rgba(255,255,255,0.6))]"></div>
+        <div class="absolute inset-0 bg-gradient-to-b from-[#a53740] to-[#872d34]"></div>
         
         <div class="relative px-6 py-8 sm:px-8">
             <div class="flex flex-col sm:flex-row items-center justify-between gap-6">
                 <!-- Left Side - Credits Info -->
                 <div class="flex items-center gap-6">
                     <div class="flex-shrink-0">
-                        <div class="w-16 h-16 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center">
+                        <div class="w-16 h-16 rounded-full bg-gradient-to-br from-[#ad3a43] to-[#7f2a31] flex items-center justify-center">
                             <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                             </svg>

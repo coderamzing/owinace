@@ -37,14 +37,16 @@ class LeadKanbanForm
                 Toggle::make('is_active')
                     ->label('Active')
                     ->required()
-                    ->default(true),
+                    ->default(true)
+                    ->columnSpanFull(),
                 Toggle::make('is_system')
                     ->label('System')
                     ->required()
                     ->default(false)
                     ->disabled(fn ($record) => $record?->is_system ?? false)
                     ->dehydrated(fn ($record) => !($record?->is_system ?? false))
-                    ->helperText('System kanban stages cannot be deleted or have their name/code changed.'),
+                    ->helperText('System kanban stages cannot be deleted or have their name/code changed.')
+                    ->columnSpanFull(),
             ]);
     }
 }

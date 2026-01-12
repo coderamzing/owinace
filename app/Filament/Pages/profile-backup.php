@@ -5,8 +5,10 @@ namespace App\Filament\Pages;
 use App\Notifications\EmailChangeVerificationNotification;
 use BackedEnum;
 use UnitEnum;
+use Filament\Auth\MultiFactor\Contracts\MultiFactorAuthenticationProvider;
 use Filament\Facades\Filament;
 use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
+use Filament\Forms\Components\Section;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
@@ -18,36 +20,26 @@ use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 use Illuminate\Validation\Rules\Password;
 
 class Profile extends Page implements HasForms
 {
     use InteractsWithForms;
 
-    /* -----------------------------------------------------------------
-     | Navigation (HIDDEN)
-     |-----------------------------------------------------------------*/
-    protected static BackedEnum|string|null $navigationIcon = null;
-    protected static string|UnitEnum|null $navigationGroup = null;
-    protected static ?string $navigationLabel = null;
+    protected static BackedEnum|string|null $navigationIcon = Heroicon::OutlinedUser;
+    protected static string|UnitEnum|null $navigationGroup = 'Personal';
+    protected static ?string $navigationLabel = 'Profile';
 
-    public static function shouldRegisterNavigation(): bool
-    {
-        return false;
-    }
-
-    /* -----------------------------------------------------------------
-     | Page Config
-     |-----------------------------------------------------------------*/
     protected static ?string $title = 'My Profile';
     protected static ?string $slug = 'profile';
+
     protected string $view = 'filament.pages.profile';
 
-    /* -----------------------------------------------------------------
-     | Tabs State
-     |-----------------------------------------------------------------*/
+    // ✅ ADD THIS (TAB STATE)
     public string $activeTab = 'profile';
 
+    // ✅ OPTIONAL: keep tab after refresh
     protected function getQueryString(): array
     {
         return [
@@ -55,16 +47,10 @@ class Profile extends Page implements HasForms
         ];
     }
 
-    /* -----------------------------------------------------------------
-     | Form State
-     |-----------------------------------------------------------------*/
     public ?array $profileData = [];
     public ?array $passwordData = [];
     public ?array $mfaData = [];
 
-    /* -----------------------------------------------------------------
-     | Mount
-     |-----------------------------------------------------------------*/
     public function mount(): void
     {
         $user = Auth::user();
@@ -88,9 +74,6 @@ class Profile extends Page implements HasForms
         }
     }
 
-    /* -----------------------------------------------------------------
-     | Profile Form
-     |-----------------------------------------------------------------*/
     public function profileForm(Schema $schema): Schema
     {
         return $schema
@@ -100,15 +83,18 @@ class Profile extends Page implements HasForms
                     ->collection('avatar')
                     ->image()
                     ->avatar()
+                    ->imageEditor()
                     ->circleCropper()
                     ->maxSize(2048)
                     ->columnSpanFull(),
 
                 TextInput::make('name')
+                    ->label('Name')
                     ->required()
                     ->maxLength(255),
 
                 TextInput::make('email')
+                    ->label('Email')
                     ->email()
                     ->required()
                     ->maxLength(255),
@@ -117,24 +103,24 @@ class Profile extends Page implements HasForms
             ->model(Auth::user());
     }
 
-    /* -----------------------------------------------------------------
-     | Password Form
-     |-----------------------------------------------------------------*/
     public function passwordForm(Schema $schema): Schema
     {
         return $schema
             ->components([
                 TextInput::make('current_password')
+                    ->label('Current Password')
                     ->password()
                     ->required()
                     ->rules(['current_password']),
 
                 TextInput::make('password')
+                    ->label('New Password')
                     ->password()
                     ->required()
                     ->rules([Password::defaults()]),
 
                 TextInput::make('password_confirmation')
+                    ->label('Confirm Password')
                     ->password()
                     ->required()
                     ->same('password'),
@@ -142,9 +128,6 @@ class Profile extends Page implements HasForms
             ->statePath('passwordData');
     }
 
-    /* -----------------------------------------------------------------
-     | MFA Form
-     |-----------------------------------------------------------------*/
     public function mfaForm(Schema $schema): Schema
     {
         if (! Filament::hasMultiFactorAuthentication()) {
@@ -155,9 +138,8 @@ class Profile extends Page implements HasForms
 
         $components = collect(Filament::getMultiFactorAuthenticationProviders())
             ->sort(fn ($provider) => $provider->isEnabled($user) ? 0 : 1)
-            ->map(fn ($provider): Component => Group::make(
-                $provider->getManagementSchemaComponents()
-            )->statePath($provider->getId()))
+            ->map(fn ($provider) => Group::make($provider->getManagementSchemaComponents())
+                ->statePath($provider->getId()))
             ->all();
 
         return $schema
@@ -165,14 +147,12 @@ class Profile extends Page implements HasForms
             ->statePath('mfaData');
     }
 
-    /* -----------------------------------------------------------------
-     | Actions
-     |-----------------------------------------------------------------*/
     public function updateProfile(): void
     {
+        $user = Auth::user();
         $data = $this->profileForm->getState();
 
-        Auth::user()->update([
+        $user->update([
             'name' => $data['name'],
         ]);
 

@@ -25,6 +25,8 @@ class ProposalsTable
             ->columns([
                 TextColumn::make('title')
                     ->limit(60)
+                    ->color('primary')
+                    ->weight('bold')
                     ->sortable(),
                 TextColumn::make('keywords')
                     ->limit(40),

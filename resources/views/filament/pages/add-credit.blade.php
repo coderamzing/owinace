@@ -50,9 +50,9 @@
         <!-- Credit Packages Grid -->
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mt-8">
             @foreach($packages as $package)
-                <div class="relative bg-white dark:bg-gray-800 rounded-lg shadow-md hover:shadow-xl transition-shadow duration-300 overflow-hidden {{ $package['popular'] ? 'ring-2 ring-primary-500' : '' }}">
+                <div class="relative bg-white dark:bg-gray-800 rounded-lg shadow-md hover:shadow-xl transition-shadow duration-300 overflow-hidden {{ $package['popular'] ? 'ring-2 ring-[#ad3a43]' : '' }}">
                     @if($package['popular'])
-                        <div class="absolute top-0 right-0 bg-primary-500 text-white px-3 py-1 text-xs font-semibold rounded-bl-lg">
+                        <div class="absolute top-0 right-0 bg-[#ad3a43] text-white px-3 py-1 text-xs font-semibold rounded-bl-lg">
                             Popular
                         </div>
                     @endif
@@ -60,7 +60,7 @@
                     <div class="p-6">
                         <!-- Credits -->
                         <div class="text-center mb-4">
-                            <div class="text-4xl font-bold text-primary-600 dark:text-primary-400">
+                            <div class="text-4xl font-bold text-[#ad3a43] dark:text-primary-400">
                                 {{ $package['credits'] }}
                             </div>
                             <div class="text-sm text-gray-600 dark:text-gray-400 mt-1">
@@ -89,7 +89,7 @@
                             <input type="hidden" name="credits" value="{{ $package['credits'] }}">
                             <input type="hidden" name="amount" value="{{ $package['price'] }}">
                             
-                            <button type="submit" class="w-full px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white font-semibold rounded-lg transition-colors duration-200">
+                            <button type="submit" class="w-full px-4 py-2 bg-[#ad3a43] hover:bg-primary-700 text-white font-semibold rounded-lg transition-colors duration-200">
                                 Purchase Now
                             </button>
                         </form>
@@ -105,7 +105,7 @@
                     <p class="text-sm text-gray-600 dark:text-gray-400">
                         Current Workspace Balance
                     </p>
-                    <p class="text-2xl font-bold text-primary-600 dark:text-primary-400 mt-1">
+                    <p class="text-2xl font-bold text-[#ad3a43] dark:text-[#ad3a43] mt-1">
                         {{ $user->workspace->totalCredits() }} Credits
                     </p>
                 </div>
