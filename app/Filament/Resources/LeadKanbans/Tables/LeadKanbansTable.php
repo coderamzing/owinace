@@ -21,6 +21,8 @@ class LeadKanbansTable
             ->columns([
                 TextColumn::make('name')
                     ->searchable()
+                    ->color('primary')
+                    ->weight('bold')
                     ->sortable(),
                 TextColumn::make('color')
                     ->searchable(),

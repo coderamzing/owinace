@@ -26,6 +26,8 @@ class TeamMembersTable
                     ->label('Team')
                     ->searchable()
                     ->sortable()
+                    ->color('primary')
+                    ->weight('bold')
                     ->url(fn ($record) => \App\Filament\Resources\Teams\TeamResource::getUrl('index') . '?tableFilters[team_id][value]=' . $record->team_id)
                     ->openUrlInNewTab(false),
                 TextColumn::make('user.name')

@@ -19,6 +19,8 @@ class TeamsTable
                 TextColumn::make('name')
                     ->label('Team Name')
                     ->searchable()
+                    ->color('primary')
+                    ->weight('bold')
                     ->sortable(),
                 TextColumn::make('workspace.name')
                     ->label('Workspace')

@@ -17,6 +17,8 @@ class LeadCostsTable
             ->columns([
                 TextColumn::make('title')
                     ->searchable()
+                    ->color('primary')
+                    ->weight('bold')
                     ->sortable(),
                 TextColumn::make('monthly_cost')
                     ->money('USD')

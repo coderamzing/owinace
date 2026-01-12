@@ -20,6 +20,8 @@ class LeadSourcesTable
             ->modifyQueryUsing(fn (Builder $query) => $query->withCount('leads'))
             ->columns([
                 TextColumn::make('name')
+                    ->color('primary')
+                    ->weight('bold')
                     ->searchable(),
                 TextColumn::make('color')
                     ->searchable(),
