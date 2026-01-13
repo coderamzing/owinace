@@ -309,6 +309,58 @@ table tbody tr > td.fi-ta-cell-notice-card{
     background-color: #fff;
 }
 
+.kanban-arrow {
+    position: relative;
+    overflow: visible; /* important */
+    padding-left: 30px;
+}
+
+#kanban-board ~ .kanban-arrow:first-child{
+    padding-left: 16px;
+}
+
+.attachments-section .space-y-4 > div.border-2,
+.attachments-section .space-y-4 > div.space-y-3 .space-y-2 > div{
+    background: #fff;
+}
+
+/* arrow border */
+.kanban-arrow::before {
+    content: "";
+    position: absolute;
+    top: -1px;
+    right: -23px;
+    width: 0;
+    height: 0;
+    border-top: 26px solid transparent;
+    border-bottom: 26px solid transparent;
+    border-left: 22px solid #e5e7eb;
+    z-index: 1;
+}
+
+.kanban-arrow::after {
+    content: "";
+    position: absolute;
+    top: -2px;
+    right: -55px;
+    width: 0;
+    height: 0;
+    border-top: 25px solid transparent;
+    border-bottom: 25px solid transparent;
+    border-left: 21px solid #ffffff;
+    z-index: 2;
+}
+
+#kanban-board .kanban-div:last-child .kanban-arrow::before{
+    display: none;
+}
+
+/* Dark mode support */
+.dark .kanban-arrow::after {
+    border-left-color: #1f2937; /* gray-800 */
+}
+
+
 /* Dark theme */
 
 :where(.dark, .dark *) nav.fi-sidebar-nav,

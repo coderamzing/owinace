@@ -124,9 +124,9 @@
                     $perPage = $kanbanData['perPage'];
                 @endphp
                 
-                <div class="flex-shrink-0 w-80 flex flex-col max-h-[calc(100vh-250px)]" data-kanban-id="{{ $kanban->id }}">
+                <div class="kanban-div flex-shrink-0 w-80 flex flex-col max-h-[calc(100vh-250px)] mr-[10px]" data-kanban-id="{{ $kanban->id }}">
                     <!-- Column Header -->
-                    <div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-t-lg px-4 py-3 flex items-center justify-between">
+                    <div class="kanban-arrow bg-[#e5e7eb] dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-t-lg px-4 py-3 flex items-center justify-between">
                         <div class="flex items-center gap-2">
                             <div class="w-3 h-3 rounded-full shadow-sm" style="background-color: {{ $kanban->color }}"></div>
                             <span class="font-semibold text-gray-900 dark:text-gray-100">{{ $kanban->name }}</span>

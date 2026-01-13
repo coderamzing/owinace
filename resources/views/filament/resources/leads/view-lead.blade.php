@@ -5,22 +5,22 @@
 
     <div class="space-y-6">
         {{-- Header Section --}}
-        <div class="dark:bg-gray-800 shadow-sm border border-gray-200 dark:border-gray-700 rounded-lg p-6 bg-[#ad3a432b]">
+        <div class="dark:bg-gray-800 shadow-sm border border-gray-200 dark:border-gray-700 rounded-lg p-6 bg-[#ad3a43]">
             <div class="flex items-start justify-between">
                 <div class="flex-1">
-                    <h1 class="text-3xl font-bold text-[#ad3a43] dark:text-white mb-2">{{ $record->title }}</h1>
+                    <h1 class="text-3xl font-bold text-[#fff] dark:text-white mb-2">{{ $record->title }}</h1>
                     @if($record->description)
-                        <p class="text-gray-600 dark:text-gray-400 mt-2">{{ $record->description }}</p>
+                        <p class="text-[#fff] dark:text-gray-400 mt-2">{{ $record->description }}</p>
                     @endif
                 </div>
                 <div class="flex items-center gap-3">
                     @if($record->kanban)
-                        <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium" style="background-color: {{ $record->kanban->color }}20; color: {{ $record->kanban->color }}">
+                        <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium" style="background-color: #ff8488; color: #45171a">
                             {{ $record->kanban->name }}
                         </span>
                     @endif
                     @if($record->is_archived)
-                        <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-warning-100 dark:bg-warning-900/20 text-warning-600 dark:text-warning-400">
+                        <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-[#45171a] dark:bg-warning-900/20 text-[#ff8488] dark:text-warning-400">
                             <x-filament::icon icon="heroicon-o-archive-box" class="w-4 h-4 mr-1" />
                             Archived
                         </span>
@@ -147,8 +147,8 @@
         </div>
 
         {{-- Additional Information --}}
-        <div class="bg-white dark:bg-gray-800 shadow-sm border border-gray-200 dark:border-gray-700 rounded-lg p-6">
-            <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Additional Information</h3>
+        <div class="bg-[#f2f8ff] dark:bg-gray-800 shadow-sm border border-gray-200 dark:border-gray-700 rounded-lg p-6">
+            <h3 class="text-lg font-semibold text-[#3f7de3] dark:text-white mb-4">Additional Information</h3>
             <div class="space-y-4">
                 @if($record->url)
                     <div>
@@ -164,7 +164,7 @@
                 @if($record->notes)
                     <div>
                         <label class="text-sm font-medium text-gray-500 dark:text-gray-400">Notes</label>
-                        <div class="mt-1 p-4 bg-gray-50 dark:bg-gray-900 rounded-lg">
+                        <div class="mt-1 p-4 bg-[#fff] dark:bg-gray-900 rounded-lg">
                             <p class="text-sm text-gray-900 dark:text-white whitespace-pre-wrap">{{ $record->notes }}</p>
                         </div>
                     </div>
@@ -174,8 +174,8 @@
 
         {{-- Contacts --}}
         @if($record->contacts->count() > 0)
-            <div class="bg-white dark:bg-gray-800 shadow-sm border border-gray-200 dark:border-gray-700 rounded-lg p-6">
-                <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Contacts</h3>
+            <div class="bg-[#fff4f4] dark:bg-gray-800 shadow-sm border border-gray-200 dark:border-gray-700 rounded-lg p-6">
+                <h3 class="text-lg font-semibold text-[#d14b55] dark:text-white mb-4">Contacts</h3>
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                     @foreach($record->contacts as $contact)
                         <div class="border border-gray-200 dark:border-gray-600 rounded-lg p-4 hover:shadow-md transition-shadow">
@@ -228,11 +228,11 @@
 
         {{-- Tags --}}
         @if($record->tags->count() > 0)
-            <div class="bg-white dark:bg-gray-800 shadow-sm border border-gray-200 dark:border-gray-700 rounded-lg p-6">
-                <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Tags</h3>
+            <div class="bg-[#fef6ee] dark:bg-gray-800 shadow-sm border border-gray-200 dark:border-gray-700 rounded-lg p-6">
+                <h3 class="text-lg font-semibold text-[#9c5300] dark:text-white mb-4">Tags</h3>
                 <div class="flex flex-wrap gap-2">
                     @foreach($record->tags as $tag)
-                        <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium" style="background-color: {{ $tag->color }}20; color: {{ $tag->color }}">
+                        <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium" style="background-color: #d14b55; color: #fff">
                             {{ $tag->name }}
                         </span>
                     @endforeach
@@ -241,26 +241,26 @@
         @endif
 
         {{-- Attachments --}}
-        <div class="bg-white dark:bg-gray-800 shadow-sm border border-gray-200 dark:border-gray-700 rounded-lg p-6">
-            <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center">
-                <x-filament::icon icon="heroicon-o-paper-clip" class="w-5 h-5 mr-2" />
+        <div class="bg-[#f0fbf5] dark:bg-gray-800 shadow-sm border border-gray-200 dark:border-gray-700 rounded-lg p-6 attachments-section">
+            <h3 class="text-lg font-semibold text-[#009d62] dark:text-white mb-4 flex items-center">
+                <!-- <x-filament::icon icon="heroicon-o-paper-clip" class="w-5 h-5 mr-2" /> -->
                 Attachments
             </h3>
             <livewire:lead-attachment-management :lead="$record" :key="'attachments-' . $record->id" />
         </div>
 
         {{-- Team & Ownership --}}
-        <div class="bg-white dark:bg-gray-800 shadow-sm border border-gray-200 dark:border-gray-700 rounded-lg p-6">
-            <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Team & Ownership</h3>
+        <div class="bg-[#fff4f4] dark:bg-gray-800 shadow-sm border border-gray-200 dark:border-gray-700 rounded-lg p-6">
+            <h3 class="text-lg font-semibold text-[#d14b55] dark:text-white mb-4">Team & Ownership</h3>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div>
+                <div class="p-4 border border-gray-200 dark:border-gray-700 !rounded-lg bg-[#fff]">
                     <label class="text-sm font-medium text-gray-500 dark:text-gray-400">Team</label>
                     <p class="mt-1 text-sm text-gray-900 dark:text-white flex items-center">
                         <x-filament::icon icon="heroicon-o-user-group" class="w-4 h-4 mr-2" />
                         {{ $record->team?->name ?? 'No team assigned' }}
                     </p>
                 </div>
-                <div>
+                <div class="p-4 border border-gray-200 dark:border-gray-700 !rounded-lg bg-[#fff]">
                     <label class="text-sm font-medium text-gray-500 dark:text-gray-400">Created By</label>
                     <p class="mt-1 text-sm text-gray-900 dark:text-white flex items-center">
                         <x-filament::icon icon="heroicon-o-user-plus" class="w-4 h-4 mr-2" />
@@ -268,7 +268,7 @@
                     </p>
                 </div>
                 @if($record->conversionBy)
-                    <div>
+                    <div class="p-4 border border-gray-200 dark:border-gray-700 !rounded-lg bg-[#fff]">
                         <label class="text-sm font-medium text-gray-500 dark:text-gray-400">Converted By</label>
                         <p class="mt-1 text-sm text-success-600 dark:text-success-400 flex items-center">
                             <x-filament::icon icon="heroicon-o-trophy" class="w-4 h-4 mr-2" />
