@@ -45,7 +45,7 @@ class LeadForm
                             ->orderBy('sort_order')
                             ->pluck('name', 'id');
                     })
-                    ->searchable(),
+                    ->required(),
                 
                 Select::make('source_id')
                     ->label('Source')
@@ -59,7 +59,7 @@ class LeadForm
                             ->orderBy('sort_order')
                             ->pluck('name', 'id');
                     })
-                    ->searchable(),
+                    ->required(),
 
                 Select::make('tags')
                     ->label('Tags')
@@ -88,6 +88,7 @@ class LeadForm
                         return User::where('workspace_id', $workspaceId)
                             ->pluck('name', 'id');
                     })
+                    ->default(fn () => auth()->id())
                     ->searchable(),
                 
                 TextInput::make('expected_value')
