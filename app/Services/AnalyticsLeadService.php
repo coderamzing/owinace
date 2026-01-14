@@ -10,6 +10,7 @@ use App\Models\TeamMember;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class AnalyticsLeadService
 {
@@ -24,7 +25,7 @@ class AnalyticsLeadService
      */
     public function generateLeadAnalytics(int $teamId, int $month, int $year, ?int $userId = null): AnalyticsLead
     {
-        $query = Lead::where('team_id', $teamId)
+        $query = Lead::withoutTeam()->where('team_id', $teamId)
             ->whereYear('created_at', $year)
             ->whereMonth('created_at', $month);
 
@@ -35,14 +36,14 @@ class AnalyticsLeadService
         $leads = $query->get();
 
         // Get won and lost kanban statuses
-        $wonKanban = LeadKanban::where('team_id', $teamId)
+        $wonKanban = LeadKanban::withoutTeam()->where('team_id', $teamId)
             ->where(function ($q) {
                 $q->where('name', 'like', '%won%')
                   ->orWhere('name', 'like', '%Won%');
             })
             ->first();
 
-        $lostKanban = LeadKanban::where('team_id', $teamId)
+        $lostKanban = LeadKanban::withoutTeam()->where('team_id', $teamId)
             ->where(function ($q) {
                 $q->where('name', 'like', '%lost%')
                   ->orWhere('name', 'like', '%Lost%');
@@ -70,7 +71,7 @@ class AnalyticsLeadService
         }
 
         // Create or update analytics lead record
-        return AnalyticsLead::updateOrCreate(
+        return AnalyticsLead::withoutTeam()->updateOrCreate(
             [
                 'team_id' => $teamId,
                 'month' => $month,
@@ -101,7 +102,7 @@ class AnalyticsLeadService
      */
     public function generateLeadAnalyticsForAllUsers(int $teamId, int $month, int $year): array
     {
-        $userIds = Lead::where('team_id', $teamId)
+        $userIds = Lead::withoutTeam()->where('team_id', $teamId)
             ->whereYear('created_at', $year)
             ->whereMonth('created_at', $month)
             ->distinct()
@@ -169,7 +170,7 @@ class AnalyticsLeadService
      */
     public function getLeadAnalytics(int $teamId, int $month, int $year, ?int $userId = null): ?AnalyticsLead
     {
-        $query = AnalyticsLead::where('team_id', $teamId)
+        $query = AnalyticsLead::withoutTeam()->where('team_id', $teamId)
             ->where('month', $month)
             ->where('year', $year);
 
@@ -211,66 +212,70 @@ class AnalyticsLeadService
         $monthEnd = Carbon::now()->endOfMonth();
 
         // Get team members
-        $teamMembers = TeamMember::where('team_id', $teamId)->get();
+        $teamMembers = TeamMember::withoutTeam()->where('team_id', $teamId)->get();
         
         foreach ($teamMembers as $teamMember) {
-            $member = $teamMember->user;
+            try {
+                $member = $teamMember->user;
             
-            if (!$member) {
-                continue;
+                if (!$member) {
+                    continue;
+                }
+                // Get OPEN kanban
+                $openKanban = LeadKanban::withoutTeam()->where('team_id', $teamId)
+                    ->where('code', 'OPEN')
+                    ->first();
+
+                $openKanbanId = $openKanban?->id;
+
+                // Get member leads excluding OPEN stage
+                $memberLeadsQuery = Lead::withoutTeam()->where('team_id', $teamId)
+                    ->where('assigned_member_id', $member->id)
+                    ->where('created_at', '>=', $monthStart)
+                    ->where('created_at', '<=', $monthEnd);
+
+                if ($openKanbanId) {
+                    $memberLeadsQuery->where('kanban_id', '!=', $openKanbanId);
+                }
+
+                $memberLeads = $memberLeadsQuery->get();
+
+                // Get WON and LOST kanban IDs
+                $wonKanban = LeadKanban::withoutTeam()->where('team_id', $teamId)
+                    ->where('code', 'WON')
+                    ->first();
+                $lostKanban = LeadKanban::withoutTeam()->where('team_id', $teamId)
+                    ->where('code', 'LOST')
+                    ->first();
+
+                $wonKanbanId = $wonKanban?->id;
+                $lostKanbanId = $lostKanban?->id;
+
+                // Calculate metrics
+                $totalLeads = $memberLeads->count();
+                $totalWon = $memberLeads->where('kanban_id', $wonKanbanId)->count();
+                $totalLost = $memberLeads->where('kanban_id', $lostKanbanId)->count();
+                $totalValue = $memberLeads->sum('actual_value') ?? 0;
+                
+                AnalyticsLead::withoutTeam()->updateOrCreate(
+                    [
+                        'month' => $monthStart->month,
+                        'year' => $monthStart->year,
+                        'team_id' => $teamId,
+                        'user_id' => $member->id,
+                    ],
+                    [
+                        'fullname' => $member->name,
+                        'total_lead' => $totalLeads,
+                        'total_won' => $totalWon,
+                        'total_lost' => $totalLost,
+                        'total_value' => $totalValue,
+                    ]
+                );
+            } catch (\Exception $e) {
+                // Log error silently or handle as needed
+                Log::error('Error syncing analytic lead for member: ' . $e->getMessage());
             }
-
-            // Get OPEN kanban
-            $openKanban = LeadKanban::where('team_id', $teamId)
-                ->where('code', 'OPEN')
-                ->first();
-
-            $openKanbanId = $openKanban?->id;
-
-            // Get member leads excluding OPEN stage
-            $memberLeadsQuery = Lead::where('team_id', $teamId)
-                ->where('assigned_member_id', $member->id)
-                ->where('created_at', '>=', $monthStart)
-                ->where('created_at', '<=', $monthEnd);
-
-            if ($openKanbanId) {
-                $memberLeadsQuery->where('kanban_id', '!=', $openKanbanId);
-            }
-
-            $memberLeads = $memberLeadsQuery->get();
-
-            // Get WON and LOST kanban IDs
-            $wonKanban = LeadKanban::where('team_id', $teamId)
-                ->where('code', 'WON')
-                ->first();
-            $lostKanban = LeadKanban::where('team_id', $teamId)
-                ->where('code', 'LOST')
-                ->first();
-
-            $wonKanbanId = $wonKanban?->id;
-            $lostKanbanId = $lostKanban?->id;
-
-            // Calculate metrics
-            $totalLeads = $memberLeads->count();
-            $totalWon = $memberLeads->where('kanban_id', $wonKanbanId)->count();
-            $totalLost = $memberLeads->where('kanban_id', $lostKanbanId)->count();
-            $totalValue = $memberLeads->sum('actual_value') ?? 0;
-
-            AnalyticsLead::updateOrCreate(
-                [
-                    'month' => $monthStart->month,
-                    'year' => $monthStart->year,
-                    'team_id' => $teamId,
-                    'user_id' => $member->id,
-                ],
-                [
-                    'fullname' => $member->name,
-                    'total_lead' => $totalLeads,
-                    'total_won' => $totalWon,
-                    'total_lost' => $totalLost,
-                    'total_value' => $totalValue,
-                ]
-            );
         }
 
         return true;

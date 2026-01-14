@@ -8,6 +8,7 @@ use App\Filament\Widgets\LeadsByStageWidget;
 use App\Filament\Widgets\LeadsBySourceWidget;
 use App\Filament\Widgets\MemberPerformanceWidget;
 use App\Filament\Widgets\GoalPerformanceTrackingWidget;
+use App\Filament\Widgets\GoalBarsWidget;
 use App\Filament\Widgets\RecentLeadsWidget;
 use App\Filament\Widgets\RevenueOverviewWidget;
 use App\Filament\Widgets\LeadConversionFunnelWidget;
@@ -177,6 +178,7 @@ class AnalyticsDashboard extends Page
             LeadsBySourceWidget::class,
             MemberPerformanceWidget::class,
             GoalPerformanceTrackingWidget::class,
+            GoalBarsWidget::class,
             RevenueOverviewWidget::class,
             LeadQualityWidget::class,
             LeadConversionFunnelWidget::class,

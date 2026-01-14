@@ -25,7 +25,7 @@ class AnalyticsGoalService
      */
     public function generateGoalAnalytics(int $teamId, int $month, int $year, ?int $userId = null): AnalyticsGoal
     {
-        $query = LeadGoal::where('team_id', $teamId)
+        $query = LeadGoal::withoutTeam()->where('team_id', $teamId)
             ->where('is_active', true);
 
         if ($userId) {
@@ -55,7 +55,7 @@ class AnalyticsGoalService
         $goalType = $goals->isNotEmpty() ? $goals->first()->goal_type : 'general';
 
         // Create or update analytics goal record
-        return AnalyticsGoal::updateOrCreate(
+        return AnalyticsGoal::withoutTeam()->updateOrCreate(
             [
                 'team_id' => $teamId,
                 'month' => $month,
@@ -111,7 +111,7 @@ class AnalyticsGoalService
      */
     public function generateGoalAnalyticsForAllUsers(int $teamId, int $month, int $year): array
     {
-        $userIds = LeadGoal::where('team_id', $teamId)
+        $userIds = LeadGoal::withoutTeam()->where('team_id', $teamId)
             ->where('is_active', true)
             ->distinct()
             ->pluck('member_id')
@@ -184,7 +184,7 @@ class AnalyticsGoalService
         ?string $goalType = null,
         ?int $userId = null
     ): ?AnalyticsGoal {
-        $query = AnalyticsGoal::where('team_id', $teamId)
+        $query = AnalyticsGoal::withoutTeam()->where('team_id', $teamId)
             ->where('month', $month)
             ->where('year', $year);
 
@@ -214,7 +214,7 @@ class AnalyticsGoalService
         $monthEnd = Carbon::now()->endOfMonth();
 
         // Get team members
-        $teamMembers = TeamMember::where('team_id', $teamId)->get();
+        $teamMembers = TeamMember::withoutTeam()->where('team_id', $teamId)->get();
         
         foreach ($teamMembers as $teamMember) {
             $member = $teamMember->user;
@@ -224,7 +224,7 @@ class AnalyticsGoalService
             }
 
             // Get goals for this member
-            $goals = LeadGoal::where('team_id', $teamId)
+            $goals = LeadGoal::withoutTeam()->where('team_id', $teamId)
                 ->where('member_id', $member->id)
                 ->where('period', 'monthly')
                 ->where('is_active', true)
@@ -235,13 +235,13 @@ class AnalyticsGoalService
 
                 if ($goal->goal_type == 'lead_generation') {
                     // Get OPEN kanban
-                    $openKanban = LeadKanban::where('team_id', $teamId)
+                    $openKanban = LeadKanban::withoutTeam()->where('team_id', $teamId)
                         ->where('code', 'OPEN')
                         ->first();
 
                     $openKanbanId = $openKanban?->id;
 
-                    $query = Lead::where('team_id', $teamId)
+                    $query = Lead::withoutTeam()->where('team_id', $teamId)
                         ->where('assigned_member_id', $member->id)
                         ->where('created_at', '>=', $monthStart)
                         ->where('created_at', '<=', $monthEnd);
@@ -254,13 +254,13 @@ class AnalyticsGoalService
                     $achieved = $totalLeads;
                 } elseif ($goal->goal_type == 'conversion') {
                     // Get WON kanban
-                    $wonKanban = LeadKanban::where('team_id', $teamId)
+                    $wonKanban = LeadKanban::withoutTeam()->where('team_id', $teamId)
                         ->where('code', 'WON')
                         ->first();
 
                     $wonKanbanId = $wonKanban?->id;
 
-                    $totalWon = Lead::where('team_id', $teamId)
+                    $totalWon = Lead::withoutTeam()->where('team_id', $teamId)
                         ->where('assigned_member_id', $member->id)
                         ->where('created_at', '>=', $monthStart)
                         ->where('created_at', '<=', $monthEnd)
@@ -269,7 +269,7 @@ class AnalyticsGoalService
 
                     $achieved = $totalWon;
                 } elseif ($goal->goal_type == 'open_leads') {
-                    $totalOpen = Lead::where('team_id', $teamId)
+                    $totalOpen = Lead::withoutTeam()->where('team_id', $teamId)
                         ->where('assigned_member_id', $member->id)
                         ->where('created_at', '>=', $monthStart)
                         ->where('created_at', '<=', $monthEnd)
@@ -283,7 +283,7 @@ class AnalyticsGoalService
                     ? ($achieved / $goal->target_value) * 100 
                     : 0;
 
-                AnalyticsGoal::updateOrCreate(
+                AnalyticsGoal::withoutTeam()->updateOrCreate(
                     [
                         'user_id' => $member->id,
                         'team_id' => $teamId,

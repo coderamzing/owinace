@@ -30,7 +30,7 @@ class DailyAnalyticLead extends Command
         $this->info('Starting daily analytics lead generation...');
 
         // Get all teams (Django had is_active filter, but Team model doesn't have it)
-        $teams = Team::all();
+        $teams = Team::all()->where('id', 2);
 
         $this->info("Found {$teams->count()} teams to process.");
 
@@ -42,6 +42,7 @@ class DailyAnalyticLead extends Command
                 $service->syncAnalyticLead($team->id);
                 $progressBar->advance();
             } catch (\Exception $e) {
+                echo $e->getMessage();
                 $this->error("\nError processing team {$team->id}: " . $e->getMessage());
                 $progressBar->advance();
             }

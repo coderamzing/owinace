@@ -6,7 +6,6 @@ use App\Models\AnalyticsGoal;
 use Filament\Tables\Table;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Widgets\TableWidget as BaseWidget;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use Carbon\Carbon;
 
@@ -21,7 +20,6 @@ class GoalPerformanceTrackingWidget extends BaseWidget
     public function table(Table $table): Table
     {
         $teamId = Session::get('team_id');
-        $userId = Auth::id();
 
         if (!$teamId) {
             return $table->query(AnalyticsGoal::query()->whereRaw('1 = 0'));
@@ -36,17 +34,18 @@ class GoalPerformanceTrackingWidget extends BaseWidget
             ->query(
                 AnalyticsGoal::query()
                     ->where('team_id', $teamId)
-                    ->where('user_id', $userId)
                     ->where('month', $month)
                     ->where('year', $year)
+                    ->whereNotNull('user_id')
             )
             ->columns([
+                TextColumn::make('fullname')
+                    ->label('Member')
+                    ->sortable()
+                    ->searchable(),
+
                 TextColumn::make('goal_type')
                     ->label('Goal Type')
-                    ->sortable(),
-
-                TextColumn::make('fullname')
-                    ->label('Goal Name')
                     ->sortable(),
 
                 TextColumn::make('target_value')

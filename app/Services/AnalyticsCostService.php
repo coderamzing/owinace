@@ -24,12 +24,12 @@ class AnalyticsCostService
     public function generateCostAnalytics(int $teamId, int $month, int $year, ?string $type = null): AnalyticsCost
     {
         // Calculate total cost from LeadCost records for the month
-        $totalCost = LeadCost::where('team_id', $teamId)
+        $totalCost = LeadCost::withoutTeam()->where('team_id', $teamId)
             ->where('is_active', true)
             ->sum('monthly_cost');
 
         // Calculate total leads for the month
-        $totalLeads = Lead::where('team_id', $teamId)
+        $totalLeads = Lead::withoutTeam()->where('team_id', $teamId)
             ->whereYear('created_at', $year)
             ->whereMonth('created_at', $month)
             ->count();
@@ -43,7 +43,7 @@ class AnalyticsCostService
         }
 
         // Create or update analytics cost record
-        return AnalyticsCost::updateOrCreate(
+        return AnalyticsCost::withoutTeam()->updateOrCreate(
             [
                 'team_id' => $teamId,
                 'month' => $month,
@@ -69,13 +69,13 @@ class AnalyticsCostService
     public function generateCostAnalyticsBySource(int $teamId, int $month, int $year, int $sourceId): AnalyticsCost
     {
         // Calculate total cost from LeadCost records for the source
-        $totalCost = LeadCost::where('team_id', $teamId)
+        $totalCost = LeadCost::withoutTeam()->where('team_id', $teamId)
             ->where('source_id', $sourceId)
             ->where('is_active', true)
             ->sum('monthly_cost');
 
         // Calculate total leads for the source in the month
-        $totalLeads = Lead::where('team_id', $teamId)
+        $totalLeads = Lead::withoutTeam()->where('team_id', $teamId)
             ->where('source_id', $sourceId)
             ->whereYear('created_at', $year)
             ->whereMonth('created_at', $month)
@@ -85,7 +85,7 @@ class AnalyticsCostService
         $avgCostPerLead = $totalLeads > 0 ? ($totalCost / $totalLeads) : 0;
 
         // Create or update analytics cost record
-        return AnalyticsCost::updateOrCreate(
+        return AnalyticsCost::withoutTeam()->updateOrCreate(
             [
                 'team_id' => $teamId,
                 'month' => $month,
@@ -111,13 +111,13 @@ class AnalyticsCostService
     public function generateCostAnalyticsByMember(int $teamId, int $month, int $year, int $memberId): AnalyticsCost
     {
         // Calculate total cost from LeadCost records for the member
-        $totalCost = LeadCost::where('team_id', $teamId)
+        $totalCost = LeadCost::withoutTeam()->where('team_id', $teamId)
             ->where('member_id', $memberId)
             ->where('is_active', true)
             ->sum('monthly_cost');
 
         // Calculate total leads assigned to the member in the month
-        $totalLeads = Lead::where('team_id', $teamId)
+        $totalLeads = Lead::withoutTeam()->where('team_id', $teamId)
             ->where('assigned_member_id', $memberId)
             ->whereYear('created_at', $year)
             ->whereMonth('created_at', $month)
@@ -127,7 +127,7 @@ class AnalyticsCostService
         $avgCostPerLead = $totalLeads > 0 ? ($totalCost / $totalLeads) : 0;
 
         // Create or update analytics cost record
-        return AnalyticsCost::updateOrCreate(
+        return AnalyticsCost::withoutTeam()->updateOrCreate(
             [
                 'team_id' => $teamId,
                 'month' => $month,
@@ -186,7 +186,7 @@ class AnalyticsCostService
      */
     public function getCostAnalytics(int $teamId, int $month, int $year, ?string $type = null): ?AnalyticsCost
     {
-        $query = AnalyticsCost::where('team_id', $teamId)
+        $query = AnalyticsCost::withoutTeam()->where('team_id', $teamId)
             ->where('month', $month)
             ->where('year', $year);
 
@@ -212,14 +212,14 @@ class AnalyticsCostService
         $monthEnd = Carbon::now()->endOfMonth();
 
         // Get OPEN kanban code
-        $openKanban = LeadKanban::where('team_id', $teamId)
+        $openKanban = LeadKanban::withoutTeam()->where('team_id', $teamId)
             ->where('code', 'OPEN')
             ->first();
 
         $openKanbanId = $openKanban?->id;
 
         // Get total leads excluding OPEN stage
-        $leadTotal = Lead::where('team_id', $teamId)
+        $leadTotal = Lead::withoutTeam()->where('team_id', $teamId)
             ->where('created_at', '>=', $monthStart)
             ->where('created_at', '<=', $monthEnd);
 
@@ -234,19 +234,19 @@ class AnalyticsCostService
         }
 
         // Get total lead cost (from leads)
-        $totalLeadCost = Lead::where('team_id', $teamId)
+        $totalLeadCost = Lead::withoutTeam()->where('team_id', $teamId)
             ->where('created_at', '>=', $monthStart)
             ->where('created_at', '<=', $monthEnd)
             ->sum('cost') ?? 0;
 
         // Get total tool cost (LeadCost where member_id is null)
-        $totalToolCost = LeadCost::where('team_id', $teamId)
+        $totalToolCost = LeadCost::withoutTeam()->where('team_id', $teamId)
             ->whereNull('member_id')
             ->where('is_active', true)
             ->sum('monthly_cost') ?? 0;
 
         // Get total member cost (LeadCost where member_id is not null)
-        $totalMemberCost = LeadCost::where('team_id', $teamId)
+        $totalMemberCost = LeadCost::withoutTeam()->where('team_id', $teamId)
             ->whereNotNull('member_id')
             ->where('is_active', true)
             ->sum('monthly_cost') ?? 0;
@@ -255,7 +255,7 @@ class AnalyticsCostService
         $avgCostPerLeadTool = ($totalToolCost + $totalLeadCost) / $leadTotal;
 
         // Update or create tool analytics cost
-        AnalyticsCost::updateOrCreate(
+        AnalyticsCost::withoutTeam()->updateOrCreate(
             [
                 'team_id' => $teamId,
                 'month' => $monthStart->month,
@@ -272,7 +272,7 @@ class AnalyticsCostService
         $avgCostPerLeadMember = $totalMemberCost / $leadTotal;
 
         // Update or create member analytics cost
-        AnalyticsCost::updateOrCreate(
+        AnalyticsCost::withoutTeam()->updateOrCreate(
             [
                 'team_id' => $teamId,
                 'month' => $monthStart->month,

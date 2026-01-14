@@ -17,6 +17,7 @@ use Filament\Schemas\Components\Group;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules\Password;
 
@@ -53,6 +54,108 @@ class Profile extends Page implements HasForms
         return [
             'activeTab' => ['except' => 'profile'],
         ];
+    }
+
+    /* -----------------------------------------------------------------
+     | Sessions
+     |-----------------------------------------------------------------*/
+    public function getSessionsProperty(): array
+    {
+        $user = Auth::user();
+        $currentSessionId = session()->getId();
+        
+        $sessions = DB::table('sessions')
+            ->where('user_id', $user->id)
+            ->where('last_activity', '>', now()->subMinutes(config('session.lifetime', 120))->timestamp)
+            ->orderBy('last_activity', 'desc')
+            ->get()
+            ->map(function ($session) use ($currentSessionId) {
+                $isCurrentSession = $session->id === $currentSessionId;
+                
+                return [
+                    'id' => $session->id,
+                    'ip_address' => $session->ip_address,
+                    'user_agent' => $session->user_agent,
+                    'last_activity' => $session->last_activity,
+                    'is_current_session' => $isCurrentSession,
+                    'device' => $this->parseUserAgent($session->user_agent),
+                ];
+            })
+            ->toArray();
+        
+        return $sessions;
+    }
+
+    protected function parseUserAgent(?string $userAgent): string
+    {
+        if (!$userAgent) {
+            return 'Unknown Device';
+        }
+
+        // Simple user agent parsing
+        if (preg_match('/Mobile|Android|iPhone|iPad/i', $userAgent)) {
+            if (preg_match('/iPhone/i', $userAgent)) {
+                return 'iPhone';
+            }
+            if (preg_match('/iPad/i', $userAgent)) {
+                return 'iPad';
+            }
+            if (preg_match('/Android/i', $userAgent)) {
+                return 'Android Device';
+            }
+            return 'Mobile Device';
+        }
+
+        if (preg_match('/Windows/i', $userAgent)) {
+            return 'Windows';
+        }
+        if (preg_match('/Macintosh|Mac OS X/i', $userAgent)) {
+            return 'Mac';
+        }
+        if (preg_match('/Linux/i', $userAgent)) {
+            return 'Linux';
+        }
+
+        return 'Desktop';
+    }
+
+    public function logoutSession(string $sessionId): void
+    {
+        $currentSessionId = session()->getId();
+        
+        // Don't allow logging out the current session
+        if ($sessionId === $currentSessionId) {
+            Notification::make()
+                ->danger()
+                ->title('Cannot logout current session')
+                ->body('Please use the logout button in the menu to logout from this session.')
+                ->send();
+            return;
+        }
+
+        $user = Auth::user();
+        
+        // Verify the session belongs to the user
+        $session = DB::table('sessions')
+            ->where('id', $sessionId)
+            ->where('user_id', $user->id)
+            ->first();
+
+        if ($session) {
+            DB::table('sessions')->where('id', $sessionId)->delete();
+            
+            Notification::make()
+                ->success()
+                ->title('Session logged out')
+                ->body('The session has been successfully logged out.')
+                ->send();
+        } else {
+            Notification::make()
+                ->danger()
+                ->title('Session not found')
+                ->body('The session could not be found or does not belong to you.')
+                ->send();
+        }
     }
 
     /* -----------------------------------------------------------------
