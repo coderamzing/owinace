@@ -10,10 +10,12 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
 
-class Portfolio extends Model
+class Portfolio extends Model implements HasMedia
 {
-    use HasFactory, TeamTraits;
+    use HasFactory, TeamTraits, InteractsWithMedia;
 
     /**
      * The attributes that are mass assignable.
@@ -97,5 +99,29 @@ class Portfolio extends Model
     public function team(): BelongsTo
     {
         return $this->belongsTo(Team::class, 'team_id');
+    }
+
+    /**
+     * Register media collections for avatar.
+     */
+    public function registerMediaCollections(): void
+    {
+        $this->addMediaCollection('avatar')
+            ->singleFile()
+            ->useDisk('public')
+            ->registerMediaConversions(function () {
+                $this->addMediaConversion('thumb')
+                    ->width(100)
+                    ->height(100)
+                    ->sharpen(10);
+            });
+    }
+
+    /**
+     * Get the portfolio's avatar URL.
+     */
+    public function getAvatarUrlAttribute(): string
+    {
+        return $this->getFirstMediaUrl('avatar') ?: asset('/images/avatars/avatar-1.png');
     }
 }

@@ -7,10 +7,12 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use App\Traits\TeamTraits;
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
 
-class Contact extends Model
+class Contact extends Model implements HasMedia
 {
-    use HasFactory, TeamTraits;
+    use HasFactory, TeamTraits, InteractsWithMedia;
 
     /**
      * The attributes that are mass assignable.
@@ -42,5 +44,29 @@ class Contact extends Model
     public function leads(): BelongsToMany
     {
         return $this->belongsToMany(Lead::class, 'lead_contact');
+    }
+
+    /**
+     * Register media collections for avatar.
+     */
+    public function registerMediaCollections(): void
+    {
+        $this->addMediaCollection('avatar')
+            ->singleFile()
+            ->useDisk('public')
+            ->registerMediaConversions(function () {
+                $this->addMediaConversion('thumb')
+                    ->width(100)
+                    ->height(100)
+                    ->sharpen(10);
+            });
+    }
+
+    /**
+     * Get the contact's avatar URL.
+     */
+    public function getAvatarUrlAttribute(): string
+    {
+        return $this->getFirstMediaUrl('avatar') ?: asset('/images/avatars/avatar-1.png');
     }
 }

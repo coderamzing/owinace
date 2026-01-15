@@ -19,6 +19,8 @@ class ListLeads extends ListRecords
             Actions\CreateAction::make()
                 ->modalHeading('Create Lead')
                 ->modalSubmitActionLabel('Create')
+                ->color('primary')
+                ->size('lg')
                 ->slideOver()
                 ->mutateFormDataUsing(function (array $data): array {
                     $data['created_by_id'] = auth()->id();

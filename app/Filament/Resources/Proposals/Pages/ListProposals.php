@@ -16,6 +16,8 @@ class ListProposals extends ListRecords
             CreateAction::make()
                 ->modalHeading('Create Proposal')
                 ->modalSubmitActionLabel('Create')
+                ->color('primary')
+                ->size('lg')
                 ->slideOver()
                 ->mutateFormDataUsing(function (array $data): array {
                     // Set user_id to authenticated user

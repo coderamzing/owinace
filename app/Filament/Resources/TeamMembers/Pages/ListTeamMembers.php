@@ -34,6 +34,8 @@ class ListTeamMembers extends BaseListRecords
                 ->modalHeading('Create New Team Member')
                 ->modalSubmitActionLabel('Create')
                 ->icon('heroicon-o-user-plus')
+                ->color('primary')
+                ->size('lg')
                 ->slideOver()
                 ->form(function (Schema $schema) {
                     return TeamMemberForm::createNewMemberForm($schema);
@@ -118,6 +120,7 @@ class ListTeamMembers extends BaseListRecords
                 ->modalSubmitActionLabel('Link Members')
                 ->icon('heroicon-o-link')
                 ->color('success')
+                ->size('lg')
                 ->slideOver()
                 ->form(function (Schema $schema) {
                     return TeamMemberForm::linkExistingMemberForm($schema);

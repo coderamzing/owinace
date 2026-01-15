@@ -152,7 +152,7 @@ class CreateProposal extends Page implements HasForms
             WorkspaceCredit::create([
                 'workspace_id' => $workspace->id,
                 'credits' => -$creditCost,
-                'transaction_type' => 'USE',
+                'transaction_type' => 'DEBIT',
                 'triggered_by_id' => Auth::id(),
             ]);
 

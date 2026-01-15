@@ -35,6 +35,8 @@ class ListTeams extends BaseListRecords
             Actions\CreateAction::make()
                 ->modalHeading('Create Team')
                 ->modalSubmitActionLabel('Create')
+                ->color('primary')
+                ->size('lg')
                 ->slideOver()
                 ->mutateFormDataUsing(function (array $data): array {
                     $data['created_by_id'] = auth()->id();
@@ -54,6 +56,8 @@ class ListTeams extends BaseListRecords
                 ->modalHeading('Create New Team Member')
                 ->modalSubmitActionLabel('Create')
                 ->icon('heroicon-o-user-plus')
+                ->color('primary')
+                ->size('lg')
                 ->slideOver()
                 ->form(function (Schema $schema) {
                     return TeamMemberForm::createNewMemberForm($schema);
@@ -138,6 +142,7 @@ class ListTeams extends BaseListRecords
                 ->modalSubmitActionLabel('Link Members')
                 ->icon('heroicon-o-link')
                 ->color('success')
+                ->size('lg')
                 ->slideOver()
                 ->form(function (Schema $schema) {
                     return TeamMemberForm::linkExistingMemberForm($schema);

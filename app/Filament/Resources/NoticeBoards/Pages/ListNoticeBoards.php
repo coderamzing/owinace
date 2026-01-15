@@ -21,6 +21,8 @@ class ListNoticeBoards extends BaseListRecords
             Actions\CreateAction::make()
                 ->modalHeading('Create Notice')
                 ->modalSubmitActionLabel('Create')
+                ->color('primary')
+                ->size('lg')
                 ->slideOver()
                 ->mutateFormDataUsing(function (array $data): array {
                     $data['workspace_id'] = session('workspace_id');

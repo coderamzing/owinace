@@ -18,6 +18,8 @@ class ListLeadSources extends BaseListRecords
             CreateAction::make()
                 ->modalHeading('Create Lead Source')
                 ->modalSubmitActionLabel('Create')
+                ->color('primary')
+                ->size('lg')
                 ->slideOver()
                 ->mutateFormDataUsing(function (array $data): array {
                     // Set team_id from session if available

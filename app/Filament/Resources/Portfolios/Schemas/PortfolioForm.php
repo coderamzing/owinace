@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Portfolios\Schemas;
 
+use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TagsInput;
@@ -14,6 +15,14 @@ class PortfolioForm
     {
         return $schema
             ->components([
+                SpatieMediaLibraryFileUpload::make('avatar')
+                    ->label('Avatar')
+                    ->collection('avatar')
+                    ->image()
+                    ->avatar()
+                    ->circleCropper()
+                    ->maxSize(2048)
+                    ->columnSpanFull(),
                 TextInput::make('title')
                     ->required()
                     ->maxLength(255)
@@ -23,13 +32,6 @@ class PortfolioForm
                     ->maxLength(500)
                     ->rule('max:500')
                     ->columnSpanFull(),
-                TextInput::make('scale')
-                    ->required()
-                    ->maxLength(100),
-                TextInput::make('sort_order')
-                    ->required()
-                    ->numeric()
-                    ->default(0),
                 TagsInput::make('keywords')
                     ->required()
                     ->rules(['array', 'max:10'])

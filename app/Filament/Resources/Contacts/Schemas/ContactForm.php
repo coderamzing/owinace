@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Contacts\Schemas;
 
+use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Schema;
 
@@ -11,12 +12,18 @@ class ContactForm
     {
         return $schema
             ->components([
+                SpatieMediaLibraryFileUpload::make('avatar')
+                    ->label('Avatar')
+                    ->collection('avatar')
+                    ->image()
+                    ->avatar()
+                    ->circleCropper()
+                    ->maxSize(2048)
+                    ->columnSpanFull(),
+
                 TextInput::make('first_name')
-                    ->label('First Name')
-                    ->maxLength(255),
-                
-                TextInput::make('last_name')
-                    ->label('Last Name')
+                    ->label('Name')
+                    ->required()
                     ->maxLength(255),
                 
                 TextInput::make('email')

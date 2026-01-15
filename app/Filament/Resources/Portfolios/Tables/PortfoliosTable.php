@@ -4,6 +4,7 @@ namespace App\Filament\Resources\Portfolios\Tables;
 
 use Filament\Actions\DeleteAction;
 use Filament\Actions\EditAction;
+use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
@@ -16,19 +17,19 @@ class PortfoliosTable
     {
         return $table
             ->columns([
+                ImageColumn::make('avatar')
+                    ->label('')
+                    ->getStateUsing(fn ($record) => $record->avatar_url)
+                    ->circular()
+                    ->size(40),
                 TextColumn::make('title')
                     ->searchable()
                     ->color('primary')
                     ->weight('bold')
                     ->sortable(),
-                TextColumn::make('scale')
-                    ->searchable(),
                 TextColumn::make('keywords')
                     ->limit(50)
                     ->searchable(),
-                TextColumn::make('sort_order')
-                    ->numeric()
-                    ->sortable(),
                 IconColumn::make('is_active')
                     ->boolean(),
                 TextColumn::make('created_at')

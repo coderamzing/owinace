@@ -5,6 +5,7 @@ namespace App\Filament\Resources\Proposals\Tables;
 use App\Models\TeamMember;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\EditAction;
+use Filament\Tables\Columns\ImageColumn;
 use Filament\Forms\Components\TextInput;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
@@ -23,6 +24,12 @@ class ProposalsTable
         return $table
             ->searchable(false)
             ->columns([
+                ImageColumn::make('user_avatar')
+                    ->label('')
+                    ->getStateUsing(fn ($record) => $record->user?->avatar_url)
+                    ->circular()
+                    ->size(32),
+
                 TextColumn::make('title')
                     ->limit(60)
                     ->color('primary')
@@ -30,20 +37,12 @@ class ProposalsTable
                     ->sortable(),
                 TextColumn::make('keywords')
                     ->limit(40),
-                TextColumn::make('sort_order')
-                    ->numeric()
-                    ->sortable(),
-                IconColumn::make('is_active')
-                    ->boolean(),
                 TextColumn::make('created_at')
+                    ->label('Created')
                     ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                TextColumn::make('updated_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    ->sortable(),
             ])
+            ->defaultSort('created_at', 'desc')
             ->filters([
                 Filter::make('search')
                     ->label('Full Text')

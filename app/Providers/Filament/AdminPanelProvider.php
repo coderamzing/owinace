@@ -25,6 +25,7 @@ use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 
+
 class AdminPanelProvider extends PanelProvider
 {
     public function panel(Panel $panel): Panel
@@ -34,12 +35,16 @@ class AdminPanelProvider extends PanelProvider
             ->id('admin')
             ->path('admin')
             ->colors([
-                'primary' => Color::hex('#F37B7F'), // Coral pink
-                'secondary' => Color::hex('#272E3F'), // Dark navy
-                'success' => Color::hex('#059669'),
-                'warning' => Color::hex('#F59E0B'),
-                'danger' => Color::hex('#EF4444'),
-                'info' => Color::hex('#3B82F6'),
+                // 'primary' => Color::hex('#061d19'),
+                // 'secondary' => Color::hex('#00000'),
+                // 'primary-400' => Color::hex('#b8ff90'),
+                
+                // 'success' => Color::hex('#b8ff90'),
+                // 'success-400' => Color::hex('#b8ff90'),
+                // 'warning' => Color::hex('#fffd76'),
+                // 'danger' => Color::hex('#EF4444'),
+                // 'info' => Color::hex('#3B82F6'),
+                // 'gray' => Color::hex('#dfdfdf'),
             ])
             ->font('Inter') // Add your Google Font name here
             ->brandName(env('APP_NAME', 'Owinace'))

@@ -52,7 +52,7 @@
             @foreach($packages as $package)
                 <div class="relative bg-white dark:bg-gray-800 rounded-lg shadow-md hover:shadow-xl transition-shadow duration-300 overflow-hidden {{ $package['popular'] ? 'ring-2 ring-[#ad3a43]' : '' }}">
                     @if($package['popular'])
-                        <div class="absolute top-0 right-0 bg-[#ad3a43] text-white px-3 py-1 text-xs font-semibold rounded-bl-lg">
+                        <div class="absolute top-0 right-0 text-white px-3 py-1 text-xs font-semibold rounded-bl-lg">
                             Popular
                         </div>
                     @endif
@@ -89,7 +89,7 @@
                             <input type="hidden" name="credits" value="{{ $package['credits'] }}">
                             <input type="hidden" name="amount" value="{{ $package['price'] }}">
                             
-                            <button type="submit" class="w-full px-4 py-2 bg-[#ad3a43] hover:bg-primary-700 text-white font-semibold rounded-lg transition-colors duration-200">
+                            <button type="submit" class="w-full px-4 py-2 hover:bg-primary-700 text-white font-semibold rounded-lg transition-colors duration-200">
                                 Purchase Now
                             </button>
                         </form>

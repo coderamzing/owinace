@@ -18,6 +18,8 @@ class ListLeadCosts extends BaseListRecords
             CreateAction::make()
                 ->modalHeading('Create Lead Cost')
                 ->modalSubmitActionLabel('Create')
+                ->color('primary')
+                ->size('lg')
                 ->slideOver()
                 ->mutateFormDataUsing(function (array $data): array {
                     // Set team_id from session if available

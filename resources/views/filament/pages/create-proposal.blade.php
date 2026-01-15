@@ -1,8 +1,8 @@
 <x-filament-panels::page>
     <div class="max-w-full min-w-full mx-auto">
         <!-- Simple Hero Header -->
-        <div class="mb-10 text-center bg-gradient-to-b from-[#a53740] to-[#872d34] p-5 text-white">
-            <div class="w-16 h-16 bg-gradient-to-br from-[#ad3a43] to-[#7f2a31] rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg">
+        <div class="mb-10 text-center p-5 text-white">
+            <div class="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg">
                 <x-filament::icon icon="heroicon-o-sparkles" class="w-9 h-9 text-white" />
             </div>
             <h1 class="text-4xl font-extrabold text-white dark:text-white mb-3">
@@ -42,7 +42,7 @@
                         wire:target="generate"
                         wire:loading.attr="disabled"
                         wire:loading.class="opacity-70 cursor-not-allowed"
-                        class="min-w-xs shadow-lg hover:shadow-xl transition-all bg-[#ad3a43] text-white"
+                        class="min-w-xs shadow-lg hover:shadow-xl transition-all text-white"
                     >
                         <span class="inline-flex items-center gap-3 px-8">
                             <x-filament::loading-indicator
@@ -77,7 +77,7 @@
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4">
-                <div class="group flex gap-3 border border-[#e3e3e3] p-4 !rounded-lg hover:bg-[#ad3a43]">
+                <div class="group flex gap-3 border border-[#e3e3e3] p-4 !rounded-lg">
                     <x-filament::icon 
                         icon="heroicon-o-check-circle"
                         class="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" 
@@ -92,7 +92,7 @@
                     </div>
                 </div>
 
-                <div class="group flex gap-3 border border-[#e3e3e3] p-4 !rounded-lg hover:bg-[#ad3a43]">
+                <div class="group flex gap-3 border border-[#e3e3e3] p-4 !rounded-lg">
                     <x-filament::icon icon="heroicon-o-check-circle" class="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
                     <div>
                         <p class="text-sm font-semibold text-gray-900 group-hover:text-white dark:text-white">Choose right length</p>
@@ -100,7 +100,7 @@
                     </div>
                 </div>
 
-                <div class="group flex gap-3 border border-[#e3e3e3] p-4 !rounded-lg hover:bg-[#ad3a43]">
+                <div class="group flex gap-3 border border-[#e3e3e3] p-4 !rounded-lg">
                     <x-filament::icon icon="heroicon-o-check-circle" class="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
                     <div>
                         <p class="text-sm font-semibold text-gray-900 group-hover:text-white dark:text-white">Match the tone</p>
@@ -108,7 +108,7 @@
                     </div>
                 </div>
 
-                <div class="group flex gap-3 border border-[#e3e3e3] p-4 !rounded-lg hover:bg-[#ad3a43]">
+                <div class="group flex gap-3 border border-[#e3e3e3] p-4 !rounded-lg">
                     <x-filament::icon icon="heroicon-o-check-circle" class="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
                     <div>
                         <p class="text-sm font-semibold text-gray-900 group-hover:text-white dark:text-white">Review before sending</p>

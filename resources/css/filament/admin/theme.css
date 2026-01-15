@@ -13,11 +13,52 @@
    GLOBAL STYLES - Premium Modern Design
    ============================================ */
 :root {
-    --color-gray-200: #e2e8f0;
+    /* --primary-50:  oklch(0.985 0.004 270);
+    --primary-100: oklch(0.955 0.006 270);
+    --primary-200: oklch(0.905 0.008 270);
+    --primary-300: oklch(0.845 0.010 270);
+    --primary-400: oklch(0.760 0.012 270);
+    --primary-500: oklch(0.660 0.010 270);
+    --primary-600: oklch(0.560 0.008 270);
+    --primary-700: oklch(0.460 0.006 270);
+    --primary-800: oklch(0.360 0.004 270);
+    --primary-900: oklch(0.260 0.002 270);
+    --primary-950: oklch(0.160 0.001 270); */
+
+
+    --primary-50:  #dbffc5;
+    --primary-100: #b8ff90;
+    --primary-200: oklch(0.905 0.135 135);
+    --primary-300: #b8ff90;
+    --primary-400: #b8ff90; /* ~ #b8ff90 feel */
+    --primary-500: oklch(0.810 0.185 135);
+    --primary-600: oklch(0.810 0.185 135);
+    --primary-700: oklch(0.550 0.110 165);
+    --primary-800: oklch(0.430 0.080 180);
+    --primary-900: oklch(0.300 0.045 190);
+    --primary-950: oklch(0.170 0.020 195); /* ~ #061d19 feel */
+
+
+    --info-50:  oklch(0.985 0.010 95);
+    --info-100: oklch(0.965 0.018 95);  /* ~ #f3f3e5 */
+    --info-200: oklch(0.930 0.028 95);
+    --info-300: oklch(0.880 0.040 95);
+    --info-400: oklch(0.800 0.055 95);
+    --info-500: oklch(0.710 0.060 95);
+    --info-600: oklch(0.610 0.055 95);
+    --info-700: oklch(0.510 0.045 95);
+    --info-800: oklch(0.410 0.035 95);
+    --info-900: oklch(0.310 0.025 95);
+    --info-950: oklch(0.200 0.015 95);
+
+
+
+    /* --primary-400: #b8ff90; */
+    /* --color-gray-200: #e2e8f0;
     --font-family: "Inter", sans-serif;
     --color-dark: #061d19;
     --color-primary: #b8ff90;
-    --color-white: #fff;
+    --color-white: #fff; */
 }
 
 main.fi-main,
@@ -27,18 +68,18 @@ main.fi-main,
     width: 100% !important;
 }
 
-.fi-layout{
+/* .fi-layout{
     background-color: var(--color-white);
     &:where(.dark, .dark *) {
         background-color: var(--color-dark);
     }
-}
+} */
 
 
 /* ============================================
 Widgets
 ============================================ */
-.fi-topbar{
+/* .fi-topbar{
     border-bottom: 1px solid var(--color-gray-200);
     box-shadow: none;
 }
@@ -55,22 +96,33 @@ Widgets
     &:where(.dark, .dark *) {
         color: var(--color-white);
     }
-}
+} */
 
 
 /* ============================================
 Sidebar
 ============================================ */
-.fi-sidebar-item.fi-active a,
+/* .fi-sidebar-item.fi-active a,
 .fi-sidebar-item.fi-active .fi-icon,
 .fi-sidebar-item.fi-active .fi-sidebar-item-label
 {
     background-color: var(--color-primary);
     color: var(--color-dark);
 }
-
-/* Custom text size for goals widget */
 .text-xs-plus {
     font-size: 0.8125rem;
     line-height: 1.25rem;
+} */
+
+
+/* ============================================
+Buttons
+============================================ */
+/* button.fi-text-color-900,
+button.fi-text-color-950
+{
+    color: var(--color-white);
+} */
+.fi-btn{
+    font-weight: var(--font-weight-normal);
 }

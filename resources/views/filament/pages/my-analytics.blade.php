@@ -33,7 +33,7 @@
                     type="button"
                     wire:click="goToPreviousMonth"
                     @if(!$this->canGoToPreviousMonth()) disabled @endif
-                    class="inline-flex items-center justify-center px-4 py-2.5 text-sm font-semibold text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-800 rounded-lg hover:bg-[#ad3a43] hover:text-[#fff] focus:outline-none focus:ring-2 focus:ring-[#ad3a43] focus:bg-[#ad3a43] focus:text-[#fff] disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                    class="inline-flex items-center justify-center px-4 py-2.5 text-sm font-semibold text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-800 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                 >
                     <x-filament::icon icon="heroicon-o-chevron-left" class="w-5 h-5 mr-1.5" />
                     Previous
@@ -43,7 +43,7 @@
                     type="button"
                     wire:click="goToNextMonth"
                     @if(!$this->canGoToNextMonth()) disabled @endif
-                    class="inline-flex items-center justify-center px-4 py-2.5 text-sm font-semibold text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-800 rounded-lg hover:bg-[#ad3a43] hover:text-[#fff] focus:outline-none focus:ring-2 focus:ring-[#ad3a43] focus:bg-[#ad3a43] focus:text-[#fff] disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                    class="inline-flex items-center justify-center px-4 py-2.5 text-sm font-semibold text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-800 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                 >
                     Next
                     <x-filament::icon icon="heroicon-o-chevron-right" class="w-5 h-5 ml-1.5" />

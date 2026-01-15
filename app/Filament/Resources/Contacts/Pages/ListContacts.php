@@ -25,13 +25,16 @@ class ListContacts extends BaseListRecords
             Action::make('import')
                 ->label('Import CSV')
                 ->icon('heroicon-o-arrow-up-tray')
-                ->color('success')
+                ->color('primary')
+                ->size('lg')
                 ->url(fn () => ContactResource::getUrl('import'))
                 ->visible(fn () => self::hasPermissionTo('contact.import')),
             
             CreateAction::make()
                 ->modalHeading('Create Contact')
                 ->modalSubmitActionLabel('Create')
+                ->color('primary')
+                ->size('lg')
                 ->slideOver()
                 ->mutateFormDataUsing(function (array $data): array {
                     $teamId = session('team_id');

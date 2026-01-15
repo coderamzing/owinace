@@ -74,7 +74,7 @@ class PortfolioObserver
         WorkspaceCredit::create([
             'workspace_id' => $workspace->id,
             'credits' => -$creditCost,
-            'transaction_type' => 'USE',
+            'transaction_type' => 'DEBIT',
             'transaction_id' => 'portfolio_' . $portfolio->id,
             'note' => $note,
             'triggered_by_id' => Auth::id() ?? $portfolio->created_by_id,

@@ -5,7 +5,7 @@
 
     <div class="space-y-6">
         {{-- Header Section --}}
-        <div class="dark:bg-gray-800 shadow-sm border border-gray-200 dark:border-gray-700 rounded-lg p-6 bg-[#ad3a43]">
+        <div class="dark:bg-gray-800 shadow-sm border border-gray-200 dark:border-gray-700 rounded-lg p-6">
             <div class="flex items-start justify-between">
                 <div class="flex-1">
                     <h1 class="text-3xl font-bold text-[#fff] dark:text-white mb-2">{{ $record->title }}</h1>

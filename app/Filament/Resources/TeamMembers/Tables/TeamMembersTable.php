@@ -7,6 +7,7 @@ use App\Models\User;
 use Filament\Actions\Action;
 use Filament\Actions\ActionGroup;
 use Filament\Actions\DeleteAction;
+use Filament\Tables\Columns\ImageColumn;
 use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
 use Filament\Tables\Columns\TextColumn;
@@ -22,6 +23,12 @@ class TeamMembersTable
     {
         return $table
             ->columns([
+                ImageColumn::make('user_avatar')
+                    ->label('')
+                    ->getStateUsing(fn ($record) => $record->user?->avatar_url)
+                    ->circular()
+                    ->size(32),
+
                 TextColumn::make('team.name')
                     ->label('Team')
                     ->searchable()

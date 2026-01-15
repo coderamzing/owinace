@@ -4,6 +4,7 @@ namespace App\Filament\Resources\Contacts\Tables;
 
 use Filament\Actions\DeleteAction;
 use Filament\Actions\EditAction;
+use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use App\Traits\HasPermission;
@@ -15,6 +16,12 @@ class ContactsTable
     {
         return $table
             ->columns([
+                ImageColumn::make('avatar')
+                    ->label('')
+                    ->getStateUsing(fn ($record) => $record->avatar_url)
+                    ->circular()
+                    ->size(40),
+
                 TextColumn::make('name')
                     ->label('Name')
                     ->getStateUsing(function ($record) {
@@ -47,12 +54,6 @@ class ContactsTable
                 
                 TextColumn::make('company')
                     ->label('Company')
-                    ->searchable()
-                    ->sortable()
-                    ->placeholder('N/A'),
-                
-                TextColumn::make('job_title')
-                    ->label('Job Title')
                     ->searchable()
                     ->sortable()
                     ->placeholder('N/A'),

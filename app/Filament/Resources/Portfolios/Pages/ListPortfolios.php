@@ -18,6 +18,8 @@ class ListPortfolios extends BaseListRecords
             CreateAction::make()
                 ->modalHeading('Create Portfolio')
                 ->modalSubmitActionLabel('Create')
+                ->color('primary')
+                ->size('lg')
                 ->slideOver()
                 ->mutateFormDataUsing(function (array $data): array {
                     $data['created_by_id'] = auth()->id();
