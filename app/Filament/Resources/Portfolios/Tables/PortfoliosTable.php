@@ -6,6 +6,7 @@ use Filament\Actions\DeleteAction;
 use Filament\Actions\EditAction;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\IconColumn;
+use Filament\Tables\Columns\TagsColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use App\Traits\HasPermission;
@@ -27,9 +28,19 @@ class PortfoliosTable
                     ->color('primary')
                     ->weight('bold')
                     ->sortable(),
-                TextColumn::make('keywords')
-                    ->limit(50)
-                    ->searchable(),
+                TagsColumn::make('keywords')
+                    ->label('Keywords')
+                    ->limit(5)
+                    ->separator(',')
+                    ->badge()
+                    ->color(fn (string $state): string => collect([
+                        'primary',
+                        'success',
+                        'warning',
+                        'info',
+                        'danger',
+                        'gray',
+                    ])->random()),
                 IconColumn::make('is_active')
                     ->boolean(),
                 TextColumn::make('created_at')

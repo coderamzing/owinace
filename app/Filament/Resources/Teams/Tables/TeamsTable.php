@@ -22,10 +22,6 @@ class TeamsTable
                     ->color('primary')
                     ->weight('bold')
                     ->sortable(),
-                TextColumn::make('workspace.name')
-                    ->label('Workspace')
-                    ->searchable()
-                    ->sortable(),
                 TextColumn::make('description')
                     ->label('Description')
                     ->limit(50)

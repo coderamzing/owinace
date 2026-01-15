@@ -9,6 +9,7 @@ use Filament\Forms\Components\TextInput;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\EditAction;
 use Filament\Tables\Columns\IconColumn;
+use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Enums\FiltersLayout;
 use Filament\Tables\Enums\FiltersResetActionPosition;
@@ -24,22 +25,42 @@ class LeadsTable
     {
         return $table
             ->columns([
+                ImageColumn::make('assignedMember.avatar_url')
+                    ->label('')
+                    ->circular()
+                    ->size(32)
+                    ->tooltip(fn ($record) => $record->assignedMember?->name ?? 'Unassigned'),
                 TextColumn::make('title')
                     ->label('Title')
-                    ->color('primary')
-                    ->weight('bold')
+                    //->color('primary')
+                    //->weight('bold')
                     ->sortable(),
                 TextColumn::make('kanban.name')
                     ->label('Status')
-                    ->badge()
+                    ->formatStateUsing(function ($state, $record) {
+                        if (! $record->kanban?->color) {
+                            return $state;
+                        }
+                        $color = $record->kanban->color;
+                        return "<span class=\"inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium\" style=\"background-color: {$color}; color: #ffffff;\">{$state}</span>";
+                    })
+                    ->html()
                     ->sortable(),
                 TextColumn::make('source.name')
                     ->label('Source')
+                    ->formatStateUsing(function ($state, $record) {
+                        if (! $record->source?->color) {
+                            return $state;
+                        }
+                        $color = $record->source->color;
+                        return "<span class=\"inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium\" style=\"background-color: {$color}; color: #ffffff;\">{$state}</span>";
+                    })
+                    ->html()
                     ->sortable(),
-                TextColumn::make('assignedMember.name')
-                    ->label('Assigned To')
-                    ->sortable()
-                    ->default('Unassigned'),
+                // TextColumn::make('assignedMember.name')
+                //     ->label('Assigned To')
+                //     ->sortable()
+                //     ->default('Unassigned'),
                 TextColumn::make('expected_value')
                     ->label('Expected Value')
                     ->money('USD')
@@ -54,16 +75,16 @@ class LeadsTable
                     ->dateTime()
                     ->sortable()
                     ->toggleable(),
-                IconColumn::make('is_archived')
-                    ->label('Archived')
-                    ->boolean()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                // IconColumn::make('is_archived')
+                //     ->label('Archived')
+                //     ->boolean()
+                //     ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('createdBy.name')
-                    ->label('Created By')
+                    ->label('By')
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('created_at')
-                    ->label('Created')
+                    ->label('On')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),

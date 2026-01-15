@@ -47,53 +47,69 @@
             </p>
         </div>
 
-        <!-- Credit Packages Grid -->
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mt-8">
+        <!-- Credit Packages Grid (Pricing Cards) -->
+        <div class="grid lg:grid-cols-3 gap-10 md:items-center md:justify-center mt-8">
             @foreach($packages as $package)
-                <div class="relative bg-white dark:bg-gray-800 rounded-lg shadow-md hover:shadow-xl transition-shadow duration-300 overflow-hidden {{ $package['popular'] ? 'ring-2 ring-[#ad3a43]' : '' }}">
-                    @if($package['popular'])
-                        <div class="absolute top-0 right-0 text-white px-3 py-1 text-xs font-semibold rounded-bl-lg">
-                            Popular
-                        </div>
-                    @endif
-                    
-                    <div class="p-6">
-                        <!-- Credits -->
-                        <div class="text-center mb-4">
-                            <div class="text-4xl font-bold text-[#ad3a43] dark:text-primary-400">
-                                {{ $package['credits'] }}
+                <div
+                    class="md:p-10 p-5 rounded-2xl md:gap-20 flex flex-col lg:justify-between h-full
+                        {{ $package['popular'] ? 'bg-primary' : 'bg-white' }}
+                        dark:bg-gray-800 shadow-md hover:shadow-xl transition-shadow duration-300"
+                >
+                    <div>
+                        <div class="gap-5 flex items-center mb-5">
+                            <div class="lg:size-13.5 size-12.5 bg-primary rounded-full flex items-center justify-center">
+                                <i class="iconify solar--chart-square-linear lg:size-7.5 size-6.5 {{ $package['popular'] ? 'text-primary' : 'text-dark' }}"></i>
                             </div>
-                            <div class="text-sm text-gray-600 dark:text-gray-400 mt-1">
-                                Credits
-                            </div>
+
+                            <h3 class="text-1.5xl {{ $package['popular'] ? 'text-black' : 'text-black' }}">
+                                {{ $package['name'] ?? ($package['credits'] . ' Credits') }}
+                            </h3>
                         </div>
 
-                        <!-- Price -->
-                        <div class="text-center mb-4">
-                            <div class="text-3xl font-bold text-gray-900 dark:text-white">
-                                ${{ number_format($package['price'], 2) }}
+                        <h4 class="{{ $package['popular'] ? 'text-black' : 'text-black' }} lg:text-4.5xl text-4xl flex items-center">
+                            <span>$</span>
+                            <span>
+                                {{ number_format($package['price'], 2) }}
+                            </span>
+                            <span class="text-base ml-1">/package</span>
+                        </h4>
+
+                        <div class="mt-5">
+                            <div class="flex gap-2.5 mb-2.5">
+                                <i class="iconify tabler--circle-check size-6 {{ $package['popular'] ? 'text-black' : 'text-black' }}"></i>
+                                <div class="text-base">
+                                    {{ $package['description'] }}
+                                </div>
                             </div>
-                            <div class="text-sm text-gray-500 dark:text-gray-400 mt-1">
-                                ${{ number_format($package['price'] / $package['credits'], 2) }} per credit
+
+                            <div class="flex gap-2.5 mb-2.5">
+                                <i class="iconify tabler--circle-check size-6 {{ $package['popular'] ? 'text-black' : 'text-black' }}"></i>
+                                <div class="text-base">
+                                    {{ $package['credits'] }} total credits
+                                </div>
+                            </div>
+
+                            <div class="flex gap-2.5 mb-2.5">
+                                <i class="iconify tabler--circle-check size-6 {{ $package['popular'] ? 'text-black' : 'text-black' }}"></i>
+                                <div class="text-base">
+                                    ${{ number_format($package['price'] / $package['credits'], 2) }} per credit
+                                </div>
                             </div>
                         </div>
-
-                        <!-- Description -->
-                        <p class="text-center text-sm text-gray-600 dark:text-gray-400 mb-6">
-                            {{ $package['description'] }}
-                        </p>
-
-                        <!-- Purchase Button -->
-                        <form action="{{ route('razorpay.create-credit-order') }}" method="POST" class="js-credit-form">
-                            @csrf
-                            <input type="hidden" name="credits" value="{{ $package['credits'] }}">
-                            <input type="hidden" name="amount" value="{{ $package['price'] }}">
-                            
-                            <button type="submit" class="w-full px-4 py-2 hover:bg-primary-700 text-white font-semibold rounded-lg transition-colors duration-200">
-                                Purchase Now
-                            </button>
-                        </form>
                     </div>
+
+                    <form action="{{ route('razorpay.create-credit-order') }}" method="POST" class="js-credit-form mt-6">
+                        @csrf
+                        <input type="hidden" name="credits" value="{{ $package['credits'] }}">
+                        <input type="hidden" name="amount" value="{{ $package['price'] }}">
+
+                        <button
+                            type="submit"
+                            class="py-3.5 lg:px-7.5 px-6.5 w-full text-center bg-dark font-medium rounded-2xl text-white transition-all duration-300 hover:text-primary"
+                        >
+                            Purchase Now
+                        </button>
+                    </form>
                 </div>
             @endforeach
         </div>

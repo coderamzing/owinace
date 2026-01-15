@@ -11,34 +11,42 @@
 
 @section('content')
     <!-- Hero Section -->
-    <section id="hero" class="bg-white lg:py-25 md:py-22.5 pt-10 pb-17.5">
+    <section id="hero" class="bg-white lg:py-20 md:py-22.5 pt-10 pb-17.5">
         <div class="max-w-7xl mx-auto">
-            <div class="text-center" data-aos="fade-up" data-aos-duration="500" data-aos-easing="ease-in-out">
-                <h1 class="md:text-6xl text-4xl mb-2.5">AI proposals + lead CRM that closes faster</h1>
-
-                <div class="flex md:justify-center md:mt-6.25 md:gap-2.5 md:flex-row flex-col gap-2.5 text-base">
-                    <div class="flex gap-2.5 justify-center">
-                        <p>Rated 4.8/5</p>
-                        <div class="flex items-center text-lg text-yellow-400">
-                            <i class="iconify tabler--star-filled"></i>
-                            <i class="iconify tabler--star-filled"></i>
-                            <i class="iconify tabler--star-filled"></i>
-                            <i class="iconify tabler--star-filled"></i>
-                            <i class="iconify tabler--star-filled"></i>
-                        </div>
-                    </div>
-                    <p>by 1,900+ product-led teams and agencies</p>
+            <div class="flex justify-center items-center md:gap-5 md:flex-row gap-2.5 flex-col mb-7.5 aos-init aos-animate" data-aos="fade-up" data-aos-delay="150" data-aos-duration="600" data-aos-easing="ease-in-out">
+                <div class="flex">
+                    <img src="/landinger/assets/1-D6bexPI2.png" alt="" class="size-10 rounded-full">
+                    <img src="/landinger/assets/2-C2hgbhv6.png" alt="" class="size-10 rounded-full -ms-2.5">
+                    <img src="/landinger/assets/4-BTKjeLDb.png" alt="" class="size-10 rounded-full -ms-2.5">
+                    <img src="/landinger/assets/5-lY0eiWKq.png" alt="" class="size-10 rounded-full -ms-2.5">
                 </div>
 
-                <div class="md:mt-6.25 mt-5 lg:w-2/5 md:w-4/5 md:mx-auto">
-                    <form class="flex md:gap-5 justify-center items-center gap-2.5">
-                        <input class="bg-body-bg w-full py-2.5 px-5 rounded-2xl border-neutral-200 h-14 transition-all focus:ring-0 focus:shadow-none focus:border-dark" placeholder="work email">
-                        <a href="{{ route('register') }}" class="md:h-14 py-3.5 lg:px-7.5 px-6.5 inline-flex items-center text-center bg-dark font-medium rounded-2xl text-white transition-all duration-300 hover:text-primary">
-                            Start free
-                        </a>
-                    </form>
+                <div class="flex justify-center items-center gap-1.25">
+                    <div>Happy customer</div>
+                    <i class="iconify tabler--star-filled text-yellow-400"></i>
+                    <div>4.5 (Reviews)</div>
                 </div>
             </div>
+
+            <div class="lg:mb-12.5 md:mb-10 mb-7.5 lg:mx-auto text-center aos-init aos-animate" data-aos="fade-up" data-aos-delay="150" data-aos-duration="600" data-aos-easing="ease-in-out">
+                <h1 class="lg:text-6xl md:text-5.5xl text-4xl mb-2.5">Automated task scheduling and workflow</h1>
+                <p class="mb-2.5">Streamline your workflow with automated task scheduling. Effortlessly manage your tasks and optimize productivity.</p>
+            </div>
+
+            <div class="flex md:gap-5 gap-2.5 md:flex-row flex-col items-center justify-center">
+                <div>
+                    <a href="/register" class="py-3.5 md:px-7.5 px-6.5 inline-flex items-center text-center bg-dark font-medium rounded-2xl text-white transition-all duration-300 hover:text-primary">
+                        Get started
+                    </a>
+                </div>
+
+                <div>
+                    <a href="/login" class="py-3.5 md:px-7.5 px-6.5 inline-flex items-center text-center bg-primary font-medium rounded-2xl text-black transition-all duration-300 hover:text-primary hover:bg-black">
+                        Login
+                    </a>
+                </div>
+            </div>
+
 
             <div class="grid md:grid-cols-4 lg:gap-7.5 md:gap-5 lg:my-25 md:my-17.5 my-15 gap-5">
                 <div class="md:col-span-1" data-aos="fade-up" data-aos-duration="500" data-aos-easing="ease-in-out">
