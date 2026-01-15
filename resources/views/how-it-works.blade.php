@@ -184,7 +184,7 @@
     }
 
     .section-title {
-        color: #667eea;
+        color: #061d19;
         margin-bottom: 1.5rem;
     }
 
@@ -252,20 +252,20 @@
 
 @section('content')
 <!-- Main Content -->
-<div class="w-full py-12 md:py-16">
-    <div class="container mx-auto px-4">
+<section class="w-full lg:py-25 md:py-22.5 py-17.5">
+    <div class="max-w-7xl mx-auto">
         <!-- How It Works Section -->
         <section class="mb-16">
             <div class="flex flex-wrap items-center -mx-4">
                 <div class="w-full lg:w-1/2 px-4 mb-8 lg:mb-0">
-                    <h1 class="text-4xl md:text-5xl font-bold section-title">How It Works</h1>
-                    <p class="text-gray-700 mb-4 leading-relaxed">
+                    <h1 class="lg:text-5.5xl md:text-4.6xl text-3.4xl mb-2.5 section-title">How It Works</h1>
+                    <p class="text-dark mb-4 leading-relaxed">
                         Owinace begins with a simple setup process where admins create the workspace, add team members, assign roles, and define permissions. This ensures everyone is aligned and ready to collaborate. Once the team is set, you can build your core assets, including proposals, portfolios, services, and structured lead pipelines that every member can use.
                     </p>
-                    <p class="text-gray-700 mb-4 leading-relaxed">
+                    <p class="text-dark mb-4 leading-relaxed">
                         Leads can be added through Kanban, list view, or imports, and each one stores conversations, files, costs, tasks, comments, and activities in a single timeline. As the team engages with leads, admins set performance goals and targets, giving members clear direction on expectations and achievements.
                     </p> 
-                    <p class="text-gray-700 mb-6 leading-relaxed">
+                    <p class="text-dark mb-6 leading-relaxed">
                         When it's time to pitch, the AI Proposal Generator creates personalized proposals instantly. All lead records, proposal interactions, team activities, and analytics are automatically tracked—providing complete visibility into performance, conversions, and growth.
                     </p>
                 </div>
@@ -292,8 +292,8 @@
         <!-- FAQ Section -->
         <section class="mt-16">
             <div class="mb-12 text-center">
-                <h2 class="text-4xl md:text-5xl font-bold mb-4">How Owinace Works</h2>
-                <p class="text-xl text-gray-600">Everything you need to know about Owinace</p>
+                <h2 class="lg:text-5.5xl md:text-4.6xl text-3.4xl mb-2.5">How Owinace Works</h2>
+                <p class="text-base text-dark">Everything you need to know about Owinace</p>
             </div>
 
             <div class="max-w-5xl mx-auto space-y-4">
@@ -306,7 +306,7 @@
                         </svg>
                     </button>
                     <div class="accordion-content active">
-                        <p class="text-gray-700 mb-4">
+                        <p class="text-dark mb-4">
                             Visualize every team member's progress with dynamic graphs and analytics. Track growth over time, compare with past performance, and gain actionable insights to maximize productivity and drive success.
                         </p>
                         <iframe 
@@ -332,7 +332,7 @@
                         </svg>
                     </button>
                     <div class="accordion-content">
-                        <p class="text-gray-700 mb-4">
+                        <p class="text-dark mb-4">
                             Easily monitor how resources are spent across different channels and team members. Gain complete visibility into expenses and make informed decisions to manage your budget efficiently.
                         </p>
                         <iframe 
@@ -358,7 +358,7 @@
                         </svg>
                     </button>
                     <div class="accordion-content">
-                        <p class="text-gray-700 mb-4">
+                        <p class="text-dark mb-4">
                             Launch your workspace by adding team members, assigning smart roles, and sending quick invitations. Each person enters with the right permissions, creating a well-organized, collaborative environment from the very first step.
                         </p>
                         <iframe 
@@ -384,7 +384,7 @@
                         </svg>
                     </button>
                     <div class="accordion-content">
-                        <p class="text-gray-700 mb-4">
+                        <p class="text-dark mb-4">
                             Our smart CRM, paired with a powerful browser extension, lets you create professional, personalized proposals in seconds. Streamline your workflow, save valuable time, and deliver polished proposals directly to your clients—effortlessly and efficiently.
                         </p>
                         <iframe 
@@ -410,7 +410,7 @@
                         </svg>
                     </button>
                     <div class="accordion-content">
-                        <p class="text-gray-700 mb-4">
+                        <p class="text-dark mb-4">
                             Visualize and manage every lead effortlessly with Kanban boards, review last month's leads at a glance, and keep detailed client information organized—making lead tracking simple, efficient, and fully transparent.
                         </p>
                         <iframe 
@@ -436,7 +436,7 @@
                         </svg>
                     </button>
                     <div class="accordion-content">
-                        <p class="text-gray-700 mb-4">
+                        <p class="text-dark mb-4">
                             Creating proposals is easy with our flexible credit system—simply use credits when generating proposals, while all other features remain completely free. Control your usage and enjoy full access without hidden costs.
                         </p>
                         <iframe 
@@ -455,7 +455,7 @@
             </div>
         </section>
     </div>
-</div>
+</section>
 @endsection
 
 @push('scripts')

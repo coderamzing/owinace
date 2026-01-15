@@ -1,105 +1,114 @@
-<footer class="bg-gradient-to-br from-indigo-900 via-purple-900 to-indigo-800 text-white">
-    <div class="footer-content">
-        <!-- Main Content -->
-        <div class="container mx-auto px-6 sm:px-6 lg:px-8 py-12">
-            <div class="grid grid-cols-1 md:grid-cols-12 gap-6 lg:gap-8">
-                <!-- Brand Section -->
-                <div class="md:col-span-5">
-                    <div class="mb-4">
-                        <h4 class="font-bold mb-3 text-[40px] mb-4">
-                            <i class="fas fa-rocket mr-2"></i>Owinace
-                        </h4>
-                        <p class="text-gray-300 mb-4 text-[16px] leading-[2]">
-                            Owinace's AI-powered platform instantly generates personalized, high-quality proposals, while seamlessly managing leads, tracking team performance with analytics, monitoring costs via a 
-                            flexible credit system, and maintaining detailed client records—delivering a complete, efficient, and intelligent sales workflow in one powerful platform.
-                        </p>
-                        <!-- <div class="flex gap-3">
-                            <a href="#" class="w-10 h-10 flex items-center justify-center rounded-full bg-white/10 hover:bg-white/20 transition-colors">
-                                <i class="fab fa-facebook-f"></i>
-                            </a>
-                            <a href="#" class="w-10 h-10 flex items-center justify-center rounded-full bg-white/10 hover:bg-white/20 transition-colors">
-                                <i class="fab fa-twitter"></i>
-                            </a>
-                            <a href="#" class="w-10 h-10 flex items-center justify-center rounded-full bg-white/10 hover:bg-white/20 transition-colors">
-                                <i class="fab fa-linkedin-in"></i>
-                            </a>
-                            <a href="#" class="w-10 h-10 flex items-center justify-center rounded-full bg-white/10 hover:bg-white/20 transition-colors">
-                                <i class="fab fa-instagram"></i>
-                            </a>
-                        </div> -->
-                    </div>
-                </div>
-
-                <!-- Navigation Links -->
-                <div class="md:col-span-3">
-                    <h6 class="font-bold mb-4 text-white">Navigation</h6>
-                    <div class="flex flex-col space-y-3">
-                        <a href="{{ route('home') }}" class="text-gray-300 hover:text-white transition-colors">Home</a>
-                        <a href="{{ route('how-it-works') }}" class="text-gray-300 hover:text-white transition-colors">How It Works</a>
-                        <a href="{{ route('support') }}" class="text-gray-300 hover:text-white transition-colors">Support</a>
-                        <a href="{{ route('faq') }}" class="text-gray-300 hover:text-white transition-colors">FAQ</a>
-                        <a href="{{ route('privacy-policy') }}" class="text-gray-300 hover:text-white transition-colors">Privacy Policy</a>
-                        <a href="{{ route('terms') }}" class="text-gray-300 hover:text-white transition-colors">Terms &amp; Conditions</a>
-                        <a href="{{ route('refund-policy') }}" class="text-gray-300 hover:text-white transition-colors">Refund Policy</a>
-                    </div>
-                </div>
-
-                <!-- Contact Information -->
-                <div class="md:col-span-4">
-                    <h6 class="font-bold mb-4 text-white">Get In Touch</h6>
-                    <div class="space-y-4">
-                        <div class="flex items-center">
-                            <div class="mr-3 flex-shrink-0">
-                                <div class="w-9 h-9 flex items-center justify-center">
-                                    <img src="/static/assets/images/email.png" alt="email" class="w-full h-full object-contain">
-                                </div>
-                            </div>
-                            <div>
-                                <small class="text-gray-300 block text-xs">Email</small>
-                                <a href="mailto:support@owinace.com" class="text-white font-medium hover:text-gray-200 transition-colors">support@owinace.com</a>
-                            </div>
+<footer class="bg-dark pt-15 pb-10 md:pt-17.5 md:pb-10 lg:pt-25 lg:pb-10 overflow-hidden">
+    <div class="container">
+        <div class="grid md:grid-cols-2 md:gap-12.5 lg:grid-cols-8 lg:gap-5 gap-10">
+            <div class="lg:col-span-3">
+                <a href="{{ route('home') }}">
+                    <img src="/image/logo.svg" alt="Owinace" class="h-11">
+                </a>
+                <p class="mt-2.5 text-white">
+                    Trusted solutions for your growing business
+                </p>
+                <div class="mt-10 flex items-center gap-3.5 md:mt-15">
+                    <h2 class="md:text-5.5xl text-4xl text-white">4.8</h2>
+                    <div>
+                        <div class="mb-1 flex gap-1.5">
+                            <i class="iconify tabler--star-filled text-xl text-orange-300"></i>
+                            <i class="iconify tabler--star-filled text-xl text-orange-300"></i>
+                            <i class="iconify tabler--star-filled text-xl text-orange-300"></i>
+                            <i class="iconify tabler--star-filled text-xl text-orange-300"></i>
+                            <i class="iconify tabler--star-filled text-xl text-orange-300"></i>
                         </div>
+                        <div class="text-white">Best rated company</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="lg:col-span-3">
+                <h4 class="text-1.5xl mb-5 text-white">Pages</h4>
+                <div class="grid grid-cols-2 md:gap-12.5 lg:gap-5 gap-2.5">
+                    <div>
+                        <ul class="flex flex-col justify-start gap-2.5 leading-normal">
+                            <li>
+                                <a href="{{ route('home') }}" class="text-primary">Home</a>
+                            </li>
+                            <li>
+                                <a href="{{ route('how-it-works') }}" class="hover:text-primary text-white transition-all duration-300">How it Works</a>
+                            </li>
+                            <li>
+                                <a href="{{ route('support') }}" class="hover:text-primary text-white transition-all duration-300">Support</a>
+                            </li>
+                            <li>
+                                <a href="{{ route('faq') }}" class="hover:text-primary text-white transition-all duration-300">FAQ</a>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div>
+                        <ul class="flex flex-col justify-start gap-2.5 leading-normal">
+                            <li>
+                                <a href="{{ route('privacy-policy') }}" class="hover:text-primary text-white transition-all duration-300">Privacy</a>
+                            </li>
+                            <li>
+                                <a href="{{ route('terms') }}" class="hover:text-primary text-white transition-all duration-300">Terms</a>
+                            </li>
+                            <li>
+                                <a href="{{ route('refund-policy') }}" class="hover:text-primary text-white transition-all duration-300">Refund Policy</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="lg:col-span-2">
+                <h4 class="text-1.5xl mb-5 text-white">Contact us</h4>
+                <div>
+                    <p class="mb-3.75 text-sm text-white md:text-base">
+                        1234 Innovation drive, suite 100, tech city, CA 94043
+                    </p>
+
+                    <p class="hover:text-primary mb-3.75 text-sm text-white transition-all duration-300 md:text-base">
+                        <a href="tel:+917710113366">+91 7710113366</a>
+                    </p>
+
+                    <p class="hover:text-primary mb-3.75 text-sm text-white underline transition-all duration-300 md:text-base">
+                        <a href="mailto:support@owinace.com">support@owinace.com</a>
+                    </p>
+
+                    <div class="mt-7.5 flex items-center gap-2.5 md:mt-12.5">
                         <div class="flex items-center">
-                            <div class="mr-3 flex-shrink-0">
-                                <div class="w-9 h-9 flex items-center justify-center">
-                                    <img src="/static/assets/images/phone-call.png" alt="phone" class="w-full h-full object-contain">
-                                </div>
-                            </div>
-                            <div>
-                                <small class="text-gray-300 block text-xs">Phone</small>
-                                <a href="tel:+917710113366" class="text-white font-medium hover:text-gray-200 transition-colors">+91 7710113366</a>
-                            </div>
+                            <p class="text-lg text-white">👋 Follow Us:</p>
+                        </div>
+
+                        <div class="flex gap-4">
+                            <a href="#" class="flex">
+                                <i class="iconify tabler--brand-meta size-5 text-white transform transition duration-300 hover:scale-110"></i>
+                            </a>
+                            <a href="#" class="flex">
+                                <i class="iconify tabler--brand-dribbble size-5 text-white transform transition duration-300 hover:scale-110"></i>
+                            </a>
+                            <a href="#" class="flex">
+                                <i class="iconify tabler--brand-linkedin size-5 text-white transform transition duration-300 hover:scale-110"></i>
+                            </a>
+                            <a href="#" class="flex">
+                                <i class="iconify tabler--brand-x size-5 text-white transform transition duration-300 hover:scale-110"></i>
+                            </a>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Bottom Section -->
-        <div class="border-t border-white/10">
-            <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-4">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 items-center">
-                    <div>
-                        <p class="mb-0 text-gray-300 text-sm">
-                            © <a href="/" class="text-white font-bold hover:text-gray-200 transition-colors no-underline">Owinace</a>. 
-                            All rights reserved.
-                        </p>
-                    </div>
-                    <div class="mt-3 md:mt-0">
-                        <div class="flex items-center md:justify-end gap-3">
-                            <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 text-sm">
-                                <i class="fas fa-circle text-[6px]"></i>
-                                Launching Q4 2025
-                            </span>
-                            <small class="text-gray-300 text-sm">Powered by AI</small>
-                        </div>
-                    </div>
-                </div>
+        <hr class="border-top mt-7.5 border-neutral-700 md:mt-15">
+
+        <div class="flex justify-between pt-7.5 md:pt-10">
+            <div class="text-sm text-white">
+                © {{ date('Y') }}
+                <a href="{{ route('home') }}" class="underline">Owinace</a>.
+            </div>
+
+            <div class="text-sm text-white">
+                Crafted with ❤️ By <a href="#" class="underline">Coderthemes</a>
             </div>
         </div>
     </div>
 </footer>
-
-
-
-

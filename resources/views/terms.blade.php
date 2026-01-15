@@ -5,7 +5,7 @@
 @push('styles')
 <style>
     .terms-content {
-        max-width: 900px;
+        max-width: 980px;
         margin: 0 auto;
     }
 
@@ -18,14 +18,14 @@
     }
 
     .terms-section h2 {
-        color: #667eea;
+        color: #061d19;
         font-size: 1.75rem;
         font-weight: bold;
         margin-bottom: 1rem;
     }
 
     .terms-section h3 {
-        color: #374151;
+        color: #061d19;
         font-size: 1.25rem;
         font-weight: 600;
         margin-top: 1.5rem;
@@ -33,7 +33,7 @@
     }
 
     .terms-section p {
-        color: #6b7280;
+        color: #061d19;
         line-height: 1.75;
         margin-bottom: 1rem;
     }
@@ -41,14 +41,14 @@
     .terms-section ul {
         list-style: disc;
         padding-left: 1.5rem;
-        color: #6b7280;
+        color: #061d19;
         margin-bottom: 1rem;
     }
 
     .terms-section ol {
         list-style: decimal;
         padding-left: 1.5rem;
-        color: #6b7280;
+        color: #061d19;
         margin-bottom: 1rem;
     }
 
@@ -58,8 +58,8 @@
     }
 
     .last-updated {
-        background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1));
-        border-left: 4px solid #667eea;
+        background: #f3f3e5;
+        border-left: 4px solid #061d19;
         padding: 1rem;
         border-radius: 0.5rem;
         margin-bottom: 2rem;
@@ -76,27 +76,27 @@
 @endpush
 
 @section('content')
-<div class="w-full py-12 md:py-16 bg-gray-50">
-    <div class="container mx-auto px-4">
+<section class="w-full lg:py-25 md:py-22.5 py-17.5">
+    <div class="max-w-7xl mx-auto">
         <!-- Header -->
-        <div class="text-center mb-12">
-            <h1 class="text-4xl md:text-5xl font-bold mb-4 text-gray-900">Terms & Conditions</h1>
-            <p class="text-xl text-gray-600">
+        <div class="text-center lg:mb-12.5 mb-7.5">
+            <h1 class="lg:text-5.5xl md:text-4.6xl text-3.4xl mb-2.5">Terms & Conditions</h1>
+            <p class="text-base text-dark">
                 Please read these terms carefully before using our service
             </p>
         </div>
 
         <div class="terms-content">
             <div class="last-updated">
-                <p class="text-sm font-semibold text-gray-700 mb-0">
+                <p class="text-sm font-semibold text-dark mb-0">
                     <i class="fas fa-calendar-alt mr-2"></i>
                     Last Updated: {{ date('F d, Y') }}
                 </p>
             </div>
 
             <div class="important-notice">
-                <p class="text-sm font-semibold text-gray-800 mb-0">
-                    <i class="fas fa-exclamation-triangle mr-2"></i>
+                <p class="text-sm font-semibold text-dark mb-0">
+                    <i class="fas fa-exclamation-triangle mr-2 text-amber-500"></i>
                     By accessing and using {{ config('app.name', 'Owinace') }}, you accept and agree to be bound by the terms and provision of this agreement.
                 </p>
             </div>
@@ -254,6 +254,6 @@
             </div>
         </div>
     </div>
-</div>
+</section>
 @endsection
 

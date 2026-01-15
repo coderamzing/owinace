@@ -19,7 +19,7 @@
                 <a href="{{ url('/admin/buy-credits') }}" class="block w-full bg-primary-600 text-white text-center py-3 rounded-lg font-semibold hover:bg-primary-700 transition-colors">
                     Try Again
                 </a>
-                <a href="{{ route('home') }}" class="block w-full bg-gray-200 text-gray-800 text-center py-3 rounded-lg font-semibold hover:bg-gray-300 transition-colors">
+                <a href="{{ route('home') }}" class="block w-full bg-gray-200 text-gray-800 text-center py-3 rounded-lg font-semibold hover:bg-gray-200 transition-colors">
                     Back to Home
                 </a>
             </div>

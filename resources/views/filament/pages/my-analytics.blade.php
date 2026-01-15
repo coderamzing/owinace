@@ -54,7 +54,7 @@
         {{-- Summary Cards --}}
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             {{-- Total Goals --}}
-            <div class="bg-primary-50 dark:bg-primary-900/20 border border-primary-200 dark:border-primary-700 rounded-lg p-6">
+            <div class="border border-gray-200 dark:border-primary-700 rounded-lg p-6">
                 <div class="flex items-center justify-between">
                     <div>
                         <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Total Goals</p>
@@ -68,7 +68,7 @@
             </div>
 
             {{-- Achieved --}}
-            <div class="bg-success-50 dark:bg-success-900/20 border border-success-200 dark:border-success-700 rounded-lg p-6">
+            <div class="border border-gray-200 dark:border-success-700 rounded-lg p-6">
                 <div class="flex items-center justify-between">
                     <div>
                         <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Achieved</p>
@@ -82,7 +82,7 @@
             </div>
 
             {{-- Active --}}
-            <div class="bg-info-50 dark:bg-info-900/20 border border-info-200 dark:border-info-700 rounded-lg p-6">
+            <div class="border border-gray-200 dark:border-info-700 rounded-lg p-6">
                 <div class="flex items-center justify-between">
                     <div>
                         <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Active</p>
@@ -96,7 +96,7 @@
             </div>
 
             {{-- Success Rate --}}
-            <div class="bg-success-50 dark:bg-success-900/20 border border-success-200 dark:border-success-700 rounded-lg p-6">
+            <div class="border border-gray-200 dark:border-success-700 rounded-lg p-6">
                 <div class="flex items-center justify-between">
                     <div>
                         <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Success Rate</p>
@@ -115,7 +115,7 @@
         {{-- Leads Summary Cards --}}
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
             {{-- Total Leads --}}
-            <div class="bg-primary-50 dark:bg-primary-900/20 border border-primary-200 dark:border-primary-700 rounded-lg p-6">
+            <div class="border border-gray-200 dark:border-primary-700 rounded-lg p-6">
                 <div class="flex items-center justify-between">
                     <div>
                         <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Total Leads</p>
@@ -129,7 +129,7 @@
             </div>
 
             {{-- Won --}}
-            <div class="bg-success-50 dark:bg-success-900/20 border border-success-200 dark:border-success-700 rounded-lg p-6">
+            <div class="border border-gray-200 dark:border-success-700 rounded-lg p-6">
                 <div class="flex items-center justify-between">
                     <div>
                         <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Won</p>
@@ -143,7 +143,7 @@
             </div>
 
             {{-- Lost --}}
-            <div class="bg-danger-50 dark:bg-danger-900/20 border border-danger-200 dark:border-danger-700 rounded-lg p-6">
+            <div class="border border-gray-200 dark:border-danger-700 rounded-lg p-6">
                 <div class="flex items-center justify-between">
                     <div>
                         <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Lost</p>
@@ -157,7 +157,7 @@
             </div>
 
             {{-- Open --}}
-            <div class="bg-info-50 dark:bg-info-900/20 border border-info-200 dark:border-info-700 rounded-lg p-6">
+            <div class="border border-gray-200 dark:border-info-700 rounded-lg p-6">
                 <div class="flex items-center justify-between">
                     <div>
                         <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Open</p>
@@ -171,7 +171,7 @@
             </div>
 
             {{-- Proposals Created --}}
-            <div class="bg-primary-50 dark:bg-primary-900/20 border border-primary-200 dark:border-primary-700 rounded-lg p-6">
+            <div class="border border-gray-200 dark:border-primary-700 rounded-lg p-6">
                 <div class="flex items-center justify-between">
                     <div>
                         <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Proposals</p>
@@ -186,7 +186,7 @@
         </div>
 
         {{-- Goals Table --}}
-        <div class="bg-gray-50 dark:bg-gray-900/50 border border-gray-300 dark:border-gray-600 rounded-lg overflow-hidden">
+        <div class="border border-gray-200 dark:bg-gray-900/50 border border-gray-300 dark:border-gray-600 rounded-lg overflow-hidden">
 
             <div class="p-6 border-b-2 border-primary-200 dark:border-primary-700 bg-[#fff5f6] dark:bg-[#2a1a1c]">
                 <div class="flex items-center gap-3">
@@ -304,7 +304,7 @@
         </div>
 
         {{-- Tips Section --}}
-        <div class=" bg-[#f3faf5] dark:bg-[#232a1a] border border-success-200 dark:border-success-700 rounded-lg p-8 overflow-hidden relative">
+        <div class="border border-gray-200 dark:border-success-700 rounded-lg p-8 overflow-hidden relative">
             <div class="absolute top-0 right-0 w-64 h-64 bg-success-100 dark:bg-success-900/10 rounded-full -mr-32 -mt-32 opacity-30"></div>
             <div class="relative">
                 <div class="flex items-center gap-3 mb-6">

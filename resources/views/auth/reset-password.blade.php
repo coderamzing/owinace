@@ -8,13 +8,13 @@
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
                 <div class="hidden lg:flex flex-col space-y-4">
                     <p class="text-xs font-semibold tracking-[0.2em] uppercase text-indigo-600">
-                        Reset your password
+                        Secure employee access
                     </p>
                     <h2 class="text-3xl font-semibold tracking-tight sm:text-4xl text-gray-900">
-                        Create a new password
+                        Reset your workspace password
                     </h2>
                     <p class="text-sm text-gray-600 max-w-md">
-                        Enter your new password below to reset your account password.
+                        Choose a strong new password so you can get back to managing your team and proposals with confidence.
                     </p>
                 </div>
 
@@ -26,8 +26,11 @@
                                     Password reset
                                 </p>
                                 <h1 class="text-2xl font-semibold tracking-tight text-gray-900 sm:text-3xl">
-                                    Reset your password
+                                    Create a new password
                                 </h1>
+                                <p class="text-sm text-gray-600">
+                                    Enter your email and a new password below to securely update your account.
+                                </p>
                             </div>
 
                             <form method="POST" action="{{ route('password.store') }}" class="space-y-5">
@@ -38,7 +41,7 @@
 
                                 <!-- Email Address -->
                                 <div>
-                                    <x-input-label for="email" :value="__('Email')" />
+                                    <x-input-label for="email" :value="__('Work email')" />
                                     <x-text-input 
                                         id="email" 
                                         class="block mt-1 w-full" 
@@ -48,6 +51,7 @@
                                         required 
                                         autofocus 
                                         autocomplete="username" 
+                                        placeholder="you@company.com"
                                     />
                                     <x-input-error :messages="$errors->get('email')" class="mt-2" />
                                 </div>
@@ -61,7 +65,8 @@
                                         type="password" 
                                         name="password" 
                                         required 
-                                        autocomplete="new-password" 
+                                        autocomplete="new-password"
+                                        placeholder="••••••••" 
                                     />
                                     <x-input-error :messages="$errors->get('password')" class="mt-2" />
                                 </div>
@@ -76,6 +81,7 @@
                                         name="password_confirmation" 
                                         required 
                                         autocomplete="new-password" 
+                                        placeholder="••••••••"
                                     />
                                     <x-input-error :messages="$errors->get('password_confirmation')" class="mt-2" />
                                 </div>
@@ -84,6 +90,18 @@
                                     <x-primary-button class="w-full justify-center">
                                         {{ __('Reset Password') }}
                                     </x-primary-button>
+
+                                    @if (Route::has('login'))
+                                        <p class="text-center text-xs text-gray-500">
+                                            {{ __('Remembered your password?') }}
+                                            <a
+                                                href="{{ route('login') }}"
+                                                class="font-medium text-indigo-600 hover:text-indigo-700"
+                                            >
+                                                {{ __('Sign in instead') }}
+                                            </a>
+                                        </p>
+                                    @endif
                                 </div>
                             </form>
                         </div>

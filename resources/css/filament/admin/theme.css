@@ -8,36 +8,18 @@
 @source '../../../../app/Filament/**/*';
 @source '../../../../resources/views/filament/**/*';
 
-/* ============================================
+
+/** ============================================
    GLOBAL STYLES - Premium Modern Design
    ============================================ */
 :root {
-    --primary-gradient: linear-gradient(135deg, #0F766E 0%, #14B8A6 100%);
-    --secondary-gradient: linear-gradient(135deg, #10B981 0%, #34D399 100%);
-    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-    --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    --color-gray-200: #e2e8f0;
+    --font-family: "Inter", sans-serif;
+    --color-dark: #061d19;
+    --color-primary: #b8ff90;
+    --color-white: #fff;
 }
 
-* {
-    /* Animations removed for better performance */
-    font-family: var(--font-family);
-}
-
-/* Force square borders on all elements */
-*,
-*::before,
-*::after {
-    border-radius: 0 !important;
-}
-
-/* Allow specific exceptions if needed (like scrollbar thumb can stay rounded) */
-::-webkit-scrollbar-thumb {
-    border-radius: 0 !important;
-}
-
-/* Main content width - Full width */
 main.fi-main,
 .fi-main.fi-width-7xl,
 .fi-main[class*="fi-width"] {
@@ -45,355 +27,50 @@ main.fi-main,
     width: 100% !important;
 }
 
-/* ============================================
-INPUTS & FORMS - Modern Form Design
-============================================ */
-.fi-input,
-.fi-select,
-.fi-textarea {
-    @apply border-2 border-slate-300 bg-white text-slate-900;
-    @apply focus:border-teal-500 focus:ring-4 focus:ring-teal-500/20;
-    padding: 0.75rem 1rem;
-    font-size: 0.9375rem;
-    border-radius: 0;
-}
-
-.fi-input:hover,
-.fi-select:hover,
-.fi-textarea:hover {
-    @apply border-slate-400;
-}
-
-.fi-input:focus,
-.fi-select:focus,
-.fi-textarea:focus {
-    @apply border-teal-500 shadow-lg;
-}
-
-.fi-input::placeholder,
-.fi-textarea::placeholder {
-    @apply text-slate-400;
-}
-
-.fi-input-wrp {
-    border-radius: 0;
-}
-
-.fi-input-wrp-label {
-    @apply text-slate-700 font-semibold mb-2;
-    font-size: 0.875rem;
-    letter-spacing: 0.025em;
-}
-
-
-/* ============================================
-   TABLES - Premium Table Design
-   ============================================ */
 .fi-layout{
-    @apply bg-white;
-}   
-.fi-ta-ctn {
-    @apply shadow-none border-none rounded-none;
-    box-shadow: none !important;
+    background-color: var(--color-white);
+    &:where(.dark, .dark *) {
+        background-color: var(--color-dark);
+    }
 }
-.fi-ta-filters-above-content-ctn{
-    @apply bg-gray-50;
-}
+
 
 /* ============================================
-   WIDGETS - Enhanced Box Shadow
-   ============================================ */
-.fi-wi {
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05) !important;
-    transition: box-shadow 0.3s ease-in-out;
+Widgets
+============================================ */
+.fi-topbar{
+    border-bottom: 1px solid var(--color-gray-200);
+    box-shadow: none;
 }
-
-.fi-wi:hover {
-    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04) !important;
+.fi-wi-stats-overview-stat{
+    border: 1px solid var(--color-gray-200);
+    box-shadow: none;
+    &:where(.dark, .dark *) {
+        border: 1px solid var(--color-primary);
+        background-color: var(--color-dark);
+    }
 }
-
-/* Specific widget styling for table widgets */
-.fi-wi-table {
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05) !important;
-    transition: box-shadow 0.3s ease-in-out;
-}
-
-.fi-wi-table:hover {
-    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04) !important;
-}
-
-/* Custom CSS */
-
-.fi-pagination,
-.filter-form > .fi-sc{
-    display: flex !important;
-    justify-content: space-between;
-    align-items: center;
-    gap: 10px;
-}
-
-.filter-form > .fi-sc{
-    width: 87%;
-}
-
-.filter-form .fi-ta-filters-actions-ctn{
-    width: calc(100% - 87%);
-}
-
-.filter-form .fi-input{
-    padding: 6px 12px;
-}
-.filter-form .fi-fo-field-label-col{
-    display: none;
-}
-
-.filter-form .fi-sc > .fi-grid-col {
-    flex: 1 1 auto;
-    min-width: 0;
-}
-.fi-ta-filters{
-    margin-bottom: calc(var(--spacing) * 4);
-}
-
-.items-end{
-    align-items: end !important;
-}
-
-.notice-description{
-    text-wrap: wrap;
-}
-.fi-ta-cell-notice-card button{
-    pointer-events: none;
-}
-
-table tbody tr > td.fi-ta-cell-notice-card,
-table tbody tr > td.fi-ta-cell-notice-card ~ td{
-    background: #fff;
-}
-
-table tbody tr > td.fi-ta-cell-notice-card{
-    border-left: 4px solid #ad3a43;
-}
-
-.analytics-border > div,
-.analytics-border > div:hover,
-.analytics-dashboard div:nth-child(6) div,
-.analytics-dashboard div:nth-child(7) div,
-.analytics-dashboard div:nth-child(6) div:hover,
-.analytics-dashboard div:nth-child(7) div:hover {
-    box-shadow: none !important;
+.fi-wi-stats-overview-stat-label{
+    color: var(--color-dark);
+    &:where(.dark, .dark *) {
+        color: var(--color-white);
+    }
 }
 
 
-
-.analytics-dashboard div:nth-child(6),
-.analytics-dashboard div:nth-child(7),
-.fi-wi-table{
-    border: 0.8px solid #e3e3e3;
+/* ============================================
+Sidebar
+============================================ */
+.fi-sidebar-item.fi-active a,
+.fi-sidebar-item.fi-active .fi-icon,
+.fi-sidebar-item.fi-active .fi-sidebar-item-label
+{
+    background-color: var(--color-primary);
+    color: var(--color-dark);
 }
 
-:where(.dark, .dark *) .fi-wi-table,
-:where(.dark, .dark *) .analytics-dashboard div:nth-child(6),
-:where(.dark, .dark *) .analytics-dashboard div:nth-child(7) {
-    border: 0.8px solid #e3e3e317;
+/* Custom text size for goals widget */
+.text-xs-plus {
+    font-size: 0.8125rem;
+    line-height: 1.25rem;
 }
-
-.filter-section{
-    background-image: linear-gradient(180deg, #a53740, #872d34);
-}
-
-.fi-ta-filters-header h2,
-.filter-form label span{
-    color: #fff !important;
-}
-
-.filter-section .fi-ta-filters .fi-ta-filters-header button{
-    padding: 4px 10px;
-    background: #fff;
-}
-
-.filter-section input,
-.filter-section select{
-    border: 1px solid #e3e3e3;
-    padding: 6px 12px;
-}
-
-.filter-section input{
-    padding: 4px 12px;
-}
-
-nav.fi-sidebar-nav,
-nav.fi-topbar{
-    background: #f5f4f4;
-}
-
-.fi-sidebar-nav .fi-sidebar-nav-groups ul li.fi-active a{
-    background-color: #ad3a43 !important;
-    border-radius: 6px !important;
-}
-
-.fi-sidebar-nav .fi-sidebar-nav-groups ul li.fi-active a svg{
-    stroke: #fff;
-}
-
-.fi-sidebar-nav .fi-sidebar-nav-groups ul li.fi-active a span{
-    color: #fff;
-}
-
-.fi-ta-filters-above-content-ctn{
-    border: 1px solid #e3e3e3 !important;
-}
-
-tbody:has(td.fi-ta-cell-notice-card){
-    background: #ad3a434f;
-    padding: 10px;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    min-width: 100%;
-}
-table tbody tr > td.fi-ta-cell-notice-card{
-    min-width: 90%;
-}
-
-.fi-modal-footer .fi-modal-footer-actions button:nth-child(3){
-    background: #ff0606c2;
-    color: #fff;
-}
-
-.fi-modal-footer .fi-modal-footer-actions button:first-child{
-    background: #ad3a43;
-    color: #fff;
-}
-
-.lead-generation-form .fi-sc > div.fi-grid-col .fi-sc-component .fi-fo-field .fi-fo-field-label-col{
-    display: none;
-}
-
-.lead-generation-form .fi-sc div.fi-grid-col .fi-sc-component .fi-fo-field .fi-fo-field-content-col .fi-fo-radio{
-    display: flex;
-    justify-content: center;
-}
-
-
-.my-profile-tabs nav button.fi-tabs-item{
-    background-color: #fafafa;
-    border-radius: 4px !important;
-}
-
-.my-profile-tabs nav button.fi-tabs-item svg,
-.my-profile-tabs nav button.fi-tabs-item span {
-    color: #ad3a43;
-}
-
-.my-profile-tabs nav button.fi-tabs-item.fi-active{
-    background-color: #ad3a43;
-}
-
-.my-profile-tabs nav button.fi-tabs-item.fi-active svg,
-.my-profile-tabs nav button.fi-tabs-item.fi-active span {
-    color: #fff;
-}
-
-.profile-submit-button button{
-    background: #ad3a43;
-    color: #fff;
-    border-radius: 6px !important;
-}
-
-.profile-submit-button button svg{
-    color: #fff;
-}
-
-.fi-ta-filters-actions-ctn button:nth-child(2){
-    background-color: #fff;
-}
-
-.kanban-arrow {
-    position: relative;
-    overflow: visible; /* important */
-    padding-left: 30px;
-}
-
-#kanban-board ~ .kanban-arrow:first-child{
-    padding-left: 16px;
-}
-
-.attachments-section .space-y-4 > div.border-2,
-.attachments-section .space-y-4 > div.space-y-3 .space-y-2 > div{
-    background: #fff;
-}
-
-/* arrow border */
-.kanban-arrow::before {
-    content: "";
-    position: absolute;
-    top: -1px;
-    right: -23px;
-    width: 0;
-    height: 0;
-    border-top: 26px solid transparent;
-    border-bottom: 26px solid transparent;
-    border-left: 22px solid #e5e7eb;
-    z-index: 1;
-}
-
-.kanban-arrow::after {
-    content: "";
-    position: absolute;
-    top: -2px;
-    right: -55px;
-    width: 0;
-    height: 0;
-    border-top: 25px solid transparent;
-    border-bottom: 25px solid transparent;
-    border-left: 21px solid #ffffff;
-    z-index: 2;
-}
-
-#kanban-board .kanban-div:last-child .kanban-arrow::before{
-    display: none;
-}
-
-/* Dark mode support */
-.dark .kanban-arrow::after {
-    border-left-color: #1f2937; /* gray-800 */
-}
-
-
-/* Dark theme */
-
-:where(.dark, .dark *) nav.fi-sidebar-nav,
-:where(.dark, .dark *) nav.fi-topbar {
-    background: #000;
-}
-:where(.dark, .dark *) .fi-main{
-    background-color: #1b1718;
-}
-
-:where(.dark, .dark *) .filter-form .fi-input,
-:where(.dark, .dark *) .fi-input,
-:where(.dark, .dark *) .fi-select-input,
-:where(.dark, .dark *) #table-search{
-    background-color: #242427;
-    border: 1px solid #fff;
-}
-
-:where(.dark, .dark *) .fi-logo{
-    filter: invert(1);
-}
-
-:where(.dark, .dark *) .fi-ta-filters-above-content-ctn{
-    border: 1px solid #ffffff17 !important;
-}
-
-:where(.dark, .dark *) .fi-pagination .fi-pagination-records-per-page-select-ctn .fi-input-wrp-label{
-    color: #fff;
-    margin-bottom: 0;
-}
-
-:where(.dark, .dark *) table tbody tr > td.fi-ta-cell-notice-card,
-:where(.dark, .dark *) table tbody tr > td.fi-ta-cell-notice-card ~ td{
-    background: #242427;
-}
-

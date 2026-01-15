@@ -17,6 +17,11 @@ Route::get('/contact', function () {
     return view('contact');
 })->name('contact');
 
+Route::get('/pricing', function () {
+    $tiers = \App\Models\Tier::where('is_active', true)->orderBy('price', 'asc')->get();
+    return view('pages.pricing', compact('tiers'));
+})->name('pricing');
+
 Route::get('/privacy-policy', function () {
     return view('privacy-policy');
 })->name('privacy-policy');

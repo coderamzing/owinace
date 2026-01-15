@@ -64,99 +64,108 @@
 @endpush
 
 @section('content')
-<div class="w-full py-12 md:py-16 bg-gray-50">
-    <div class="container mx-auto px-4">
-        <!-- Header -->
-        <div class="text-center mb-12">
-            <h1 class="text-4xl md:text-5xl font-bold mb-4 text-gray-900">Contact Us</h1>
-            <p class="text-xl text-gray-600 max-w-2xl mx-auto">
-                Have questions? We'd love to hear from you. Send us a message and we'll respond as soon as possible.
-            </p>
-        </div>
+    <section class="bg-body-bg lg:py-25 md:py-22.5 py-17.5">
+        <div class="container-small">
 
-        <!-- Contact Cards -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
-            <div class="contact-card text-center">
-                <div class="contact-icon mx-auto">
-                    <i class="fas fa-envelope"></i>
-                </div>
-                <h3 class="text-xl font-bold mb-2">Email Us</h3>
-                <p class="text-gray-600 mb-3">Our team is here to help</p>
-                <a href="mailto:support@owinace.com" class="text-purple-600 hover:text-purple-700 font-semibold">
-                    support@owinace.com
-                </a>
+            <div class="text-center md:mb-12.5 mb-7.5 aos-init aos-animate"
+                 data-aos="fade-up"
+                 data-aos-delay="150"
+                 data-aos-duration="500"
+                 data-aos-easing="ease-in-out">
+                <h2 class="mb-2.5 lg:text-6xl md:text-4.6xl text-4xl">We're ready to assist you</h2>
+                <p>Have questions? We’re ready to help!</p>
             </div>
 
-            <div class="contact-card text-center">
-                <div class="contact-icon mx-auto">
-                    <i class="fas fa-phone"></i>
-                </div>
-                <h3 class="text-xl font-bold mb-2">Call Us</h3>
-                <p class="text-gray-600 mb-3">Mon-Fri from 9am to 6pm</p>
-                <a href="tel:+1234567890" class="text-purple-600 hover:text-purple-700 font-semibold">
-                    +1 (234) 567-890
-                </a>
-            </div>
+            <div class="grid lg:grid-cols-2 lg:gap-12.5 md:gap-5 gap-7.5 aos-init aos-animate"
+                 data-aos="fade-up"
+                 data-aos-delay="150"
+                 data-aos-duration="500"
+                 data-aos-easing="ease-in-out">
 
-            <div class="contact-card text-center">
-                <div class="contact-icon mx-auto">
-                    <i class="fas fa-map-marker-alt"></i>
-                </div>
-                <h3 class="text-xl font-bold mb-2">Visit Us</h3>
-                <p class="text-gray-600 mb-3">Come say hello</p>
-                <p class="text-purple-600 font-semibold">
-                    123 Business St, Suite 100<br>
-                    City, State 12345
-                </p>
-            </div>
-        </div>
+                <div class="bg-primary lg:p-10 p-5 rounded-2xl h-full flex justify-between gap-12.5 flex-col">
+                    <div>
+                        <h2 class="text-2.5xl">
+                            For any inquiries or feedback, our team is here to assist you.
+                        </h2>
+                    </div>
 
-        <!-- Contact Form -->
-        <div class="max-w-3xl mx-auto">
-            <div class="contact-card">
-                <h2 class="text-2xl font-bold mb-6">Send us a Message</h2>
-                <form action="#" method="POST" class="space-y-6">
+                    <div class="flex gap-2.5 flex-col">
+                        <a href="mailto:hello@example.com" class="underline text-dark">hello@example.com</a>
+                        <a href="tel:+0124574578" class="underline text-dark">+0 12 457 4578</a>
+                        <p>Chicago HQ Estica Cop. Macomb, MI 48042</p>
+                    </div>
+                </div>
+
+                <form action="#" method="POST">
                     @csrf
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div>
-                            <label for="name" class="block text-sm font-semibold text-gray-700 mb-2">Name *</label>
-                            <input type="text" id="name" name="name" required class="form-input" placeholder="Your name">
+                    <!-- Name  -->
+                    <div class="mb-5">
+                        <label for="name" class="mb-1.25 block font-normal">Name</label>
+                        <input
+                            class="rounded-2xl py-2.5 px-5 border border-neutral-200 w-full h-14"
+                            maxlength="256"
+                            name="name"
+                            id="name"
+                            placeholder="John Deo"
+                            type="text">
+                    </div>
+
+                    <!-- Email Address  -->
+                    <div class="mb-5">
+                        <label for="email" class="mb-1.25 block font-normal">Email address</label>
+                        <input
+                            class="rounded-2xl py-2.5 px-5 border border-neutral-200 w-full h-14"
+                            maxlength="256"
+                            name="email"
+                            id="email"
+                            placeholder="hello@example.com"
+                            type="email">
+                    </div>
+
+                    <div class="mb-5 flex gap-5 lg:flex-row flex-col">
+                        <!-- Phone  -->
+                        <div class="w-full">
+                            <label for="phone" class="mb-1.25 block font-normal">Phone</label>
+                            <input
+                                class="rounded-2xl py-2.5 px-5 border border-neutral-200 w-full h-14"
+                                name="phone"
+                                id="phone"
+                                placeholder="+2 123 456 66"
+                                type="text">
                         </div>
-                        <div>
-                            <label for="email" class="block text-sm font-semibold text-gray-700 mb-2">Email *</label>
-                            <input type="email" id="email" name="email" required class="form-input" placeholder="your@email.com">
+                        <!-- Subject  -->
+                        <div class="w-full">
+                            <label for="subject" class="mb-1.25 block font-normal">Subject</label>
+                            <input
+                                class="rounded-2xl py-2.5 px-5 border border-neutral-200 w-full h-14"
+                                name="subject"
+                                id="subject"
+                                placeholder="Subject"
+                                type="text">
                         </div>
                     </div>
 
-                    <div>
-                        <label for="subject" class="block text-sm font-semibold text-gray-700 mb-2">Subject *</label>
-                        <input type="text" id="subject" name="subject" required class="form-input" placeholder="How can we help?">
+                    <!-- Message  -->
+                    <div class="mb-5">
+                        <label for="message" class="mb-1.25 block font-normal">Message</label>
+                        <textarea
+                            class="rounded-2xl py-2.5 px-5 border border-neutral-200 w-full h-50"
+                            name="message"
+                            id="message"
+                            maxlength="5000"
+                            placeholder="Comment"></textarea>
                     </div>
 
                     <div>
-                        <label for="message" class="block text-sm font-semibold text-gray-700 mb-2">Message *</label>
-                        <textarea id="message" name="message" rows="6" required class="form-input" placeholder="Tell us more about your inquiry..."></textarea>
-                    </div>
-
-                    <div>
-                        <button type="submit" class="btn-primary w-full md:w-auto">
-                            <i class="fas fa-paper-plane mr-2"></i>
-                            Send Message
+                        <button
+                            type="submit"
+                            class="md:h-14 w-full py-3.5 lg:px-7.5 px-6.5 text-center bg-dark font-medium rounded-2xl text-white transition-all duration-300 hover:text-primary">
+                            Submit
                         </button>
                     </div>
                 </form>
             </div>
         </div>
-
-        <!-- FAQ Section -->
-        <div class="mt-16 text-center">
-            <h2 class="text-3xl font-bold mb-4">Frequently Asked Questions</h2>
-            <p class="text-gray-600 mb-6">
-                Find answers to common questions in our 
-                <a href="{{ route('how-it-works') }}" class="text-purple-600 hover:text-purple-700 font-semibold">FAQ section</a>
-            </p>
-        </div>
-    </div>
-</div>
+    </section>
 @endsection
 

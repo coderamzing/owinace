@@ -3,80 +3,63 @@
 @section('title', 'Forgot Password')
 
 @section('content')
-    <section class="py-16 sm:py-20 bg-gradient-to-br from-indigo-50 via-white to-blue-50">
-        <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
-                <div class="hidden lg:flex flex-col space-y-4">
-                    <p class="text-xs font-semibold tracking-[0.2em] uppercase text-indigo-600">
-                        Reset your password
-                    </p>
-                    <h2 class="text-3xl font-semibold tracking-tight sm:text-4xl text-gray-900">
-                        Get back to your workspace
-                    </h2>
-                    <p class="text-sm text-gray-600 max-w-md">
-                        Enter your email address and we'll send you a link to reset your password so you can regain access to your account.
-                    </p>
+    <section class="bg-white lg:py-25 md:py-22.5 py-17.5 md:h-dvh flex items-center">
+        <div class="container">
+            <div class="lg:w-4/10 md:w-7/10 mx-auto aos-init aos-animate"
+                 data-aos="fade-up"
+                 data-aos-delay="150"
+                 data-aos-duration="500"
+                 data-aos-easing="ease-in-out">
+                <div class="lg:mb-12.5 md:mb-10 mb-7.5 text-center">
+                    <h1 class="lg:text-6xl md:text-5.5xl text-4xl">Reset password</h1>
+                    <p class="mb-2.5">Enter your registered email to reset your password.</p>
                 </div>
 
-                <div>
-                    <div class="bg-white border border-gray-200 rounded-2xl shadow-xl px-6 py-8 sm:px-8 sm:py-10 max-w-md mx-auto">
-                        <div class="space-y-6">
-                            <div class="space-y-2 text-center lg:text-left">
-                                <p class="text-xs font-semibold tracking-wide text-indigo-600 uppercase">
-                                    Password recovery
-                                </p>
-                                <h1 class="text-2xl font-semibold tracking-tight text-gray-900 sm:text-3xl">
-                                    Reset your password
-                                </h1>
-                                <p class="text-sm text-gray-600">
-                                    Enter your email address and we'll send you a password reset link.
-                                </p>
-                            </div>
+                <div class="bg-body-bg md:p-10 p-5 rounded-2xl">
+                    <!-- Session Status -->
+                    <x-auth-session-status class="mb-4" :status="session('status')" />
 
-                            <!-- Session Status -->
-                            <x-auth-session-status class="mb-4" :status="session('status')" />
+                    <form method="POST" action="{{ route('password.email') }}" class="mb-3.75 space-y-5">
+                        @csrf
 
-                            <form method="POST" action="{{ route('password.email') }}" class="space-y-5">
-                                @csrf
-
-                                <!-- Email Address -->
-                                <div>
-                                    <x-input-label for="email" :value="__('Work email')" />
-                                    <x-text-input
-                                        id="email"
-                                        class="block mt-1 w-full"
-                                        type="email"
-                                        name="email"
-                                        :value="old('email')"
-                                        required
-                                        autofocus
-                                        autocomplete="username"
-                                        placeholder="you@company.com"
-                                    />
-                                    <x-input-error :messages="$errors->get('email')" class="mt-2" />
-                                </div>
-
-                                <div class="space-y-4">
-                                    <x-primary-button class="w-full justify-center">
-                                        {{ __('Email Password Reset Link') }}
-                                    </x-primary-button>
-
-                                    @if (Route::has('login'))
-                                        <p class="text-center text-xs text-gray-500">
-                                            {{ __('Remember your password?') }}
-                                            <a
-                                                href="{{ route('login') }}"
-                                                class="font-medium text-indigo-600 hover:text-indigo-700"
-                                            >
-                                                {{ __('Sign in instead') }}
-                                            </a>
-                                        </p>
-                                    @endif
-                                </div>
-                            </form>
+                        <!-- Email Address -->
+                        <div class="mb-5">
+                            <x-input-label for="email" :value="__('Work email')" class="mb-1.25 block font-normal" />
+                            <x-text-input
+                                id="email"
+                                class="rounded-2xl py-2.5 px-5 border border-neutral-200 w-full h-14"
+                                type="email"
+                                name="email"
+                                :value="old('email')"
+                                required
+                                autofocus
+                                autocomplete="username"
+                                placeholder="Your email"
+                            />
+                            <x-input-error :messages="$errors->get('email')" class="mt-2" />
                         </div>
-                    </div>
+
+                        <div>
+                            <x-primary-button
+                                class="md:h-14 w-full py-3.5 lg:px-7.5 px-6.5 text-center bg-dark font-medium rounded-2xl text-white transition-all duration-300 hover:text-primary justify-center"
+                            >
+                                {{ __('Send reset link') }}
+                            </x-primary-button>
+                        </div>
+                    </form>
+
+                    @if (Route::has('login'))
+                        <div class="flex md:justify-between md:gap-5 md:flex-row gap-1.25 flex-col">
+                            <p>
+                                {{ __('Remember your password?') }}
+                                <a href="{{ route('login') }}" class="underline text-dark">
+                                    {{ __('Log in') }}
+                                </a>
+                            </p>
+                        </div>
+                    @endif
                 </div>
+
             </div>
         </div>
     </section>
