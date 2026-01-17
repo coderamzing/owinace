@@ -3,109 +3,92 @@
 @section('title', 'Reset Password')
 
 @section('content')
-    <section class="py-16 sm:py-20 bg-gradient-to-br from-indigo-50 via-white to-blue-50">
-        <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
-                <div class="hidden lg:flex flex-col space-y-4">
-                    <p class="text-xs font-semibold tracking-[0.2em] uppercase text-indigo-600">
-                        Secure employee access
-                    </p>
-                    <h2 class="text-3xl font-semibold tracking-tight sm:text-4xl text-gray-900">
-                        Reset your workspace password
-                    </h2>
-                    <p class="text-sm text-gray-600 max-w-md">
-                        Choose a strong new password so you can get back to managing your team and proposals with confidence.
-                    </p>
+    <section class="bg-white lg:py-25 md:py-22.5 py-17.5 md:min-h-[50vh] flex items-center">
+        <div class="container">
+            <div class="lg:w-4/10 md:w-7/10 mx-auto" data-aos="fade-up" data-aos-delay="150" data-aos-duration="500"
+                 data-aos-easing="ease-in-out">
+                <div class="lg:mb-12.5 md:mb-10 mb-7.5 text-center">
+                    <h1 class="lg:text-6xl md:text-5.5xl text-4xl">Reset password</h1>
+                    <p class="mb-2.5">Enter your email and a new password below to securely update your account.</p>
                 </div>
 
-                <div>
-                    <div class="bg-white border border-gray-200 rounded-2xl shadow-xl px-6 py-8 sm:px-8 sm:py-10 max-w-md mx-auto">
-                        <div class="space-y-6">
-                            <div class="space-y-2 text-center lg:text-left">
-                                <p class="text-xs font-semibold tracking-wide text-indigo-600 uppercase">
-                                    Password reset
-                                </p>
-                                <h1 class="text-2xl font-semibold tracking-tight text-gray-900 sm:text-3xl">
-                                    Create a new password
-                                </h1>
-                                <p class="text-sm text-gray-600">
-                                    Enter your email and a new password below to securely update your account.
-                                </p>
-                            </div>
+                <div class="bg-body-bg md:p-10 p-5 rounded-2xl">
+                    <!-- Session Status -->
+                    <x-auth-session-status class="mb-4" :status="session('status')" />
 
-                            <form method="POST" action="{{ route('password.store') }}" class="space-y-5">
-                                @csrf
+                    <form method="POST" action="{{ route('password.store') }}" class="mb-3.75 space-y-5">
+                        @csrf
 
-                                <!-- Password Reset Token -->
-                                <input type="hidden" name="token" value="{{ $request->route('token') }}">
+                        <!-- Password Reset Token -->
+                        <input type="hidden" name="token" value="{{ $request->route('token') }}">
 
-                                <!-- Email Address -->
-                                <div>
-                                    <x-input-label for="email" :value="__('Work email')" />
-                                    <x-text-input 
-                                        id="email" 
-                                        class="block mt-1 w-full" 
-                                        type="email" 
-                                        name="email" 
-                                        :value="old('email', $request->email)" 
-                                        required 
-                                        autofocus 
-                                        autocomplete="username" 
-                                        placeholder="you@company.com"
-                                    />
-                                    <x-input-error :messages="$errors->get('email')" class="mt-2" />
-                                </div>
-
-                                <!-- Password -->
-                                <div>
-                                    <x-input-label for="password" :value="__('Password')" />
-                                    <x-text-input 
-                                        id="password" 
-                                        class="block mt-1 w-full" 
-                                        type="password" 
-                                        name="password" 
-                                        required 
-                                        autocomplete="new-password"
-                                        placeholder="••••••••" 
-                                    />
-                                    <x-input-error :messages="$errors->get('password')" class="mt-2" />
-                                </div>
-
-                                <!-- Confirm Password -->
-                                <div>
-                                    <x-input-label for="password_confirmation" :value="__('Confirm Password')" />
-                                    <x-text-input 
-                                        id="password_confirmation" 
-                                        class="block mt-1 w-full"
-                                        type="password"
-                                        name="password_confirmation" 
-                                        required 
-                                        autocomplete="new-password" 
-                                        placeholder="••••••••"
-                                    />
-                                    <x-input-error :messages="$errors->get('password_confirmation')" class="mt-2" />
-                                </div>
-
-                                <div class="space-y-4">
-                                    <x-primary-button class="w-full justify-center">
-                                        {{ __('Reset Password') }}
-                                    </x-primary-button>
-
-                                    @if (Route::has('login'))
-                                        <p class="text-center text-xs text-gray-500">
-                                            {{ __('Remembered your password?') }}
-                                            <a
-                                                href="{{ route('login') }}"
-                                                class="font-medium text-indigo-600 hover:text-indigo-700"
-                                            >
-                                                {{ __('Sign in instead') }}
-                                            </a>
-                                        </p>
-                                    @endif
-                                </div>
-                            </form>
+                        <!-- Email Address -->
+                        <div class="mb-5">
+                            <x-text-input
+                                id="email"
+                                class="rounded-2xl py-2.5 px-5 border border-neutral-200 w-full h-14 block mt-1"
+                                type="hidden"
+                                name="email"
+                                :value="old('email', $request->email)"
+                                required
+                                autofocus
+                                autocomplete="username"
+                                placeholder="Your email"
+                            />
+                            <x-input-error :messages="$errors->get('email')" class="mt-2" />
                         </div>
-                    </div>
+
+                        <!-- Password -->
+                        <div class="mb-5">
+                            <x-input-label for="password" :value="__('Password')" class="mb-1.25 block font-normal" />
+                            <x-text-input
+                                id="password"
+                                class="rounded-2xl py-2.5 px-5 border border-neutral-200 w-full h-14 block mt-1"
+                                type="password"
+                                name="password"
+                                :value="old('password')"
+                                required
+                                autocomplete="new-password"
+                                placeholder="Password"
+                            />
+                            <x-input-error :messages="$errors->get('password')" class="mt-2" />
+                        </div>
+
+                        <!-- Confirm Password -->
+                        <div class="mb-5">
+                            <x-input-label for="password_confirmation" :value="__('Confirm Password')" class="mb-1.25 block font-normal" />
+                            <x-text-input
+                                id="password_confirmation"
+                                class="rounded-2xl py-2.5 px-5 border border-neutral-200 w-full h-14 block mt-1"
+                                type="password"
+                                name="password_confirmation"
+                                :value="old('password_confirmation')"
+                                required
+                                autocomplete="new-password"
+                                placeholder="Confirm password"
+                            />
+                            <x-input-error :messages="$errors->get('password_confirmation')" class="mt-2" />
+                        </div>
+
+                        <div>
+                            <x-primary-button
+                                class="md:h-14 w-full py-3.5 lg:px-7.5 px-6.5 text-center bg-dark font-medium rounded-2xl text-white transition-all duration-300 hover:text-primary justify-center"
+                            >
+                                {{ __('Reset Password') }}
+                            </x-primary-button>
+                        </div>
+                    </form>
+
+                    @if (Route::has('login'))
+                        <div>
+                            <p>
+                                {{ __('Remembered your password?') }}
+                                <a href="{{ route('login') }}" class="underline text-dark">
+                                    {{ __('Sign in instead') }}
+                                </a>
+                            </p>
+                        </div>
+                    @endif
                 </div>
             </div>
         </div>

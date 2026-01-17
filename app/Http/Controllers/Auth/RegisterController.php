@@ -69,7 +69,7 @@ class RegisterController extends Controller
             event(new Registered($user));
 
             // Don't auto-login - user must verify email first
-            return redirect()->route('login')->with('status', 'Thanks for signing up! Please check your email to verify your account before logging in.');
+            return redirect()->route('email-confirmation')->with('status', 'Thanks for signing up! Please check your email to verify your account before logging in.');
         } catch (\Exception $e) {
             Log::error("RegisterController: ".$e->getMessage());
             return redirect()->back()

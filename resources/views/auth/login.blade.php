@@ -3,7 +3,7 @@
 @section('title', 'Login')
 
 @section('content')
-    <section class="bg-white lg:py-25 md:py-22.5 py-17.5 md:h-dvh flex items-center">
+    <section class="bg-white lg:py-25 md:py-22.5 py-17.5 md:min-h-[50vh]flex items-center">
         <div class="container">
             <div class="lg:w-4/10 md:w-7/10 mx-auto aos-init aos-animate" data-aos="fade-up" data-aos-delay="150" data-aos-duration="500" data-aos-easing="ease-in-out">
                 <div class="lg:mb-12.5 md:mb-10 mb-7.5 text-center">

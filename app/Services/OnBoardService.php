@@ -95,7 +95,7 @@ class OnBoardService
             // Add welcome credits to the workspace
             WorkspaceCredit::create([
                 'workspace_id' => $workspace->id,
-                'transaction_type' => 'welcome_bonus',
+                'transaction_type' => 'CREDIT',
                 'credits' => config('credit.credit_welcome', 50),
                 'note' => 'Welcome bonus credits',
                 'triggered_by_id' => $user->id,

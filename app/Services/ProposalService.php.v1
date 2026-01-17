@@ -1,0 +1,299 @@
+<?php
+
+namespace App\Services;
+
+use App\Models\Portfolio;
+use Illuminate\Support\Collection;
+
+class ProposalService
+{
+    protected OpenAIService $openAIService;
+
+    public static array $coverletterTypes = [
+        'beginner',
+        'intermediate',
+        'professional',
+        'pitch',
+        'experience',
+        'approach',
+    ];
+
+    public function __construct(OpenAIService $openAIService)
+    {
+        $this->openAIService = $openAIService;
+    }
+
+    public function generateProposal(
+        string $jobDescription,
+        int $teamId,
+        string $type = 'pitch',
+        int $words = 180
+    ): array {
+        // 1️⃣ Match portfolios using embeddings
+        $portfolioMatches = $this->matchJobWithPortfolios(
+            $teamId,
+            $jobDescription
+        );
+
+        // 2️⃣ Build portfolio context
+        $portfolioText = $this->buildPortfolioText($portfolioMatches);
+
+        // 3️⃣ Build prompt (LLM infers intent from JD)
+        $prompt = $this->buildPrompt(
+            $jobDescription,
+            $portfolioText,
+            $type,
+            $words
+        );
+
+        return $this->openAIService->generateProposal($prompt);
+    }
+
+    /**
+     * Select prompt type.
+     */
+    private function buildPrompt(
+        string $description,
+        string $portfolioText,
+        string $type,
+        int $words
+    ): string {
+        return match ($type) {
+            'pitch' => $this->buildPitchPrompt($description, $portfolioText, $words),
+            'experience' => $this->buildExperiencePrompt($description, $portfolioText, $words),
+            'approach' => $this->buildApproachPrompt($description, $portfolioText, $words),
+            'beginner' => $this->buildBeginnerPrompt($description, $portfolioText, $words),
+            'intermediate' => $this->buildIntermediatePrompt($description, $portfolioText, $words),
+            'professional' => $this->buildProfessionalPrompt($description, $portfolioText, $words),
+            default => $this->buildApproachPrompt($description, $portfolioText, $words),
+        };
+    }
+
+    /**
+     * Match job description with portfolio embeddings.
+     */
+    public function matchJobWithPortfolios(
+        int $teamId,
+        string $jobDescription,
+        int $limit = 3
+    ) {
+        $jobEmbedding = $this->openAIService->createEmbedding(
+            $this->buildJobSemanticText($jobDescription)
+        );
+
+        $portfolios = Portfolio::where('team_id', $teamId)
+            ->where('is_active', true)
+            ->whereNotNull('embedding')
+            ->get(['id', 'title', 'keywords', 'description', 'embedding']);
+
+        $scored = $portfolios->map(function ($portfolio) use ($jobEmbedding) {
+            return [
+                'portfolio' => $portfolio,
+                'score' => $this->cosineSimilarity(
+                    $jobEmbedding,
+                    $portfolio->embedding
+                ),
+            ];
+        });
+
+        return $scored
+            ->sortByDesc('score')
+            ->take($limit)
+            ->values();
+    }
+
+    private function buildPortfolioText(Collection $matches): string
+    {
+        if ($matches->isEmpty()) {
+            return 'No relevant portfolio examples available yet.';
+        }
+
+        return $matches
+            ->map(function (array $match, int $index) {
+                /** @var \App\Models\Portfolio $portfolio */
+                $portfolio = $match['portfolio'];
+
+                $parts = [];
+                $parts[] = ($index + 1) . ". {$portfolio->title}";
+                $parts[] = "Why relevant: Closely matches the client’s requirements.";
+
+                if (!empty($portfolio->keywords)) {
+                    $parts[] = "Focus areas: " . implode(', ', $portfolio->keywords);
+                }
+
+                $description = trim((string) $portfolio->description);
+                if ($description !== '') {
+                    $parts[] = "Details include Urls: {$description}";
+                }
+
+                return implode(' | ', $parts);
+            })
+            ->implode("\n");
+    }
+
+
+    /**
+     * Prepare text for embeddings.
+     */
+    private function buildJobSemanticText(string $jobDescription): string
+    {
+        return trim(strip_tags($jobDescription));
+    }
+
+    /**
+     * Cosine similarity with safety checks.
+     */
+    private function cosineSimilarity(array $a, array $b): float
+    {
+        $dot = 0.0;
+        $normA = 0.0;
+        $normB = 0.0;
+
+        foreach ($a as $i => $v) {
+            $bv = $b[$i] ?? 0;
+            $dot += $v * $bv;
+            $normA += $v * $v;
+            $normB += $bv * $bv;
+        }
+
+        return ($normA && $normB)
+            ? $dot / (sqrt($normA) * sqrt($normB))
+            : 0.0;
+    }
+
+    /* ===================== PROMPT HELPERS ===================== */
+
+    private function commonHumanConstraints(): string
+    {
+        return "
+        - Infer the client’s urgency, risk tolerance, clarity, and expectations from the job description.
+        - Adapt tone, depth, and structure accordingly.
+        - Make 1–2 reasonable assumptions and act on them confidently.
+        - Avoid generic phrases like 'I can help' or 'best practices'.
+        - Prefer decisive, experience-backed language.
+        - Write like a human expert who has solved this problem many times.
+        - Do NOT repeat the job description.
+        - If a portfolio example contains a URL, ALWAYS include the URL naturally in the proposal like ProjectTitle(url here).
+        ";
+    }
+
+    private function buildPitchPrompt(string $description, string $portfolioText, int $words): string
+    {
+        return "Write a personalized Upwork proposal of {$words} words.
+
+        Job description:
+        {$description}
+
+        Relevant example:
+        {$portfolioText}
+
+        Instructions:
+        - Start with a strong hook that proves understanding. No greetings.
+        - Propose a clear solution immediately.
+        - Use ONE portfolio example as proof.
+        - Outline a 3–4 step execution plan focused on outcomes.
+        - End with a confident call-to-action and up to 2 relevant questions.
+        {$this->commonHumanConstraints()}
+
+        Output format (STRICT):
+        Return ONLY valid JSON with keys \"title\" and \"content\".";
+    }
+
+    private function buildExperiencePrompt(string $description, string $portfolioText, int $words): string
+    {
+        return "Write a {$words}-word Upwork proposal positioning me as a proven professional.
+
+        Client needs:
+        {$description}
+
+        Relevant experience:
+        {$portfolioText}
+
+        Guidelines:
+        - Lead with confidence and clarity.
+        - Emphasize similar results and outcomes.
+        - Reduce client risk through proof.
+        {$this->commonHumanConstraints()}
+
+        Output format (STRICT):
+        Return ONLY valid JSON with keys \"title\" and \"content\".";
+    }
+
+    private function buildApproachPrompt(string $description, string $portfolioText, int $words): string
+    {
+        return "Write a {$words}-word proposal focused on approach and reasoning.
+
+        Client problem:
+        {$description}
+
+        Background:
+        {$portfolioText}
+
+        Guidelines:
+        - Reframe the problem in your own words.
+        - Identify hidden risks or decisions.
+        - Explain your approach step-by-step with reasoning.
+        {$this->commonHumanConstraints()}
+
+        Output format (STRICT):
+        Return ONLY valid JSON with keys \"title\" and \"content\".";
+    }
+
+    private function buildBeginnerPrompt(string $description, string $portfolioText, int $words): string
+    {
+        return "Write a {$words}-word friendly Upwork proposal.
+
+        Job:
+        {$description}
+
+        Portfolio:
+        {$portfolioText}
+
+        Instructions:
+        - Show understanding and eagerness.
+        - Keep tone confident and human.
+        - Outline a simple execution plan.
+        {$this->commonHumanConstraints()}
+
+        Output format (STRICT):
+        Return ONLY valid JSON with keys \"title\" and \"content\".";
+    }
+
+    private function buildIntermediatePrompt(string $description, string $portfolioText, int $words): string
+    {
+        return "Write a {$words}-word professional yet friendly proposal.
+
+        Client needs:
+        {$description}
+
+        Experience:
+        {$portfolioText}
+
+        Guidelines:
+        - Balance confidence and clarity.
+        - Focus on relevance and results.
+        {$this->commonHumanConstraints()}
+
+        Output format (STRICT):
+        Return ONLY valid JSON with keys \"title\" and \"content\".";
+    }
+
+    private function buildProfessionalPrompt(string $description, string $portfolioText, int $words): string
+    {
+        return "Write a {$words}-word executive-level proposal.
+
+        Client goals:
+        {$description}
+
+        Experience:
+        {$portfolioText}
+
+        Guidelines:
+        - Consultant tone: direct, structured, persuasive.
+        - Emphasize outcomes, trust, and ownership.
+        {$this->commonHumanConstraints()}
+
+        Output format (STRICT):
+        Return ONLY valid JSON with keys \"title\" and \"content\".";
+    }
+}

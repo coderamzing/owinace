@@ -3,7 +3,7 @@
 @section('title', 'Register')
 
 @section('content')
-    <section class="bg-white lg:py-25 md:py-22.5 py-17.5 md:h-dvh flex items-center">
+    <section class="bg-white lg:py-25 md:py-22.5 py-17.5 md:min-h-[50vh] flex items-center">
         <div class="container">
             <div class="lg:w-4/10 md:w-7/10 mx-auto" data-aos="fade-up" data-aos-delay="150" data-aos-duration="500"
                  data-aos-easing="ease-in-out">
@@ -71,7 +71,7 @@
                         </div>
 
                         <!-- Password -->
-                        <div class="grid gap-4 sm:grid-cols-2">
+                        <div class="grid gap-4 sm:grid-cols-1">
                             <div class="mb-5 sm:mb-0">
                                 <x-input-label for="password" :value="__('Password')" class="mb-1.25 block font-normal" />
 
@@ -80,6 +80,7 @@
                                     class="rounded-2xl py-2.5 px-5 border border-neutral-200 w-full h-14 block mt-1"
                                     type="password"
                                     name="password"
+                                    :value="old('password')"
                                     required
                                     autocomplete="new-password"
                                     placeholder="Password"
@@ -96,6 +97,7 @@
                                     class="rounded-2xl py-2.5 px-5 border border-neutral-200 w-full h-14 block mt-1"
                                     type="password"
                                     name="password_confirmation"
+                                    :value="old('password_confirmation')"
                                     required
                                     autocomplete="new-password"
                                     placeholder="Confirm password"
