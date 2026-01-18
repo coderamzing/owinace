@@ -14,6 +14,7 @@ use Spatie\MediaLibrary\InteractsWithMedia;
 use Filament\Auth\MultiFactor\App\Contracts\HasAppAuthentication;
 use Filament\Auth\MultiFactor\App\Contracts\HasAppAuthenticationRecovery;
 use Filament\Auth\MultiFactor\Email\Contracts\HasEmailAuthentication;
+use Filament\Panel;
 
 class User extends Authenticatable implements MustVerifyEmail, HasMedia, HasAppAuthentication, HasAppAuthenticationRecovery, HasEmailAuthentication
 {
@@ -158,5 +159,10 @@ class User extends Authenticatable implements MustVerifyEmail, HasMedia, HasAppA
     {
         $this->has_email_authentication = $condition;
         $this->save();
+    }
+
+    public function canAccessPanel(Panel $panel): bool
+    {
+        return true;
     }
 }
