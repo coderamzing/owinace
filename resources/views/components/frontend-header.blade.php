@@ -76,7 +76,7 @@
             <!-- Mobile Menu Header -->
             <div class="h-16 flex items-center justify-between px-4 border-b border-neutral-200 bg-white sticky top-0 z-10">
                 <a href="{{ route('home') }}">
-                    <img src="/images/owinace.png" alt="Logo" class="h-8.5">
+                    <img src="/images/leadcliq.png" alt="Logo" class="h-8.5">
                 </a>
 
                 <button type="button" @click="mobileMenuOpen = false" class="bg-neutral-600/15 text-neutral-600 size-8 flex justify-center items-center rounded-full hover:bg-neutral-600/25 transition-colors" aria-label="Close">
@@ -88,124 +88,18 @@
             <!-- Mobile Menu Content -->
             <div class="flex flex-col p-4 overflow-y-auto flex-1">
                 <div class="hs-accordion-group space-y-2">
-                    <!-- Home Accordion -->
-                    <div class="hs-accordion">
-                        <button class="hs-accordion-toggle text-dark w-full flex items-center justify-between py-3 font-medium text-base hover:bg-neutral-50 rounded-lg px-3 transition-colors">
-                            <span>Home</span>
-                            <i class="iconify tabler--chevron-down size-4 hs-accordion-active:rotate-180 transition-transform"></i>
-                        </button>
-
-                        <div class="hs-accordion-content hidden w-full overflow-hidden transition-[height]">
-                            <div class="flex flex-col mt-2 pl-3">
-                                <a href="{{ route('home') }}" class="flex items-center font-medium text-dark rounded-lg text-base py-2 hover:bg-neutral-50 px-3 transition-colors">
-                                    Home
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Product Accordion -->
-                    <div class="hs-accordion">
-                        <button class="hs-accordion-toggle text-dark w-full flex items-center justify-between py-3 font-medium text-base hover:bg-neutral-50 rounded-lg px-3 transition-colors">
-                            <span>Product</span>
-                            <i class="iconify tabler--chevron-down size-4 hs-accordion-active:rotate-180 transition-transform"></i>
-                        </button>
-
-                        <div class="hs-accordion-content hidden w-full overflow-hidden transition-[height]">
-                            <div class="flex flex-col mt-2 pl-3 space-y-2">
-                                <a href="{{ route('home') }}#why-choose" class="flex items-start gap-3 py-2 hover:bg-neutral-50 rounded-lg px-3 transition-colors">
-                                    <i class="iconify tabler--carambola text-black size-6 mt-0.5"></i>
-                                    <div>
-                                        <div class="text-black font-medium">Seamless onboarding</div>
-                                        <p class="text-dark text-sm">Quick, easy setup.</p>
-                                    </div>
-                                </a>
-                                <a href="{{ route('home') }}#hero" class="flex items-start gap-3 py-2 hover:bg-neutral-50 rounded-lg px-3 transition-colors">
-                                    <i class="iconify tabler--settings text-black size-6 mt-0.5"></i>
-                                    <div>
-                                        <div class="text-black font-medium">Responsive design</div>
-                                        <p class="text-dark text-sm">Perfect on any device.</p>
-                                    </div>
-                                </a>
-                                <a href="{{ route('home') }}#clients" class="flex items-start gap-3 py-2 hover:bg-neutral-50 rounded-lg px-3 transition-colors">
-                                    <i class="iconify tabler--file-text text-black size-6 mt-0.5"></i>
-                                    <div>
-                                        <div class="text-black font-medium">Integrated analytics</div>
-                                        <p class="text-dark text-sm">Real-time insights.</p>
-                                    </div>
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Pages Accordion -->
-                    <div class="hs-accordion">
-                        <button class="hs-accordion-toggle text-dark w-full flex items-center justify-between py-3 font-medium text-base hover:bg-neutral-50 rounded-lg px-3 transition-colors">
-                            <span>Pages</span>
-                            <i class="iconify tabler--chevron-down size-4 hs-accordion-active:rotate-180 transition-transform"></i>
-                        </button>
-
-                        <div class="hs-accordion-content hidden w-full overflow-hidden transition-[height]">
-                            <div class="flex flex-col mt-2 pl-3 space-y-2">
-                                <a href="{{ route('how-it-works') }}" class="flex items-center font-medium text-dark rounded-lg text-base py-2 hover:bg-neutral-50 px-3 transition-colors">
-                                    How it Works
-                                </a>
-                                <a href="{{ route('support') }}" class="flex items-center font-medium text-dark rounded-lg text-base py-2 hover:bg-neutral-50 px-3 transition-colors">
-                                    Support
-                                </a>
-                                <a href="{{ route('faq') }}" class="flex items-center font-medium text-dark rounded-lg text-base py-2 hover:bg-neutral-50 px-3 transition-colors">
-                                    FAQ
-                                </a>
-                                <a href="{{ route('privacy-policy') }}" class="flex items-center font-medium text-dark rounded-lg text-base py-2 hover:bg-neutral-50 px-3 transition-colors">
-                                    Privacy Policy
-                                </a>
-                                <a href="{{ route('terms') }}" class="flex items-center font-medium text-dark rounded-lg text-base py-2 hover:bg-neutral-50 px-3 transition-colors">
-                                    Terms
-                                </a>
-                                <a href="{{ route('refund-policy') }}" class="flex items-center font-medium text-dark rounded-lg text-base py-2 hover:bg-neutral-50 px-3 transition-colors">
-                                    Refund Policy
-                                </a>
-                                <a href="{{ route('home') }}#clients" class="flex items-center font-medium text-dark rounded-lg text-base py-2 hover:bg-neutral-50 px-3 transition-colors">
-                                    Statistics
-                                </a>
-                                <a href="{{ route('home') }}#blog" class="flex items-center font-medium text-dark rounded-lg text-base py-2 hover:bg-neutral-50 px-3 transition-colors">
-                                    Features
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Account Accordion -->
-                    <div class="hs-accordion">
-                        <button class="hs-accordion-toggle text-dark w-full flex items-center justify-between py-3 font-medium text-base hover:bg-neutral-50 rounded-lg px-3 transition-colors">
-                            <span>Account</span>
-                            <i class="iconify tabler--chevron-down size-4 hs-accordion-active:rotate-180 transition-transform"></i>
-                        </button>
-
-                        <div class="hs-accordion-content hidden w-full overflow-hidden transition-[height]">
-                            <div class="flex flex-col mt-2 pl-3 space-y-2">
-                                @auth
-                                    <a href="{{ url('/dashboard') }}" class="flex items-center font-medium text-dark rounded-lg text-base py-2 hover:bg-neutral-50 px-3 transition-colors">
-                                        Dashboard
-                                    </a>
-                                @else
-                                    <a href="{{ route('login') }}" class="flex items-center font-medium text-dark rounded-lg text-base py-2 hover:bg-neutral-50 px-3 transition-colors">
-                                        Log In
-                                    </a>
-                                    @if (Route::has('register'))
-                                        <a href="{{ route('register') }}" class="flex items-center font-medium text-dark rounded-lg text-base py-2 hover:bg-neutral-50 px-3 transition-colors">
-                                            Sign Up
-                                        </a>
-                                    @endif
-                                @endauth
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Contact Link -->
-                    <div>
-                        <a href="#workwithus" class="text-dark text-base flex items-center py-3 font-medium hover:bg-neutral-50 rounded-lg px-3 transition-colors">Contact Us</a>
-                    </div>
+                    <a href="{{ route('home') }}" class="flex items-center font-medium text-dark rounded-lg text-base py-2.5 hover:underline {{ request()->routeIs('home') ? 'font-bold' : '' }}">
+                        Home
+                    </a>
+                    <a href="{{ route('how-it-works') }}" class="flex items-center font-medium text-dark rounded-lg text-base py-2.5 hover:underline {{ request()->routeIs('how-it-works') ? 'font-bold' : '' }}">
+                        How it Works
+                    </a>
+                    <a href="{{ route('pricing') }}" class="flex items-center font-medium text-dark rounded-lg text-base py-2.5 hover:underline {{ request()->routeIs('pricing') ? 'font-bold' : '' }}">
+                        Pricing
+                    </a>
+                    <a href="{{ route('faq') }}" class="flex items-center font-medium text-dark rounded-lg text-base py-2.5 hover:underline {{ request()->routeIs('faq') ? 'font-bold' : '' }}">
+                        FAQ
+                    </a>
                 </div>
 
                 <!-- Mobile Menu Footer Actions -->

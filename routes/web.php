@@ -42,6 +42,10 @@ Route::get('/faq', function () {
     return view('faq');
 })->name('faq');
 
+Route::get('/email-confirmation', function () {
+    return view('pages.email-confirmation');
+})->name('email-confirmation');
+
 Route::get('/dashboard', function () {
     return redirect('/admin'); // Redirect to Filament admin panel
 })->middleware(['auth', 'verified'])->name('dashboard');

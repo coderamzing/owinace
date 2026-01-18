@@ -63,7 +63,7 @@
                 <h4 class="text-1.5xl mb-5 text-white">Contact us</h4>
                 <div>
                     <p class="mb-3.75 text-sm text-white md:text-base">
-                        1234 Innovation drive, suite 100, tech city, CA 94043
+                        F-427, 2nd Floor, Sector 91, Mohali, Punjab, India 140307
                     </p>
 
                     <p class="hover:text-primary mb-3.75 text-sm text-white transition-all duration-300 md:text-base">
@@ -71,7 +71,7 @@
                     </p>
 
                     <p class="hover:text-primary mb-3.75 text-sm text-white underline transition-all duration-300 md:text-base">
-                        <a href="mailto:support@owinace.com">support@owinace.com</a>
+                        <a href="mailto:support@leadcliq.com">support@leadcliq.com</a>
                     </p>
 
                     <div class="mt-7.5 flex items-center gap-2.5 md:mt-12.5">
