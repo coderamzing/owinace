@@ -3,7 +3,7 @@
         <div class="grid md:grid-cols-2 md:gap-12.5 lg:grid-cols-8 lg:gap-5 gap-10">
             <div class="lg:col-span-3">
                 <a href="{{ route('home') }}">
-                    <img src="/image/logo.svg" alt="Owinace" class="h-11">
+                    <img src="/images/leadcliq.png" alt="LeadCliq" class="h-11 invert">
                 </a>
                 <p class="mt-2.5 text-white">
                     Trusted solutions for your growing business
@@ -103,7 +103,7 @@
         <div class="flex justify-between pt-7.5 md:pt-10">
             <div class="text-sm text-white">
                 © {{ date('Y') }}
-                <a href="{{ route('home') }}" class="underline">Owinace</a>.
+                <a href="{{ route('home') }}" class="underline">LeadCliq</a>.
             </div>
 
             <div class="text-sm text-white">

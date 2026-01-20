@@ -1,24 +1,30 @@
 @extends('layouts.frontend')
 
-@section('title', 'AI Proposals + Lead CRM | Owinace')
+@section('title', 'AI Proposals + Lead CRM | LeadCliq')
 
 @push('meta')
-<meta name="title" content="AI Proposals + Lead CRM - Owinace">
-<meta name="description" content="Owinace combines AI proposal generation with a lightweight lead CRM: contacts per lead, attachments, comments, goals, activity logs, and team workspaces.">
+<meta name="title" content="AI Proposals + Lead CRM - LeadCliq">
+<meta name="description" content="LeadCliq combines AI proposal generation with a lightweight lead CRM: contacts per lead, attachments, comments, goals, activity logs, and team workspaces.">
 <meta name="keywords" content="AI proposals, lead management, CRM for freelancers, portfolio matching, attachments, comments, goals, activity log, team workspaces">
-<meta name="author" content="Owinace">
+<meta name="author" content="LeadCliq">
 @endpush
 
 @section('content')
     <!-- Hero Section -->
     <section id="hero" class="bg-white lg:py-20 md:py-22.5 pt-10 pb-17.5">
-        <div class="max-w-7xl mx-auto">
-            <div class="flex justify-center items-center md:gap-5 md:flex-row gap-2.5 flex-col mb-7.5 aos-init aos-animate" data-aos="fade-up" data-aos-delay="150" data-aos-duration="600" data-aos-easing="ease-in-out">
-                <div class="flex">
-                    <img src="/landinger/assets/1-D6bexPI2.png" alt="" class="size-10 rounded-full">
-                    <img src="/landinger/assets/2-C2hgbhv6.png" alt="" class="size-10 rounded-full -ms-2.5">
-                    <img src="/landinger/assets/4-BTKjeLDb.png" alt="" class="size-10 rounded-full -ms-2.5">
-                    <img src="/landinger/assets/5-lY0eiWKq.png" alt="" class="size-10 rounded-full -ms-2.5">
+        <div class="max-w-7xl mx-auto px-5">
+            <div class="flex md:justify-center md:mt-6.25 md:gap-2.5 md:flex-row flex-col gap-2.5 text-base">
+                    <div class="flex gap-2.5 justify-center">
+                        <p>Rated 4.8/5</p>
+                        <div class="flex items-center text-lg text-yellow-400">
+                            <i class="iconify tabler--star-filled"></i>
+                            <i class="iconify tabler--star-filled"></i>
+                            <i class="iconify tabler--star-filled"></i>
+                            <i class="iconify tabler--star-filled"></i>
+                            <i class="iconify tabler--star-filled"></i>
+                        </div>
+                    </div>
+                    <p class="text-center">by 1,900+ product-led teams and agencies</p>
                 </div>
 
                 <div class="flex justify-center items-center gap-1.25">
@@ -26,10 +32,13 @@
                     <i class="iconify tabler--star-filled text-yellow-400"></i>
                     <div>4.5 (Reviews)</div>
                 </div>
+            <div class="text-center" data-aos="fade-up" data-aos-duration="500" data-aos-easing="ease-in-out">
+                <h1 class="md:text-6xl text-4xl mb-2.5">Automated task scheduling and workflow</h1>
+
+                
             </div>
 
             <div class="lg:mb-12.5 md:mb-10 mb-7.5 lg:mx-auto text-center aos-init aos-animate" data-aos="fade-up" data-aos-delay="150" data-aos-duration="600" data-aos-easing="ease-in-out">
-                <h1 class="lg:text-6xl md:text-5.5xl text-4xl mb-2.5">Automated task scheduling and workflow</h1>
                 <p class="mb-2.5">Streamline your workflow with automated task scheduling. Effortlessly manage your tasks and optimize productivity.</p>
             </div>
 
@@ -57,11 +66,11 @@
                 </div>
 
                 <div class="md:col-span-1" data-aos="fade-up" data-aos-delay="500" data-aos-duration="600" data-aos-easing="ease-in-out">
-                    <img src="/images/4-RvdQFJPE.png" alt="" class="h-full rounded-2xl object-cover max-w-full">
+                    <img src="/images/banner-2.png" alt="" class="h-full rounded-2xl object-cover max-w-full">
                 </div>
 
                 <div class="md:col-span-2" data-aos="fade-up" data-aos-delay="700" data-aos-duration="600" data-aos-easing="ease-in-out">
-                    <img src="/images/4-DRtChKQv.svg" alt="" class="rounded-2xl max-w-full object-center">
+                    <img src="/images/banner-1.png" alt="" class="rounded-2xl max-w-full object-center">
                 </div>
             </div>
 
@@ -81,10 +90,10 @@
 
     <!-- Why choose Section  -->
     <section id="why-choose" class="lg:py-25 md:py-22.5 py-17.5">
-        <div class="max-w-7xl mx-auto">
-            <div class="lg:mb-12.5 lg:mx-auto text-center lg:w-1/2 mb-7.5" data-aos="fade-up" data-aos-duration="500" data-aos-easing="ease-in-out">
-                <h2 class="mb-2.5 lg:text-5.5xl md:text-4.6xl text-3.4xl">Why teams choose Owinace</h2>
-                <p class="text-base mb-2.5">Ship proposals faster, see every lead in one place, and keep costs, goals, and team performance aligned.</p>
+        <div class="max-w-7xl mx-auto px-5">
+            <div class="lg:mb-12.5 lg:mx-auto text-center mb-7.5" data-aos="fade-up" data-aos-duration="500" data-aos-easing="ease-in-out">
+                <h2 class="mb-2.5 lg:text-[40px] md:text-4.6xl text-3.4xl">Why teams choose LeadCliq</h2>
+                <p class="text-base mb-2.5">Maximize conversions with a smarter workflow. Track lead performance, automate engagement, streamline team actions, and turn every opportunity into predictable revenue.</p>
             </div>
 
             <div class="grid md:grid-cols-2 md:gap-25 items-center gap-7.5 lg:pb-25 pb-17.5">
@@ -111,7 +120,7 @@
                 </div>
 
                 <div data-aos="fade-left" data-aos-duration="600" data-aos-easing="ease-in-out">
-                    <img src="/images/5-EBUw5gMe.svg" alt="" class="rounded-2xl">
+                    <img src="/images/banner-3.png" alt="" class="rounded-2xl">
                 </div>
             </div>
 
@@ -168,7 +177,7 @@
 
     <!-- Testimonial Section  -->
     <section id="testimonials" class="bg-white lg:py-25 md:py-22.5 py-17.5">
-        <div class="max-w-7xl mx-auto">
+        <div class="max-w-7xl mx-auto px-5">
             <div class="grid md:grid-cols-5 grid-cols-1 lg:gap-12.5 gap-5">
                 <div class="md:col-span-2" data-aos="fade-up" data-aos-duration="500" data-aos-easing="ease-in-out">
                     <div class="bg-primary rounded-2xl lg:p-10 p-5 h-full">
@@ -303,7 +312,7 @@
 
     <!-- Client Section  -->
     <section id="clients" class="lg:py-25 md:py-22.5 py-17.5">
-        <div class="max-w-7xl mx-auto">
+        <div class="max-w-7xl mx-auto px-5">
             <div class="text-center mb-10" data-aos="fade-up" data-aos-duration="600" data-aos-easing="ease-in-out">
                 <h2 class="mb-2.5 lg:text-5.5xl md:text-4.6xl text-3.4xl">Trusted by leading brands</h2>
             </div>
@@ -355,7 +364,7 @@
 
     <!-- User Step Section  -->
     <section class="bg-dark lg:py-25 py-17.5" id="workwithus">
-        <div class="max-w-7xl mx-auto">
+        <div class="max-w-7xl mx-auto px-5">
             <div class="grid lg:grid-cols-2 lg:gap-15 gap-5" data-aos="fade-up" data-aos-duration="600" data-aos-easing="ease-in-out">
                 <div>
                     <div class="relative">
@@ -443,7 +452,7 @@
 
     <!-- Blog Section -->
     <section id="blog" class="bg-white lg:py-25 py-17.5">
-        <div class="max-w-7xl mx-auto">
+        <div class="max-w-7xl mx-auto px-5">
             <div class="lg:mb-12.5 text-center mb-7.5" data-aos="fade-up" data-aos-duration="600" data-aos-easing="ease-in-out">
                 <h2 class="mb-2.5 lg:text-5.5xl text-3.4xl">Our latest articles</h2>
                 <p class="text-base mb-2.5">Revenue teams using Owinace to win faster with AI proposals and clear analytics.</p>
