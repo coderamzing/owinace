@@ -13,18 +13,22 @@
     <!-- Hero Section -->
     <section id="hero" class="bg-white lg:py-20 md:py-22.5 pt-10 pb-17.5">
         <div class="max-w-7xl mx-auto px-5">
-            <div class="flex md:justify-center md:mt-6.25 md:gap-2.5 md:flex-row flex-col gap-2.5 text-base">
-                    <div class="flex gap-2.5 justify-center">
-                        <p>Rated 4.8/5</p>
-                        <div class="flex items-center text-lg text-yellow-400">
-                            <i class="iconify tabler--star-filled"></i>
-                            <i class="iconify tabler--star-filled"></i>
-                            <i class="iconify tabler--star-filled"></i>
-                            <i class="iconify tabler--star-filled"></i>
-                            <i class="iconify tabler--star-filled"></i>
-                        </div>
-                    </div>
-                    <p class="text-center">by 1,900+ product-led teams and agencies</p>
+            
+            <div class="text-center" data-aos="fade-up" data-aos-duration="500" data-aos-easing="ease-in-out">
+                <h1 class="md:text-6xl text-4xl mb-2.5">Automated task scheduling and workflow</h1>
+            </div>
+
+            <div class="lg:mb-8 md:mb-10 mb-7.5 lg:mx-auto text-center aos-init aos-animate" data-aos="fade-up" data-aos-delay="150" data-aos-duration="600" data-aos-easing="ease-in-out">
+                <p class="mb-2.5">Streamline your lead management with intelligent automation. LeadCliq helps you automatically capture, assign, and follow up on
+                     leads while optimizing your sales workflow and boosting conversion rates.</p>
+            </div>
+
+            <div class="flex justify-center items-center md:gap-5 md:flex-row gap-2.5 flex-col mb-7.5 aos-init aos-animate" data-aos="fade-up" data-aos-delay="150" data-aos-duration="600" data-aos-easing="ease-in-out">
+                <div class="flex">
+                    <img src="/images/profile.png" alt="" class="size-10 rounded-full">
+                    <img src="/images/woman.png" alt="" class="size-10 rounded-full -ms-2.5">
+                    <img src="/images/profile-2.png" alt="" class="size-10 rounded-full -ms-2.5">
+                    <img src="/images/man.png" alt="" class="size-10 rounded-full -ms-2.5">
                 </div>
 
                 <div class="flex justify-center items-center gap-1.25">
@@ -32,14 +36,6 @@
                     <i class="iconify tabler--star-filled text-yellow-400"></i>
                     <div>4.5 (Reviews)</div>
                 </div>
-            <div class="text-center" data-aos="fade-up" data-aos-duration="500" data-aos-easing="ease-in-out">
-                <h1 class="md:text-6xl text-4xl mb-2.5">Automated task scheduling and workflow</h1>
-
-                
-            </div>
-
-            <div class="lg:mb-12.5 md:mb-10 mb-7.5 lg:mx-auto text-center aos-init aos-animate" data-aos="fade-up" data-aos-delay="150" data-aos-duration="600" data-aos-easing="ease-in-out">
-                <p class="mb-2.5">Streamline your workflow with automated task scheduling. Effortlessly manage your tasks and optimize productivity.</p>
             </div>
 
             <div class="flex md:gap-5 gap-2.5 md:flex-row flex-col items-center justify-center">
@@ -74,7 +70,7 @@
                 </div>
             </div>
 
-            <div>
+            <!-- <div>
                 <div class="text-center">
                     <div class="mb-7">Trusted by teams that own revenue</div>
                     <div class="flex lg:gap-7.5 lg:flex-row justify-center">
@@ -84,7 +80,7 @@
                         <img src="/images/7-Dcq25DS2.svg" alt="" class="lg:h-7.5 h-6 lg:block hidden">
                     </div>
                 </div>
-            </div>
+            </div> -->
         </div>
     </section>
 
@@ -98,23 +94,28 @@
 
             <div class="grid md:grid-cols-2 md:gap-25 items-center gap-7.5 lg:pb-25 pb-17.5">
                 <div data-aos="fade-right" data-aos-duration="600" data-aos-easing="ease-in-out">
-                    <h3 class="lg:text-4xl mb-2.5 md:text-3.4xl text-2.6xl">Intuitive, fast setup</h3>
-                    <p class="mb-2.5">Launch in minutes with a UI built for sales and delivery teams. Keep lead records, AI proposals, and activity in one clean workspace.</p>
+                    <h3 class="lg:text-4xl mb-2.5 md:text-3.4xl text-2.6xl">Sales & Revenue Insights, Simplified</h3>
+                    <p class="mb-2.5">Get a complete view of your sales performance with a clean, data-driven dashboard designed for growth-focused teams. LeadCliq brings your revenue, regions, customers, and products together in one intuitive view.</p>
 
                     <div class="flex flex-wrap gap-5 mt-10">
                         <div class="flex gap-2.5">
                             <i class="iconify tabler--circle-check size-6 text-black"></i>
-                            <p>Lead health at a glance</p>
+                            <p>Real-time sales performance tracking</p>
                         </div>
 
                         <div class="flex gap-2.5">
                             <i class="iconify tabler--circle-check size-6 text-black"></i>
-                            <p>Onboard in under an hour</p>
+                            <p>Regional & customer insights</p>
                         </div>
 
                         <div class="flex gap-2.5">
                             <i class="iconify tabler--circle-check size-6 text-black"></i>
-                            <p>Reduce dropped follow-ups</p>
+                            <p>Faster, data-backed decisions</p>
+                        </div>
+
+                        <div class="flex gap-2.5">
+                            <i class="iconify tabler--circle-check size-6 text-black"></i>
+                            <p>Growth-Focused Sales Reporting</p>
                         </div>
                     </div>
                 </div>
@@ -126,12 +127,35 @@
 
             <div class="grid md:grid-cols-2 lg:gap-25 md:gap-7.5 items-center gap-7.5">
                 <div class="md:order-1 order-2" data-aos="fade-right" data-aos-duration="500" data-aos-easing="ease-in-out">
-                    <img src="/images/4-RvdQFJPE.png" alt="" class="rounded-2xl">
+                    <img src="/images/banner-4.png" alt="" class="rounded-2xl">
                 </div>
 
                 <div class="md:order-2 order-1" data-aos="fade-left" data-aos-duration="500" data-aos-easing="ease-in-out">
-                    <h3 class="lg:text-4xl mb-2.5 md:text-3.4xl text-2.6xl">Robust analytics</h3>
-                    <p class="mb-2.5">Track pipeline value, win rates, cost-per-lead, team goals, and owner activity with clear dashboards and alerts.</p>
+                    <h3 class="lg:text-4xl mb-2.5 md:text-3.4xl text-2.6xl">Statistical Sales & Lead Analytics</h3>
+                    <p class="mb-2.5">Gain deep visibility into your lead pipeline with real-time dashboards built 
+                        for performance tracking. LeadCliq transforms raw lead data into clear insights across 
+                        conversion stages, costs, and success metrics.</p>
+                    <div class="flex flex-wrap gap-5 mt-10">
+                        <div class="flex gap-2.5">
+                            <i class="iconify tabler--circle-check size-6 text-black"></i>
+                            <p>Cost-per-lead tracking</p>
+                        </div>
+
+                        <div class="flex gap-2.5">
+                            <i class="iconify tabler--circle-check size-6 text-black"></i>
+                            <p>Lead distribution by stage</p>
+                        </div>
+
+                        <div class="flex gap-2.5">
+                            <i class="iconify tabler--circle-check size-6 text-black"></i>
+                            <p>Goal & success monitoring</p>
+                        </div>
+
+                        <div class="flex gap-2.5">
+                            <i class="iconify tabler--circle-check size-6 text-black"></i>
+                            <p>Data-driven decision making</p>
+                        </div>
+                    </div>
                 </div>
             </div>
 

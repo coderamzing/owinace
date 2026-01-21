@@ -126,3 +126,11 @@ button.fi-text-color-950
 .fi-btn{
     font-weight: var(--font-weight-normal);
 }
+
+@layer components {
+  .fi-logo {
+    &:where(.dark, .dark *) {
+      filter: invert(1);
+    }
+  }
+}
