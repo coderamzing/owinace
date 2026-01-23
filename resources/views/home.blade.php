@@ -501,7 +501,7 @@
 
                 <!-- Blog Item 1  -->
                 <a href="#">
-                    <div class="overflow-hidden rounded-2xl">
+                    <div class="overflow-hidden rounded-2xl max-h-[480px] object-cover">
                         <img src="/images/Cover.png" alt="" class="duration-300 hover:scale-105 transition-all">
                     </div>
 
@@ -513,7 +513,7 @@
 
                 <!-- Blog Item 2  -->
                 <a href="#">
-                    <div class="overflow-hidden rounded-2xl">
+                    <div class="overflow-hidden rounded-2xl max-h-[480px] object-cover">
                         <img src="/images/Cover-2.png" alt="" class="duration-300 hover:scale-105 transition-all">
                     </div>
 
@@ -525,8 +525,8 @@
 
                 <!-- Blog Item 3  -->
                 <a href="#">
-                    <div class="overflow-hidden rounded-2xl">
-                        <img src="/images/2-qO0-BYVc.png" alt="" class="duration-300 hover:scale-105 transition-all">
+                    <div class="overflow-hidden rounded-2xl max-h-[480px] object-cover">
+                        <img src="/images/banner-5.png" alt="banner-5" class="duration-300 hover:scale-105 transition-all">
                     </div>
 
                     <div class="md:mt-5 mt-2.5">
