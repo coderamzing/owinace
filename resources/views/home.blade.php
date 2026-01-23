@@ -162,37 +162,49 @@
             <div class="grid lg:grid-cols-4 md:grid-cols-2 lg:gap-7.5 lg:mt-32.5 mt-12.5 gap-5">
                 <div data-aos="fade-up" data-aos-delay="50" data-aos-duration="500" data-aos-easing="ease-in-out">
                     <div class="flex items-center gap-2.5">
-                        <div class="size-10 bg-dark rounded-full inline-flex items-center justify-center">
+                        <div class="size-10 bg-dark rounded-full inline-flex items-center justify-center min-h-[40px] min-w-[40px]">
                             <i class="iconify solar--shield-check-outline size-5.5 text-primary"></i>
                         </div>
-                        <div class="lg:text-1.5xl text-lg text-black font-medium">Robust security</div>
+                        <div class=" text-black ">
+                            <h4 class="lg:text-1.5xl text-lg font-medium">Robust security</h4>
+                            <p>Protects lead data with strong access controls.</p>
+                        </div>
                     </div>
                 </div>
 
                 <div data-aos="fade-up" data-aos-duration="500" data-aos-easing="ease-in-out">
                     <div class="flex items-center gap-2.5">
-                        <div class="size-10 bg-dark rounded-full inline-flex items-center justify-center">
+                        <div class="size-10 bg-dark rounded-full inline-flex items-center justify-center min-h-[40px] min-w-[40px]">
                             <i class="iconify solar--smartphone-2-outline size-5.5 text-primary"></i>
                         </div>
-                        <div class="lg:text-1.5xl text-lg text-black font-medium">Mobile access</div>
+                        <div class=" text-black ">
+                            <h4 class="lg:text-1.5xl text-lg font-medium">Browser Based</h4>
+                            <p>Access your system directly from any web browser.</p>
+                        </div>
                     </div>
                 </div>
 
                 <div data-aos="fade-up" data-aos-delay="150" data-aos-duration="500" data-aos-easing="ease-in-out">
                     <div class="flex items-center gap-2.5 flex-row">
-                        <div class="size-10 bg-dark rounded-full inline-flex items-center justify-center">
+                        <div class="size-10 bg-dark rounded-full inline-flex items-center justify-center min-h-[40px] min-w-[40px]">
                             <i class="iconify solar--headphones-round-outline size-5.5 text-primary"></i>
                         </div>
-                        <div class="lg:text-1.5xl text-lg text-black font-medium">Customer support</div>
+                        <div class=" text-black ">
+                            <h4 class="lg:text-1.5xl text-lg font-medium">Customer support</h4>
+                            <p>Get reliable help whenever your team needs it.</p>
+                        </div>
                     </div>
                 </div>
 
                 <div data-aos="fade-up" data-aos-delay="200" data-aos-duration="500" data-aos-easing="ease-in-out">
                     <div class="flex items-center gap-2.5 flex-row">
-                        <div class="size-10 bg-dark rounded-full inline-flex items-center justify-center">
+                        <div class="size-10 bg-dark rounded-full inline-flex items-center justify-center min-h-[40px] min-w-[40px]">
                             <i class="iconify solar--lightbulb-outline size-5.5 text-primary"></i>
                         </div>
-                        <div class="lg:text-1.5xl text-lg text-black font-medium">Scalable solutions</div>
+                        <div class=" text-black ">
+                            <h4 class="lg:text-1.5xl text-lg font-medium">Scalable solutions</h4>
+                            <p>Grow lead volume without changing your system.</p>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -345,7 +357,7 @@
                 <!-- Client Item 1  -->
                 <div data-aos="fade-up" data-aos-duration="600" data-aos-easing="ease-in-out">
                     <div class="flex justify-center items-center bg-white rounded-2xl lg:py-20 py-15 px-5">
-                        <img src="/images/4-BUCeMoND.svg" alt="" class="h-12.5">
+                        <img src="/images/add-group.png" alt="add-group" class="">
                     </div>
                     <p class="lg:mt-5 mt-2.5">Using Owinace to keep proposals, leads, and costs visible.</p>
                 </div>
@@ -392,13 +404,13 @@
             <div class="grid lg:grid-cols-2 lg:gap-15 gap-5" data-aos="fade-up" data-aos-duration="600" data-aos-easing="ease-in-out">
                 <div>
                     <div class="relative">
-                        <img src="/images/7-jQxcJe8K.png" alt="" class="rounded-2xl">
+                        <img src="/images/cycle.png" alt="" class="rounded-2xl">
                         <div class="bg-primary py-0.5 px-3.75 rounded-full font-medium text-sm inline-flex text-dark absolute -top-2.5 start-7.5">Get started in 4 easy steps</div>
                     </div>
 
                     <div class="flex mt-7.5 gap-2.5 md:flex-row flex-col">
                         <p class="text-white">Ready to experience AI proposals, lead clarity, and team analytics together?</p>
-                        <a href="{{ route('register') }}" class="inline-flex text-white underline">
+                        <a href="{{ route('register') }}" class="inline-flex text-white underline text-nowrap">
                             <div>Learn more</div>
                         </a>
                     </div>
@@ -478,7 +490,7 @@
     <section id="blog" class="bg-white lg:py-25 py-17.5">
         <div class="max-w-7xl mx-auto px-5">
             <div class="lg:mb-12.5 text-center mb-7.5" data-aos="fade-up" data-aos-duration="600" data-aos-easing="ease-in-out">
-                <h2 class="mb-2.5 lg:text-5.5xl text-3.4xl">Our latest articles</h2>
+                <h2 class="mb-2.5 lg:text-[40px] md:text-4.6xl text-3.4xl">Our latest articles</h2>
                 <p class="text-base mb-2.5">Revenue teams using Owinace to win faster with AI proposals and clear analytics.</p>
             </div>
             <div class="grid md:grid-cols-3 lg:gap-12.5 md:gap-5 gap-10" data-aos="fade-up" data-aos-duration="600" data-aos-easing="ease-in-out">
@@ -486,7 +498,7 @@
                 <!-- Blog Item 1  -->
                 <a href="#">
                     <div class="overflow-hidden rounded-2xl">
-                        <img src="/images/6-BEk713wj.png" alt="" class="duration-300 hover:scale-105 transition-all">
+                        <img src="/images/Cover.png" alt="" class="duration-300 hover:scale-105 transition-all">
                     </div>
 
                     <div class="md:mt-5 mt-2.5">
@@ -498,7 +510,7 @@
                 <!-- Blog Item 2  -->
                 <a href="#">
                     <div class="overflow-hidden rounded-2xl">
-                        <img src="/images/1-DDvemzzk.png" alt="" class="duration-300 hover:scale-105 transition-all">
+                        <img src="/images/Cover-2.png" alt="" class="duration-300 hover:scale-105 transition-all">
                     </div>
 
                     <div class="md:mt-5 mt-2.5">
