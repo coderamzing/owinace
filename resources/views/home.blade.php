@@ -350,45 +350,49 @@
     <section id="clients" class="lg:py-25 md:py-22.5 py-17.5">
         <div class="max-w-7xl mx-auto px-5">
             <div class="text-center mb-10" data-aos="fade-up" data-aos-duration="600" data-aos-easing="ease-in-out">
-                <h2 class="mb-2.5 lg:text-5.5xl md:text-4.6xl text-3.4xl">Trusted by leading brands</h2>
+                <h2 class="mb-2.5 lg:text-[40px] md:text-4.6xl text-3.4xl">Built for Smarter Lead Management</h2>
             </div>
 
             <div class="grid lg:grid-cols-4 md:grid-cols-2 lg:gap-12.5 gap-7.5">
                 <!-- Client Item 1  -->
                 <div data-aos="fade-up" data-aos-duration="600" data-aos-easing="ease-in-out">
-                    <div class="flex justify-center items-center bg-white rounded-2xl lg:py-20 py-15 px-5">
-                        <img src="/images/add-group.png" alt="add-group" class="">
+                    <div class="flex justify-center items-center bg-white rounded-2xl px-[10px] py-[30px] mb-4">
+                        <img src="/images/flash.png" alt="flash" class="max-w-[200px]">
                     </div>
-                    <p class="lg:mt-5 mt-2.5">Using Owinace to keep proposals, leads, and costs visible.</p>
+                    <h2>Lead Automation</h2>
+                    <p class="mt-2.5">Automatically assign and follow up on incoming leads.</p>
                 </div>
 
                 <!-- Client Item 2  -->
                 <div data-aos="fade-up" data-aos-delay="200" data-aos-duration="600" data-aos-easing="ease-in-out">
-                    <div class="flex justify-center items-center bg-white rounded-2xl lg:py-20 py-15 px-5">
-                        <img src="data:image/svg+xml,%3csvg%20width='142'%20height='30'%20viewBox='0%200%20142%2030'%20fill='none'%20xmlns='http://www.w3.org/2000/svg'%3e%3cpath%20fill-rule='evenodd'%20clip-rule='evenodd'%20d='M11.2883%2018.75V3.75L4.80078%207.5V22.5L17.7656%2030L24.2532%2026.25L11.2883%2018.75Z'%20fill='%23181717'/%3e%3cpath%20fill-rule='evenodd'%20clip-rule='evenodd'%20d='M17.7656%2015L30.7305%2022.5V15L24.2532%2011.25V3.75L17.7656%200V15Z'%20fill='%23181717'/%3e%3cg%20clip-path='url(%23clip0_242_1543)'%3e%3cpath%20d='M42.474%2019.59H55.884V21.48H40.278V9.20398H42.474V19.59ZM57.1621%2016.962C57.1621%2013.686%2059.6101%2012.228%2064.8481%2012.228C70.1041%2012.228%2072.5341%2013.686%2072.5341%2016.962C72.5341%2020.238%2070.1041%2021.696%2064.8481%2021.696C59.6101%2021.696%2057.1621%2020.238%2057.1621%2016.962ZM59.2141%2016.962C59.2141%2019.086%2060.6541%2019.932%2064.8481%2019.932C69.0421%2019.932%2070.4821%2019.086%2070.4821%2016.962C70.4821%2014.856%2069.0421%2013.992%2064.8481%2013.992C60.6541%2013.992%2059.2141%2014.856%2059.2141%2016.962ZM88.4471%2012.912V20.076C88.4471%2023.64%2086.2331%2024.954%2081.0851%2024.954C79.1591%2024.954%2076.6211%2024.666%2074.7671%2024.126L75.2351%2022.524C76.9991%2022.992%2079.0331%2023.316%2081.1931%2023.316C85.2611%2023.316%2086.5391%2022.38%2086.4671%2020.094L86.4311%2019.662C84.5591%2020.436%2082.2911%2021.03%2079.9331%2021.03C76.2611%2021.03%2074.3711%2019.752%2074.3711%2016.71C74.3711%2013.38%2077.0711%2012.282%2081.2111%2012.282C84.0011%2012.282%2086.5571%2012.606%2088.4471%2012.912ZM76.4231%2016.692C76.4231%2018.618%2077.5391%2019.41%2080.0951%2019.41C82.1651%2019.41%2084.3071%2018.978%2086.3771%2018.276V14.352C84.7751%2014.136%2082.7051%2013.974%2080.9411%2013.974C78.1151%2013.974%2076.4231%2014.676%2076.4231%2016.692ZM92.8847%208.73598V11.166H90.8327V8.73598H92.8847ZM90.8327%2021.48V12.462H92.8847V21.48H90.8327ZM109.082%2012.912V24.72H107.03V20.004C105.122%2020.886%20102.818%2021.66%20100.424%2021.66C97.0042%2021.66%2095.0782%2020.292%2095.0782%2017.052C95.0782%2013.452%2097.7602%2012.282%20101.792%2012.282C104.582%2012.282%20107.192%2012.588%20109.082%2012.912ZM97.1302%2016.962C97.1302%2019.086%2098.2462%2019.932%20100.802%2019.932C102.872%2019.932%20104.96%2019.338%20107.03%2018.564V14.352C105.428%2014.136%20103.34%2013.974%20101.576%2013.974C98.7502%2013.974%2097.1302%2014.766%2097.1302%2016.962ZM111.307%2017.376V12.462H113.359V17.106C113.359%2018.924%20114.475%2019.95%20117.211%2019.95C118.723%2019.95%20120.793%2019.518%20123.007%2018.78V12.462H125.059V21.48H123.277L123.097%2020.184C121.171%2020.994%20118.849%2021.696%20116.563%2021.696C113.251%2021.696%20111.307%2020.472%20111.307%2017.376ZM134.682%2020.04C137.31%2020.04%20139.524%2019.644%20140.442%2019.446L140.874%2020.994C139.344%2021.39%20136.824%2021.696%20134.52%2021.696C129.588%2021.696%20127.176%2020.454%20127.176%2016.962C127.176%2013.542%20129.786%2012.246%20134.232%2012.246C138.318%2012.246%20141.198%2013.29%20141.198%2016.494C141.198%2016.8%20141.162%2017.304%20141.126%2017.502H129.192C129.444%2019.554%20131.118%2020.04%20134.682%2020.04ZM134.16%2013.704C130.956%2013.704%20129.408%2014.352%20129.192%2016.332H139.182C139.02%2014.55%20137.85%2013.704%20134.16%2013.704Z'%20fill='%23181717'/%3e%3c/g%3e%3cdefs%3e%3cclipPath%20id='clip0_242_1543'%3e%3crect%20width='102.6'%20height='30'%20fill='white'%20transform='translate(39)'/%3e%3c/clipPath%3e%3c/defs%3e%3c/svg%3e" alt="" class="h-12.5">
+                    <div class="flex justify-center items-center bg-white rounded-2xl px-[10px] py-[30px] mb-4">
+                        <img src="/images/donut-chart.png" alt="donut-chart" class="max-w-[200px]">
                     </div>
-                    <p class="lg:mt-5 mt-2.5">Accelerating growth with unified revenue analytics.</p>
+                    <h2>Smart Analytics</h2>
+                    <p class="mt-2.5">Track lead performance with clear visual reports.</p>
                 </div>
 
                 <!-- Client Item 3  -->
                 <div data-aos="fade-up" data-aos-duration="600" data-aos-easing="ease-in-out">
-                    <div class="flex justify-center items-center bg-white rounded-2xl lg:py-20 py-15 px-5">
-                        <img src="/images/5-DeKq9tIn.svg" alt="" class="h-12.5">
+                    <div class="flex justify-center items-center bg-white rounded-2xl px-[10px] py-[30px] mb-4">
+                        <img src="/images/repeat.png" alt="repeat" class="max-w-[200px]">
                     </div>
-                    <p class="lg:mt-5 mt-2.5">Enhancing campaign management through seamless integrations.</p>
+                    <h2>Workflow Control</h2>
+                    <p class="mt-2.5">Manage lead stages with structured sales workflows.</p>
                 </div>
 
                 <!-- Client Item 4  -->
                 <div data-aos="fade-up" data-aos-delay="400" data-aos-duration="600" data-aos-easing="ease-in-out">
-                    <div class="flex justify-center items-center bg-white rounded-2xl lg:py-20 py-15 px-5">
-                        <img src="/images/7-Dcq25DS2.svg" alt="" class="h-12.5">
+                    <div class="flex justify-center items-center bg-white rounded-2xl px-[10px] py-[30px] mb-4">
+                        <img src="/images/conversion-rate.png" alt="conversion-rate" class="max-w-[200px]">
                     </div>
-                    <p class="lg:mt-5 mt-2.5">Securing operations with advanced security features.</p>
+                    <h2>Centralized Leads</h2>
+                    <p class="mt-2.5">Keep all lead data organized in one place.</p>
                 </div>
             </div>
 
             <div class="flex lg:mt-22.5 mt-15 text-center gap-1.25 flex-col" data-aos="fade-up" data-aos-duration="600" data-aos-easing="ease-in-out">
-                <h3 class="mb-2.5 text-1.5xl text-xl">Save 5+ hours a week with Owinace</h3>
+                <!-- <h3 class="mb-2.5 text-1.5xl text-xl">Save 5+ hours a week with Owinace</h3> -->
                 <div>
                     <a href="{{ route('home') }}#why-choose" class="py-3.5 lg:px-7.5 px-6.5 inline-flex items-center text-center bg-dark font-medium rounded-2xl text-white transition-all duration-300 hover:text-primary">
                         See how
