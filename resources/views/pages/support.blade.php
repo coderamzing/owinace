@@ -1,15 +1,74 @@
 @extends('layouts.frontend')
 
-@section('title', 'Support - ' . config('app.name', 'Owinace'))
+@section('title', 'Support - ' . config('app.name', 'LeadCliq'))
+
+@push('meta')
+<!-- Hreflang -->
+<link rel="alternate" hreflang="en" href="{{ url()->current() }}" />
+<link rel="alternate" hreflang="x-default" href="{{ url()->current() }}" />
+
+<meta name="description" content="LeadCliq Support Center. Get help with AI proposals, lead management, analytics, and more. Access documentation and contact our support team.">
+<meta name="keywords" content="LeadCliq support, help center, documentation, customer service, AI proposals help, CRM support">
+<meta name="author" content="LeadCliq">
+
+<!-- Open Graph / Facebook -->
+<meta property="og:type" content="website">
+<meta property="og:url" content="{{ url()->current() }}">
+<meta property="og:title" content="Support Center - LeadCliq">
+<meta property="og:description" content="LeadCliq Support Center. Get help with AI proposals, lead management, analytics, and more.">
+<meta property="og:image" content="{{ asset('images/leadcliq-og.png') }}">
+
+<!-- Twitter -->
+<meta property="twitter:card" content="summary_large_image">
+<meta property="twitter:url" content="{{ url()->current() }}">
+<meta property="twitter:title" content="Support Center - LeadCliq">
+<meta property="twitter:description" content="LeadCliq Support Center. Get help with AI proposals, lead management, analytics, and more.">
+<meta property="twitter:image" content="{{ asset('images/leadcliq-og.png') }}">
+@endpush
 
 @section('content')
+<script type="application/ld+json">
+@php
+echo json_encode([
+    "@context" => "https://schema.org",
+    "@type" => "BreadcrumbList",
+    "itemListElement" => [
+        [
+            "@type" => "ListItem",
+            "position" => 1,
+            "name" => "Home",
+            "item" => url('/')
+        ],
+        [
+            "@type" => "ListItem",
+            "position" => 2,
+            "name" => "Support",
+            "item" => url()->current()
+        ]
+    ]
+], JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT);
+@endphp
+</script>
+
+<script type="application/ld+json">
+@php
+echo json_encode([
+    "@context" => "https://schema.org",
+    "@type" => "WebPage",
+    "name" => "Support Center - LeadCliq",
+    "description" => "LeadCliq Support Center and Documentation",
+    "url" => url()->current()
+], JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT);
+@endphp
+</script>
+
 <section class="w-full lg:py-25 md:py-22.5 py-17.5">
     <div class="max-w-7xl mx-auto">
         <!-- Header -->
         <div class="text-center lg:mb-12.5 mb-7.5">
             <h1 class="lg:text-5.5xl md:text-4.6xl text-3.4xl mb-2.5">Support Center</h1>
             <p class="text-base text-dark">
-                We're here to help you succeed
+                Get help with LeadCliq's AI proposals, lead CRM, Chrome extension, team management, and billing
             </p>
         </div>
 
@@ -35,8 +94,8 @@
                             <div class="ml-4">
                                 <h3 class="text-lg font-semibold text-black mb-2">Email Support</h3>
                                 <p class="text-dark text-sm mb-2">Get help via email</p>
-                                <a href="mailto:support@owinace.com" class="text-dark underline font-medium">
-                                    support@owinace.com
+                                <a href="mailto:support@leadcliq.ai" class="text-dark underline font-medium">
+                                    support@leadcliq.ai
                                 </a>
                                 <p class="text-xs text-neutral-600 mt-2">Response time: 24-48 hours</p>
                             </div>
@@ -85,7 +144,7 @@
                             <i class="fas fa-book text-dark text-xl mr-4"></i>
                             <div>
                                 <h3 class="font-semibold text-black">Getting Started Guide</h3>
-                                <p class="text-sm text-dark">Learn how to use {{ config('app.name', 'Owinace') }}</p>
+                                <p class="text-sm text-dark">Learn how to use {{ config('app.name', 'LeadCliq') }}</p>
                             </div>
                         </div>
                     </div>
@@ -116,7 +175,7 @@
             <div class="bg-dark rounded-2xl p-8 text-white shadow-lg">
                 <div class="flex items-center justify-between flex-wrap gap-4">
                     <div>
-                        <h3 class="text-2xl font-bold mb-2">Support Hours</h3>
+                        <h3 class="text-2xl font-bold mb-2 text-white/80!">Support Hours</h3>
                         <p class="text-white/80">Monday - Friday: 9:00 AM - 6:00 PM (IST)</p>
                         <p class="text-white/80">Saturday - Sunday: Closed</p>
                     </div>

@@ -10,7 +10,7 @@ use Carbon\Carbon;
 class MonthlyCostPerLeadWidget extends ChartWidget
 {
     protected static ?int $sort = 9;
-    
+
     protected int | string | array $columnSpan = 'full';
 
     public function getHeading(): string
@@ -21,6 +21,21 @@ class MonthlyCostPerLeadWidget extends ChartWidget
     public function getDescription(): ?string
     {
         return 'Total average cost per lead (sum of tool and member costs)';
+    }
+
+    protected function showGridLines(): bool
+    {
+        return true;
+    }
+
+    protected function showXAxis(): bool
+    {
+        return true;
+    }
+
+    protected function showYAxis(): bool
+    {
+        return true;
     }
 
     protected function getData(): array
@@ -67,6 +82,7 @@ class MonthlyCostPerLeadWidget extends ChartWidget
                     'borderWidth' => 2,
                 ],
             ],
+            'maxValue' => !empty($costData) ? max($costData) : 0,
             'labels' => $labels,
         ];
     }
@@ -78,54 +94,56 @@ class MonthlyCostPerLeadWidget extends ChartWidget
 
     protected function getOptions(): array
     {
+        $maxValue = $this->getCachedData()['maxValue'] ?? 0;
+        $suggestedMax = $maxValue > 0 ? $maxValue + 10 : 10;
+
         return [
             'responsive' => true,
             'maintainAspectRatio' => false,
+
             'scales' => [
                 'y' => [
                     'beginAtZero' => true,
+                    'suggestedMax' => $suggestedMax,
+
+                    // ✅ SAFE: numbers only
                     'ticks' => [
-                        'callback' => 'function(value) { return "$" + value.toFixed(2); }',
+                        'display' => true,
+                        'precision' => 0,
+                        'stepSize' => max(1, ceil($suggestedMax / 5)),
                     ],
+
                     'title' => [
                         'display' => true,
-                        'text' => 'Average Cost Per Lead ($)',
-                        'font' => [
-                            'size' => 14,
-                            'weight' => 'bold',
-                        ],
+                        'text' => 'Average Cost Per Lead',
                     ],
                 ],
+
                 'x' => [
+                    'ticks' => [
+                        'display' => true,
+                    ],
                     'title' => [
                         'display' => true,
                         'text' => 'Month',
-                        'font' => [
-                            'size' => 14,
-                            'weight' => 'bold',
-                        ],
                     ],
                 ],
             ],
+
             'plugins' => [
                 'legend' => [
                     'display' => true,
-                    'position' => 'top',
-                    'labels' => [
-                        'font' => [
-                            'size' => 14,
-                        ],
-                    ],
                 ],
+
+                // ✅ Format currency HERE (safe)
                 'tooltip' => [
-                    'enabled' => true,
                     'callbacks' => [
-                        'label' => 'function(context) { return context.dataset.label + ": $" + context.parsed.y.toFixed(2); }',
-                        'title' => 'function(context) { return context[0].label; }',
+                        'label' => 'function(context) {
+                        return "$" + context.parsed.y.toFixed(2);
+                    }',
                     ],
                 ],
             ],
         ];
     }
 }
-

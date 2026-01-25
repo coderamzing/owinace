@@ -15,6 +15,9 @@ use App\Filament\Widgets\LeadConversionFunnelWidget;
 use App\Filament\Widgets\TeamActivityWidget;
 use App\Filament\Widgets\LeadQualityWidget;
 use App\Filament\Widgets\MonthlyCostPerLeadWidget;
+use App\Filament\Widgets\WeeklyAiInsightsWidget;
+use App\Filament\Widgets\LeadAnalyticWidget;
+use App\Filament\Widgets\PPAnalyticWidget;
 use App\Models\Team;
 use Filament\Pages\Page;
 use Illuminate\Support\Facades\Session;
@@ -23,6 +26,7 @@ use Livewire\Attributes\On;
 use Filament\Support\Icons\Heroicon;
 use BackedEnum;
 use App\Traits\HasPermission;
+use App\Filament\Widgets\RecentWonLeadsWidget;
 
 class AnalyticsDashboard extends Page
 {
@@ -171,19 +175,36 @@ class AnalyticsDashboard extends Page
     protected function getWidgets(): array
     {
         return [
-            GoalsOverviewWidget::class,
-            LeadsOverviewWidget::class,
-            MonthlyCostPerLeadWidget::class,
-            LeadsByStageWidget::class,
+            // A. Lead Analytics Widget - 8 cards in full span
+            LeadAnalyticWidget::class,
+            
+            // B. PP Analytics Widget - 4 cards in full span
+            PPAnalyticWidget::class,
+            
+            // C. Leads by Source - cols 6
             LeadsBySourceWidget::class,
-            MemberPerformanceWidget::class,
-            GoalPerformanceTrackingWidget::class,
-            GoalBarsWidget::class,
-            RevenueOverviewWidget::class,
-            LeadQualityWidget::class,
+            
+            // D. Leads by Stage - cols 6
+            LeadsByStageWidget::class,
+            
+            // E. Lead Conversion Funnel - cols 6
             LeadConversionFunnelWidget::class,
-            RecentLeadsWidget::class,
-            //TeamActivityWidget::class,
+            
+            // F. Recent Won Leads - cols 6
+            RecentWonLeadsWidget::class,
+            
+            // Commented out old widgets
+            // WeeklyAiInsightsWidget::class,
+            // RevenueOverviewWidget::class,
+            // LeadQualityWidget::class,
+            // GoalsOverviewWidget::class,
+            // LeadsOverviewWidget::class,
+            // MonthlyCostPerLeadWidget::class,
+            // MemberPerformanceWidget::class,
+            // GoalPerformanceTrackingWidget::class,
+            // GoalBarsWidget::class,
+            // RecentLeadsWidget::class,
+            // TeamActivityWidget::class,
         ];
     }
 }

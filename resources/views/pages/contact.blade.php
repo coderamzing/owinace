@@ -1,6 +1,30 @@
 @extends('layouts.frontend')
 
-@section('title', 'Contact Us - ' . config('app.name', 'Owinace'))
+@section('title', 'Contact Us - ' . config('app.name', 'LeadCliq'))
+
+@push('meta')
+<!-- Hreflang -->
+<link rel="alternate" hreflang="en" href="{{ url()->current() }}" />
+<link rel="alternate" hreflang="x-default" href="{{ url()->current() }}" />
+
+<meta name="description" content="Get in touch with LeadCliq support team. Contact us for inquiries about AI proposals, lead management, or technical support.">
+<meta name="keywords" content="contact LeadCliq, support, customer service, AI proposals help, lead CRM support">
+<meta name="author" content="LeadCliq">
+
+<!-- Open Graph / Facebook -->
+<meta property="og:type" content="website">
+<meta property="og:url" content="{{ url()->current() }}">
+<meta property="og:title" content="Contact Us - LeadCliq">
+<meta property="og:description" content="Get in touch with LeadCliq support team. Contact us for inquiries about AI proposals, lead management, or technical support.">
+<meta property="og:image" content="{{ asset('images/leadcliq-og.png') }}">
+
+<!-- Twitter -->
+<meta property="twitter:card" content="summary_large_image">
+<meta property="twitter:url" content="{{ url()->current() }}">
+<meta property="twitter:title" content="Contact Us - LeadCliq">
+<meta property="twitter:description" content="Get in touch with LeadCliq support team. Contact us for inquiries about AI proposals, lead management, or technical support.">
+<meta property="twitter:image" content="{{ asset('images/leadcliq-og.png') }}">
+@endpush
 
 @push('styles')
 <style>
@@ -64,7 +88,42 @@
 @endpush
 
 @section('content')
-    <section class="bg-body-bg lg:py-25 md:py-22.5 py-17.5">
+<script type="application/ld+json">
+@php
+echo json_encode([
+    "@context" => "https://schema.org",
+    "@type" => "BreadcrumbList",
+    "itemListElement" => [
+        [
+            "@type" => "ListItem",
+            "position" => 1,
+            "name" => "Home",
+            "item" => url('/')
+        ],
+        [
+            "@type" => "ListItem",
+            "position" => 2,
+            "name" => "Contact",
+            "item" => url()->current()
+        ]
+    ]
+], JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT);
+@endphp
+</script>
+
+<script type="application/ld+json">
+@php
+echo json_encode([
+    "@context" => "https://schema.org",
+    "@type" => "ContactPage",
+    "name" => "Contact Us - LeadCliq",
+    "description" => "Get in touch with LeadCliq support team",
+    "url" => url()->current()
+], JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT);
+@endphp
+</script>
+
+<section class="bg-body-bg lg:py-25 md:py-22.5 py-17.5">
         <div class="container-small">
 
             <div class="text-center md:mb-12.5 mb-7.5 aos-init aos-animate"
@@ -90,9 +149,8 @@
                     </div>
 
                     <div class="flex gap-2.5 flex-col">
-                        <a href="mailto:hello@example.com" class="underline text-dark">hello@example.com</a>
-                        <a href="tel:+0124574578" class="underline text-dark">+0 12 457 4578</a>
-                        <p>Chicago HQ Estica Cop. Macomb, MI 48042</p>
+                        <a href="mailto:support@leadcliq.ai" class="underline text-dark">support@leadcliq.ai</a>
+                        <a href="tel:+917710113366" class="underline text-dark">+91 7710113366</a>
                     </div>
                 </div>
 

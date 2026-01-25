@@ -1,5 +1,5 @@
 // Backend URL - preset, user cannot change it
-const BACKEND_URL = "http://127.0.0.1:8000/";
+const BACKEND_URL = "https://leadcliq.ai/";
 
 async function getSettings() {
 	return new Promise((resolve) => {

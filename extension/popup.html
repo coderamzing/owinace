@@ -4,8 +4,13 @@
 <head>
 	<meta charset="utf-8" />
 	<meta name="viewport" content="width=device-width, initial-scale=1" />
-	<title>OwinAce</title>
+	<title>LeadCliq</title>
 	<style>
+		:root {
+			--color-primary: #b8ff90;
+			--color-dark: #061d19;
+		}
+
 		* {
 			box-sizing: border-box;
 		}
@@ -26,7 +31,7 @@
 			padding: 16px 20px;
 			font-size: 20px;
 			font-weight: 700;
-			color: #667eea;
+			color: #061d19;
 			box-shadow: 0 2px 8px rgba(0,0,0,0.1);
 			text-align: center;
 			letter-spacing: -0.5px;
@@ -79,9 +84,9 @@
 		textarea:focus,
 		select:focus {
 			outline: none;
-			border-color: #667eea;
+			border-color: #b8ff90;
 			background: white;
-			box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+			box-shadow: 0 0 0 3px rgba(184, 255, 144, 0.2);
 		}
 
 		textarea {
@@ -92,24 +97,29 @@
 
 		button {
 			width: 100%;
-			margin-top: 16px;
-			padding: 14px 20px;
-			background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-			color: white;
+			margin: 16px auto;
+			padding: 14px 30px;
+			background-color: var(--color-primary);
+			color: var(--color-dark);
 			border: none;
-			border-radius: 8px;
+			border-radius: 1rem;
 			cursor: pointer;
 			font-size: 14px;
-			font-weight: 600;
-			transition: all 0.3s ease;
-			box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+			font-weight: 500;
+			transition: all 0.3s;
 			text-transform: uppercase;
 			letter-spacing: 0.5px;
+			max-width: 200px;
+		}
+		button.large{
+			max-width: 300px;
 		}
 
-		button:hover {
-			transform: translateY(-2px);
-			box-shadow: 0 6px 16px rgba(102, 126, 234, 0.5);
+		@media (hover: hover) {
+			button:hover {
+				color: var(--color-primary);
+				background-color: var(--color-dark);
+			}
 		}
 
 		button:active {
@@ -117,12 +127,14 @@
 		}
 
 		button.secondary {
-			background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-			box-shadow: 0 4px 12px rgba(245, 87, 108, 0.4);
+			background-color: #f5576c;
+			color: white;
 		}
 
-		button.secondary:hover {
-			box-shadow: 0 6px 16px rgba(245, 87, 108, 0.5);
+		@media (hover: hover) {
+			button.secondary:hover {
+				opacity: 0.9;
+			}
 		}
 
 		button:disabled {
@@ -148,8 +160,6 @@
 			line-height: 1.4;
 		}
 
-		#result {
-		}
 
 		.hidden {
 			display: none;
@@ -167,19 +177,19 @@
 		}
 
 		.status.success {
-			background: linear-gradient(135deg, #84fab0 0%, #8fd3f4 100%);
+			background: #84fab0;
 			color: #155724;
 			border: none;
 		}
 
 		.status.error {
-			background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+			background: #fa709a;
 			color: #721c24;
 			border: none;
 		}
 
 		.status.info {
-			background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+			background: #a8edea;
 			color: #0c5460;
 			border: none;
 		}
@@ -214,14 +224,14 @@
 		}
 
 		.tab:hover {
-			color: #667eea;
-			background: rgba(102, 126, 234, 0.05);
+			color: #061d19;
+			background: rgba(184, 255, 144, 0.1);
 		}
 
 		.tab.active {
-			color: #667eea;
-			border-bottom-color: #667eea;
-			background: rgba(102, 126, 234, 0.08);
+			color: #061d19;
+			border-bottom-color: #b8ff90;
+			background: rgba(184, 255, 144, 0.15);
 		}
 
 		.tab.active::after {
@@ -231,7 +241,7 @@
 			left: 0%;
 			width: 100%;
 			height: 3px;
-			background: #667eea;
+			background: #b8ff90;
 			border-radius: 2px;
 		}
 
@@ -287,12 +297,12 @@
 		}
 
 		::-webkit-scrollbar-thumb {
-			background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+			background: linear-gradient(135deg, #b8ff90 0%, #8dd873 100%);
 			border-radius: 4px;
 		}
 
 		::-webkit-scrollbar-thumb:hover {
-			background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+			background: linear-gradient(135deg, #8dd873 0%, #b8ff90 100%);
 		}
 
 		/* Input placeholder styling */
@@ -305,10 +315,83 @@
 		/* Select dropdown styling */
 		select {
 			appearance: none;
-			background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23667eea' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+			background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23b8ff90' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
 			background-repeat: no-repeat;
 			background-position: right 14px center;
 			padding-right: 40px;
+		}
+
+		/* Form Validation Styles */
+		.input-group {
+			margin-bottom: 12px;
+		}
+
+		.input-group:last-of-type {
+			margin-bottom: 0;
+		}
+
+		input.error,
+		textarea.error,
+		select.error {
+			border-color: #f5576c;
+			background: #fff5f5;
+		}
+
+		input.error:focus,
+		textarea.error:focus,
+		select.error:focus {
+			border-color: #f5576c;
+			background: #fff5f5;
+			box-shadow: 0 0 0 3px rgba(245, 87, 108, 0.1);
+		}
+
+		input.valid,
+		textarea.valid,
+		select.valid {
+			border-color: #b8ff90;
+			background: #f0fff4;
+		}
+
+		input.valid:focus,
+		textarea.valid:focus,
+		select.valid:focus {
+			border-color: #b8ff90;
+			background: #f0fff4;
+			box-shadow: 0 0 0 3px rgba(184, 255, 144, 0.2);
+		}
+
+		.error-message {
+			color: #f5576c;
+			font-size: 11px;
+			margin-top: 4px;
+			display: none;
+			font-weight: 500;
+			line-height: 1.4;
+		}
+
+		.error-message.show {
+			display: block;
+		}
+
+		.success-message {
+			color: #48bb78;
+			font-size: 11px;
+			margin-top: 4px;
+			display: none;
+			font-weight: 500;
+			line-height: 1.4;
+		}
+
+		.success-message.show {
+			display: block;
+		}
+
+		.text-center {
+			text-align: center;
+		}
+
+		.w-full {
+			width: 100%;
 		}
 	</style>
 </head>
@@ -317,14 +400,22 @@
 	<!-- Login Section -->
 	<div id="loginSection" class="section">
 		<div id="loginStatus"></div>
-		<div id="loginForm">
-			<label>Email</label>
-			<input id="email" type="email" placeholder="you@example.com" />
-			<label>Password</label>
-			<input id="password" type="password" placeholder="••••••••" />
-			<button id="loginBtn">Login</button>
-			<div class="muted">Configure API base URL in extension options.</div>
-		</div>
+		<form id="loginForm" novalidate>
+			<div class="input-group">
+				<label for="email">Email</label>
+				<input id="email" name="email" type="email" placeholder="you@example.com" required />
+				<div id="emailError" class="error-message"></div>
+			</div>
+			<div class="input-group">
+				<label for="password">Password</label>
+				<input id="password" name="password" type="password" placeholder="••••••••" required minlength="6" />
+				<div id="passwordError" class="error-message"></div>
+			</div>
+			<div class="w-full text-center">
+				<button id="loginBtn" type="submit">Login</button>
+			</div>
+			
+		</form>
 	</div>
 
 	<!-- Tabs Container (shown after login) -->
@@ -350,57 +441,82 @@
 
 		<!-- Tab 2: Cover Letter -->
 		<div id="tab-coverletter" class="tab-content">
-			<label>Job Description</label>
-			<textarea id="jobDescription"
-				placeholder="Job description will be auto-filled from the page, or enter manually..."></textarea>
-			
-
-			<div class="row">
-				<div>
-					<label>Words</label>
-					<input id="words" type="number" min="150" max="1000" value="300" />
+			<form id="coverLetterForm" novalidate>
+				<div class="input-group">
+					<label for="jobDescription">Job Description</label>
+					<textarea id="jobDescription" name="jobDescription"
+						placeholder="Job description will be auto-filled from the page, or enter manually..." required></textarea>
+					<div id="jobDescriptionError" class="error-message"></div>
 				</div>
-				<div>
-					<label>Level</label>
-					<select id="level">
-						<option value="intermediate" selected>Intermediate</option>
-						<option value="beginner">Beginner</option>
-						<option value="professional">Professional</option>
-					</select>
-				</div>
-			</div>
 
-			<button id="fillJobDescBtn" class="secondary">Auto-fill from Page</button>
-			<button id="generateCoverBtn">Generate Cover Letter</button>
+				<div class="row">
+					<div class="input-group">
+						<label for="words">Words</label>
+						<input id="words" name="words" type="number" min="150" max="1000" value="300" required />
+						<div id="wordsError" class="error-message"></div>
+					</div>
+					<div class="input-group">
+						<label for="level">Level</label>
+						<select id="level" name="level" required>
+							<option value="">Loading cover letter types...</option>
+						</select>
+						<div id="levelError" class="error-message"></div>
+					</div>
+				</div>
+
+				<div class="w-full text-center">
+					<button id="fillJobDescBtn" type="button" class="secondary large">Auto-fill from Page</button>
+				</div>
+				<div class="w-full text-center">
+					<button id="generateCoverBtn" type="submit" class="large">Generate Cover Letter</button>
+				</div>
+			</form>
 		</div>
 
 		<!-- Tab 3: Lead -->
 		<div id="tab-lead" class="tab-content">
+			<form id="leadForm" novalidate>
+				<div class="input-group">
+					<label for="leadTitle">Title</label>
+					<input id="leadTitle" name="leadTitle" type="text" placeholder="Lead title" required />
+					<div id="leadTitleError" class="error-message"></div>
+				</div>
 
-			<label>Title</label>
-			<input id="leadTitle" type="text" placeholder="Lead title" />
+				<div class="input-group">
+					<label for="leadDescription">Description (optional)</label>
+					<textarea id="leadDescription" name="leadDescription" placeholder="Lead description"></textarea>
+				</div>
 
-			<label>Description (optional)</label>
-			<textarea id="leadDescription" placeholder="Lead description"></textarea>
+				<div class="input-group">
+					<label for="leadSource">Source</label>
+					<select id="leadSource" name="leadSource">
+						<option value="">Select source...</option>
+					</select>
+				</div>
 
-			<label>Source</label>
-			<select id="leadSource">
-				<option value="">Select source...</option>
-			</select>
+				<div class="input-group">
+					<label for="leadStage">Stage</label>
+					<select id="leadStage" name="leadStage">
+						<option value="">Select stage...</option>
+					</select>
+				</div>
 
-			<label>Stage</label>
-			<select id="leadStage">
-				<option value="">Select stage...</option>
-			</select>
+				<div class="input-group">
+					<label for="expectedValue">Expected Value</label>
+					<input id="expectedValue" name="expectedValue" type="number" step="0.01" placeholder="0.00" />
+					<div id="expectedValueError" class="error-message"></div>
+				</div>
 
-			<label>Expected Value</label>
-			<input id="expectedValue" type="number" step="0.01" placeholder="0.00" />
+				<input id="leadUrl" name="leadUrl" type="hidden" value=""/>
+				<input id="leadContact" name="leadContact" type="hidden" value=""/>
 
-			<input id="leadUrl" type="hidden" value=""/>
-			<input id="leadContact" type="hidden" value=""/>
-
-			<button id="fillLeadBtn" class="secondary">Auto-fill from Page</button>
-			<button id="submitLeadBtn">Submit Lead</button>
+				<div class="w-full text-center">
+					<button id="fillLeadBtn" type="button" class="secondary large">Auto-fill from Page</button>
+				</div>
+				<div class="w-full text-center">
+					<button id="submitLeadBtn" type="submit">Submit Lead</button>
+				</div>
+			</form>
 		</div>
 
 		<!-- Tab 4: Logout -->

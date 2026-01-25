@@ -1,16 +1,14 @@
 @extends('layouts.frontend')
 
-@section('title', 'Refund Policy - ' . config('app.name', 'Owinace'))
+@section('title', 'Refund Policy - ' . config('app.name', 'Leadcliq'))
 
 @section('content')
 <section class="w-full lg:py-25 md:py-22.5 py-17.5">
     <div class="max-w-7xl mx-auto">
         <!-- Header -->
-        <div class="text-center lg:mb-12.5 mb-7.5">
-            <h1 class="lg:text-5.5xl md:text-4.6xl text-3.4xl mb-2.5">Refund Policy</h1>
-            <p class="text-base text-dark">
-                Please read our refund policy carefully
-            </p>
+        <div class="text-center lg:mb-12.5 mb-7.5 aos-init aos-animate" data-aos="fade-up" data-aos-delay="150" data-aos-duration="500" data-aos-easing="ease-in-out">
+            <h1 class="lg:text-6xl md:text-5.5xl text-4xl mb-2.5">Refund Policy</h1>
+            <p class="mb-2.5">Please read our refund policy carefully</p>
         </div>
 
         <div class="max-w-4xl mx-auto">
@@ -25,7 +23,7 @@
             <div class="bg-body-bg border-l-4 border-red-500 p-6 rounded-lg mb-8">
                 <h3 class="text-xl font-bold mb-3 mt-0 text-black"><i class="fas fa-exclamation-triangle mr-2 text-red-500"></i>Important Notice</h3>
                 <p class="text-dark font-medium mb-0">
-                    All credit purchases on {{ config('app.name', 'Owinace') }} are final and non-refundable. 
+                    All credit purchases on {{ config('app.name', 'Leadcliq') }} are final and non-refundable. 
                     Please review your purchase carefully before completing the transaction.
                 </p>
             </div>
@@ -33,7 +31,7 @@
             <div class="bg-white rounded-2xl p-8 mb-8 shadow-sm">
                 <h2 class="text-2xl font-bold mb-4 text-black">1. General Refund Policy</h2>
                 <p class="text-dark leading-relaxed mb-4">
-                    At {{ config('app.name', 'Owinace') }}, we maintain a strict no-refund policy for all credit purchases. 
+                    At {{ config('app.name', 'Leadcliq') }}, we maintain a strict no-refund policy for all credit purchases. 
                     Once credits are added to your account, they cannot be refunded, exchanged, or transferred under any circumstances.
                 </p>
                 <p class="text-dark leading-relaxed mb-4">
@@ -46,7 +44,7 @@
                 <h2 class="text-2xl font-bold mb-4 text-black">2. Non-Refundable Credits</h2>
                 <p class="text-dark leading-relaxed mb-4">The following applies to all credit purchases:</p>
                 <ul class="list-disc pl-6 text-dark mb-4 space-y-2">
-                    <li class="leading-relaxed"><strong>No Refunds:</strong> Credits purchased on {{ config('app.name', 'Owinace') }} are non-refundable under any circumstances</li>
+                    <li class="leading-relaxed"><strong>No Refunds:</strong> Credits purchased on {{ config('app.name', 'Leadcliq') }} are non-refundable under any circumstances</li>
                     <li class="leading-relaxed"><strong>No Exchanges:</strong> Credits cannot be exchanged for cash, other services, or alternative payment methods</li>
                     <li class="leading-relaxed"><strong>No Transfers:</strong> Credits are tied to your account and cannot be transferred to other users or accounts</li>
                     <li class="leading-relaxed"><strong>No Chargebacks:</strong> Initiating a chargeback or payment dispute will result in immediate account suspension</li>
@@ -101,7 +99,7 @@
                 </ul>
                 <p class="text-dark leading-relaxed mb-4">
                     All refund requests under exceptional circumstances must be submitted within 48 hours of the transaction 
-                    and will be reviewed on a case-by-case basis. The decision of {{ config('app.name', 'Owinace') }} management 
+                    and will be reviewed on a case-by-case basis. The decision of {{ config('app.name', 'Leadcliq') }} management 
                     regarding refunds is final.
                 </p>
             </div>
@@ -121,7 +119,7 @@
                     <li class="leading-relaxed">Supporting documentation or screenshots</li>
                 </ul>
                 <p class="text-dark leading-relaxed mb-4">
-                    <strong>Contact Email:</strong> support@owinace.com<br>
+                    <strong>Contact Email:</strong> support@leadcliq.ai<br>
                     <strong>Response Time:</strong> We aim to respond to all inquiries within 24-48 business hours
                 </p>
             </div>
@@ -139,7 +137,7 @@
                 <h2 class="text-2xl font-bold mb-4 text-black">9. Changes to This Policy</h2>
                 <p class="text-dark leading-relaxed mb-4">
                     We reserve the right to modify this refund policy at any time. Any changes will be posted on this page 
-                    with an updated "Last Updated" date. Your continued use of {{ config('app.name', 'Owinace') }} after 
+                    with an updated "Last Updated" date. Your continued use of {{ config('app.name', 'Leadcliq') }} after 
                     any changes constitutes acceptance of the new policy.
                 </p>
             </div>
@@ -147,7 +145,7 @@
             <div class="bg-white rounded-2xl p-8 mb-8 shadow-sm">
                 <h2 class="text-2xl font-bold mb-4 text-black">10. Acceptance of Policy</h2>
                 <p class="text-dark leading-relaxed mb-4">
-                    By purchasing credits on {{ config('app.name', 'Owinace') }}, you acknowledge that you have read, 
+                    By purchasing credits on {{ config('app.name', 'Leadcliq') }}, you acknowledge that you have read, 
                     understood, and agree to be bound by this refund policy. If you do not agree with this policy, 
                     please do not make any purchases on our platform.
                 </p>
@@ -159,7 +157,7 @@
                     If you have any questions about this refund policy, please contact us:
                 </p>
                 <ul class="list-disc pl-6 text-dark mb-4 space-y-2">
-                    <li class="leading-relaxed"><strong>Email:</strong> support@owinace.com</li>
+                    <li class="leading-relaxed"><strong>Email:</strong> support@leadcliq.ai</li>
                     <li class="leading-relaxed"><strong>Support Hours:</strong> Monday - Friday, 9:00 AM - 6:00 PM (IST)</li>
                 </ul>
             </div>

@@ -2,6 +2,12 @@
 
 @section('title', 'Email Confirmation')
 
+@push('meta')
+<!-- Prevent indexing of transactional pages -->
+<meta name="robots" content="noindex, nofollow">
+<meta name="description" content="Email confirmation page for LeadCliq account verification.">
+@endpush
+
 @section('content')
     <section class="bg-white lg:py-25 md:py-22.5 py-17.5 md:min-h-[50vh] flex items-center">
         <div class="container">

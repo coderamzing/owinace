@@ -14,7 +14,7 @@ class LeadQualityWidget extends StatsOverviewWidget
 {
     public ?string $filter = null;
 
-    protected static ?int $sort = 11;
+    protected static ?int $sort = 5;
 
     protected function getStats(): array
     {

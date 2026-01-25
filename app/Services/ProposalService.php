@@ -19,6 +19,39 @@ class ProposalService
         'approach',
     ];
 
+    private string $proposalGuideline = <<<EOT
+    - Job description is the single source of truth.
+    - No assumptions beyond the job.
+    - Start confidently; no greetings.
+    - If Job is about instanty start then metioned yes I am avaiable
+    - Tone: mid-level freelancer — clear, friendly, assured.
+    - Sound conversational, not corporate or salesy.
+    - Reference at least one concrete detail from the job description early.
+    - Rephrase experience to highlight client benefit.
+    - If relevant portfolio links are provided, reference 2–3 links max and only when they closely match the job.
+    - Introduce links naturally in context.
+    - Explain what was built and why it’s relevant before adding a link.
+    - Place links at the end of the sentence in parentheses.
+    - Never say “please check my portfolio” or similar phrases.
+    - End with a friendly, human closing line that references next steps.
+    - Finish with a simple professional sign-off such as: “Looking forward to discussing this further.” or “Best regards,” followed by a role-based sign-off.
+    EOT;
+
+    private string $proposalFormat = <<<EOT
+    - Use icons instead of bold text to structure sections.
+    - Prefer icons like 🖥️ 📄 🎯 ✅ ❓ 🔧
+    - Split content into short paragraphs (2–3 sentences max each).
+    - Never write the proposal as a single paragraph.
+    - Insert a blank line between logical sections.
+    EOT;
+
+    private string $outputFormat = <<<EOT
+    Return ONLY valid JSON with keys \"title\" and \"content\".
+    No markdown. No code fences. No explanations."
+    EOT;
+
+
+
     public function __construct(OpenAIService $openAIService)
     {
         $this->openAIService = $openAIService;
@@ -37,8 +70,6 @@ class ProposalService
         );
 
         $portfolioText = $this->buildPortfolioText($portfolioMatches);
-
-        //dd($portfolioText);
 
         $prompt = $this->buildPrompt($jobDescription, $portfolioText, $type, $words);
 
@@ -146,203 +177,141 @@ class ProposalService
 
     private function buildPitchPrompt(string $description, string $portfolioText, int $words): string
     {
-        return "Write a personalized Upwork proposal of {$words} words.
-    
-        Job:
+        return <<<EOT
+        Write a {$words}-word proposal with a confident, persuasive pitch tone that still feels human and natural.
+        Client requirements:
         {$description}
-        
-        Relevant example from my work:
+        Relevant experience:
         {$portfolioText}
-        
-        Instructions:
-        
-        - Start with a strong hook that clearly shows you understand the client's problem. No greetings.
-        
-        - Immediately propose a clear, practical solution approach (what you would do).
-        
-        - Use ONE strong, relevant example from the portfolio to support the solution (rephrase naturally; include links only if present).
-        
-        - Outline a simple 3–4 step execution plan focused on outcomes, not theory.
-        
-        - Keep the tone confident, practical, and friendly — like a problem-solver, not a salesperson.
-        
-        - End with a clear call-to-action and optionally up to 2–3 short, relevant questions.
-        
-        - Use short paragraphs; light formatting (bullets, **bold**, icons) is allowed.
-        
-        - Avoid repeating or copying job text; sound human, decisive, and tailored.
-        
+        Tone & style:
+        - Open with a strong, confident statement that positions me as a clear fit.
+        - Tone: persuasive, assured, results-focused — but not pushy or salesy.
+        - Highlight value, outcomes, and why this approach works for the client.
+        - Reference at least one concrete job requirement early.
+        - Rephrase experience to emphasize results and impact.
+        Guidelines:
+        {$this->proposalGuideline}
+        Formatting rules:
+        {$this->proposalFormat}
         Output format (STRICT):
         Return ONLY valid JSON with keys \"title\" and \"content\".
-        No markdown. No code fences. No explanations.";
+        No markdown. No code fences. No explanations."
+        EOT;
     }
 
     private function buildExperiencePrompt(string $description, string $portfolioText, int $words): string
     {
-        return "Write a {$words}-word Upwork proposal that positions me as an experienced and reliable professional.
-    
+        return <<<EOT
+        Write a {$words}-word coverletter focused on experience and proven capability.
         Client requirements:
         {$description}
-        
         Relevant experience:
         {$portfolioText}
-        
+        Tone & style:
+        - Calm, confident, experience-driven.
+        - Lead with what I’ve already done that directly matches this job.
+        - Avoid selling language; let experience speak.
+        - Reference specific job requirements early.
+        - Explain how past work reduces risk for the client.
         Guidelines:
-        
-        - Start confidently with understanding + credibility. No greetings.
-        
-        - Tone: experienced freelancer — calm, assured, professional, and friendly.
-        
-        - Emphasize depth of experience, similar projects, and proven results.
-        
-        - Clearly connect past experience to the client’s specific needs and goals.
-        
-        - Structure:
-        Intro → Understanding of needs → Relevant experience & proof → How I’ll apply it here → Why I’m a safe choice → CTA
-        
-        - Use light formatting (**bold**, • bullets, ✅ icons) to improve readability.
-        
-        - Optionally include up to 2–3 thoughtful, relevant questions.
-        
-        - Avoid buzzwords and exaggeration; focus on clarity, trust, and competence.
-        
+        {$this->proposalGuideline}
+        Formatting rules:
+        {$this->proposalFormat}
         Output format (STRICT):
         Return ONLY valid JSON with keys \"title\" and \"content\".
-        No markdown. No code fences. No explanations.";
+        No markdown. No code fences. No explanations."
+        EOT;
     }
 
     private function buildApproachPrompt(string $description, string $portfolioText, int $words): string
     {
-        return "Write a {$words}-word Upwork proposal focused on my approach and thinking process.
-    
+        return <<<EOT
+        Write a {$words}-word coverletter focused on approach and execution.
         Client goal:
         {$description}
-        
         Relevant background (use only where helpful):
         {$portfolioText}
-        
+        Tone & intent:
+        - Practical, methodical, and collaborative.
+        - Focus on how the work will be handled step by step.
+        - Emphasize clarity, coordination, and clean execution.
+        - Reference workflow or constraints from the job early.
         Guidelines:
-        
-        - Start by reframing the client's problem in your own words to show deep understanding. No greetings.
-        
-        - Tone: consultant-level — thoughtful, confident, and clear.
-        
-        - Identify key challenges, risks, or decisions the client may be facing.
-        
-        - Explain your proposed approach or strategy step-by-step, including reasoning and trade-offs.
-        
-        - Reference experience only where it strengthens the approach (do not over-list achievements).
-        
-        - Structure:
-        Understanding → Key challenges → Proposed approach → Why this approach works → Why I'm a good fit → CTA
-        
-        - Use light formatting (**bold**, • bullets, ✅ icons) for clarity.
-        
-        - Optionally include up to 2–3 sharp, insight-driven questions.
-        
-        - Keep language concise, logical, and original; avoid generic advice.
-        
+        {$this->proposalGuideline}
+        Formatting rules:
+        {$this->proposalFormat}
         Output format (STRICT):
         Return ONLY valid JSON with keys \"title\" and \"content\".
-        No markdown. No code fences. No explanations.";
+        No markdown. No code fences. No explanations."
+        EOT;
     }
 
     private function buildBeginnerPrompt(string $description, string $portfolioText, int $words): string
     {
-        return "Write a personalized Upwork proposal of {$words} words.
-
+        return <<<EOT
+        Write a {$words}-word coverletter with a beginner-friendly but professional tone.
         Job:
         {$description}
-        
         Portfolio:
         {$portfolioText}
         (rephrase naturally to match the client's needs; include links if available)
-        
-        Instructions:
-        
-        - Start with an engaging first sentence showing understanding of the project. No greetings.
-        
-        - Use a friendly, approachable, confident tone; short, clear sentences.
-        
-        - Highlight the most relevant portfolio points first.
-        
-        - Outline a simple 3–4 step plan.
-        
-        - Explain why you're eager and adaptable.
-        
-        - Include a call-to-action and optionally up to 3 relevant questions.
-        
-        - Use paragraphs naturally; bullets, bold, or icons are allowed.
-        
-        - Avoid copy-pasting job text; make it sound human-written and natural.
-        
+        Tone & guidance:
+        - Honest, motivated, and respectful.
+        - Show understanding of the task even if experience is limited.
+        - Emphasize willingness to follow instructions and learn.
+        - Avoid overconfidence or exaggeration.
+        - Reference job requirements early.
+        Guidelines:
+        {$this->proposalGuideline}
+        Formatting rules:
+        {$this->proposalFormat}
         Output format (STRICT):
-        Return ONLY valid JSON with keys \"title\" and \"content\".
-        No markdown. No code fences. No explanations.";
+        {$this->outputFormat}
+        EOT;
     }
 
     private function buildIntermediatePrompt(string $description, string $portfolioText, int $words): string
     {
-        return "Write a {$words}-word Upwork proposal that sounds professional yet friendly.
-
-        Client needs:
+        return <<<EOT
+        Write a {$words}-word proposal with an intermediate freelancer tone.
+        Client job description:
         {$description}
-        
-        My experience (adapt to match):
+        My experience (adapt to match) with links to projects:
         {$portfolioText}
-        
+        Tone & style:
+        - Balanced confidence without senior-level authority.
+        - Show capability, reliability, and practical understanding.
+        - Reference at least one concrete job detail early.
+        - Focus on smooth execution and communication.
         Guidelines:
-        
-        - Start confidently; no greetings like \"Hello\" or \"Hi\".
-        
-        - Tone: mid-level freelancer — clear, friendly, assured.
-        
-        - Rephrase experience to show relevance and client benefit.
-        
-        - Structure:
-        Intro → Understanding → Simple plan → Proof → Why me → CTA → Closing
-        
-        - Use light formatting (**bold**, • bullets, ✅ icons) for readability.
-        
-        - Optionally include up to 3 short, relevant questions.
-        
-        - Keep sentences natural, concise, and varied each time.
-        
+        {$this->proposalGuideline}
+        Formatting rules:
+        {$this->proposalFormat}
         Output format (STRICT):
-        Return ONLY valid JSON with keys \"title\" and \"content\".
-        No markdown. No code fences. No explanations.";
+        {$this->outputFormat}
+        EOT;
     }
 
     private function buildProfessionalPrompt(string $description, string $portfolioText, int $words): string
     {
-        return "Write a {$words}-word Upwork proposal that is polished, persuasive, and executive-level.
-
-        Client needs:
+        return <<<EOT
+        Write a {$words}-word coverletter with a senior professional tone.
+        Client requirements:
         {$description}
-        
-        My experience (adapt or rephrase to match):
+        My experience (adapt or rephrase to match) with links to projects:
         {$portfolioText}
-        
+        Tone & intent:
+        - Composed, direct, and confident.
+        - Focus on clarity, responsibility, and execution quality.
+        - Avoid enthusiasm or sales language.
+        - Reference constraints (scope limits, collaboration, review process) early.
         Guidelines:
-        
-        - Start confidently; no greetings like \"Hello\" or \"Hi\".
-        
-        - Tone: expert freelancer/consultant — formal, clear, persuasive, yet approachable.
-        
-        - Highlight achievements, proof, and results relevant to client needs.
-        
-        - Structure:
-        Intro → Deep understanding of client's goal → Detailed plan → Proof / credentials → Why I'm ideal → CTA → Closing
-        
-        - Use light formatting (**bold**, • bullets, ✅ icons) for readability.
-        
-        - Optionally include up to 3 sharp, relevant questions.
-        
-        - Keep sentences concise, confident, and unique each time.
-        
+        {$this->proposalGuideline}
+        Formatting rules:
+        {$this->proposalFormat}
         Output format (STRICT):
-        Return ONLY valid JSON with keys \"title\" and \"content\".
-        No markdown. No code fences. No explanations.";
+        {$this->outputFormat}
+        EOT;
     }
 }
 

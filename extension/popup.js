@@ -78,8 +78,6 @@ async function scrapeJobDescription() {
 			if (window.PlatformManager && typeof window.PlatformManager.detectPlatform === 'function') {
 				platform = window.PlatformManager.detectPlatform();
 			}
-
-			console.log(platform)
 			
 			// If platform found, call findJobDescription
 			if (platform && typeof platform.findJobDescription === 'function') {
@@ -102,7 +100,7 @@ async function scrapeJobDescription() {
 			return {
 				description: '',
 				platform: '',
-				error: 'Platform not supported or not detected'
+				error: 'Platform not supported or not detected!!'
 			};
 		}
 	});
@@ -128,7 +126,6 @@ async function scrapeLead() {
 			// If platform found, call findJobDescription
 			if (platform && typeof platform.findLead === 'function') {
 				try{
-					console.log("SAdasd")
 					const lead = await platform.findLead();
 					return {
 						lead: lead || {},
@@ -165,6 +162,177 @@ function hideStatus() {
 	const el = document.getElementById('result');
 	el.textContent = '';
 	el.className = '';
+}
+
+// Validation functions
+function validateEmail(email) {
+	const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+	return emailRegex.test(email);
+}
+
+function validatePassword(password) {
+	// Password must be at least 6 characters
+	return password && password.length >= 6;
+}
+
+function showFieldError(fieldId, errorMessage) {
+	const field = document.getElementById(fieldId);
+	const errorElement = document.getElementById(fieldId + 'Error');
+	
+	if (field) {
+		field.classList.remove('valid');
+		field.classList.add('error');
+	}
+	
+	if (errorElement) {
+		errorElement.textContent = errorMessage;
+		errorElement.classList.add('show');
+	}
+}
+
+function showFieldValid(fieldId) {
+	const field = document.getElementById(fieldId);
+	const errorElement = document.getElementById(fieldId + 'Error');
+	
+	if (field) {
+		field.classList.remove('error');
+		field.classList.add('valid');
+	}
+	
+	if (errorElement) {
+		errorElement.textContent = '';
+		errorElement.classList.remove('show');
+	}
+}
+
+function clearFieldValidation(fieldId) {
+	const field = document.getElementById(fieldId);
+	const errorElement = document.getElementById(fieldId + 'Error');
+	
+	if (field) {
+		field.classList.remove('error', 'valid');
+	}
+	
+	if (errorElement) {
+		errorElement.textContent = '';
+		errorElement.classList.remove('show');
+	}
+}
+
+function validateLoginForm() {
+	const email = document.getElementById('email').value.trim();
+	const password = document.getElementById('password').value;
+	let isValid = true;
+
+	// Validate email
+	if (!email) {
+		showFieldError('email', 'Email is required');
+		isValid = false;
+	} else if (!validateEmail(email)) {
+		showFieldError('email', 'Please enter a valid email address');
+		isValid = false;
+	} else {
+		showFieldValid('email');
+	}
+
+	// Validate password
+	if (!password) {
+		showFieldError('password', 'Password is required');
+		isValid = false;
+	} else if (!validatePassword(password)) {
+		showFieldError('password', 'Password must be at least 6 characters');
+		isValid = false;
+	} else {
+		showFieldValid('password');
+	}
+
+	return isValid;
+}
+
+function validateNumber(value, min, max, fieldName) {
+	const num = parseInt(value);
+	if (isNaN(num)) {
+		return { valid: false, message: `${fieldName} must be a valid number` };
+	}
+	if (num < min) {
+		return { valid: false, message: `${fieldName} must be at least ${min}` };
+	}
+	if (num > max) {
+		return { valid: false, message: `${fieldName} must be at most ${max}` };
+	}
+	return { valid: true };
+}
+
+function validateCoverLetterForm() {
+	const jobDescription = document.getElementById('jobDescription').value.trim();
+	const words = document.getElementById('words').value;
+	const level = document.getElementById('level').value;
+	let isValid = true;
+
+	// Validate job description
+	if (!jobDescription) {
+		showFieldError('jobDescription', 'Job description is required');
+		isValid = false;
+	} else if (jobDescription.length < 50) {
+		showFieldError('jobDescription', 'Job description must be at least 50 characters');
+		isValid = false;
+	} else {
+		showFieldValid('jobDescription');
+	}
+
+	// Validate words
+	const wordsValidation = validateNumber(words, 150, 1000, 'Words');
+	if (!wordsValidation.valid) {
+		showFieldError('words', wordsValidation.message);
+		isValid = false;
+	} else {
+		showFieldValid('words');
+	}
+
+	// Validate level
+	if (!level) {
+		showFieldError('level', 'Level is required');
+		isValid = false;
+	} else {
+		showFieldValid('level');
+	}
+
+	return isValid;
+}
+
+function validateLeadForm() {
+	const title = document.getElementById('leadTitle').value.trim();
+	const expectedValue = document.getElementById('expectedValue').value;
+	let isValid = true;
+
+	// Validate title
+	if (!title) {
+		showFieldError('leadTitle', 'Title is required');
+		isValid = false;
+	} else if (title.length < 3) {
+		showFieldError('leadTitle', 'Title must be at least 3 characters');
+		isValid = false;
+	} else {
+		showFieldValid('leadTitle');
+	}
+
+	// Validate expected value (if provided)
+	if (expectedValue) {
+		const valueNum = parseFloat(expectedValue);
+		if (isNaN(valueNum)) {
+			showFieldError('expectedValue', 'Expected value must be a valid number');
+			isValid = false;
+		} else if (valueNum < 0) {
+			showFieldError('expectedValue', 'Expected value cannot be negative');
+			isValid = false;
+		} else {
+			showFieldValid('expectedValue');
+		}
+	} else {
+		clearFieldValidation('expectedValue');
+	}
+
+	return isValid;
 }
 
 // Tab switching functionality
@@ -220,6 +388,7 @@ async function checkAuth() {
 			await switchTeam(settings.teams[0].id);
 		}
 		await loadLeadFormData();
+		await loadCoverLetterTypes();
 	} else {
 		// Show login form, hide tabs container
 		document.getElementById('loginForm').classList.remove('hidden');
@@ -262,6 +431,7 @@ async function switchTeam(teamId) {
 		if (!resp.ok) throw new Error(resp.error);
 		// Reload form data for new team
 		await loadLeadFormData();
+		await loadCoverLetterTypes();
 		return true;
 	} catch (e) {
 		console.error('Failed to switch team:', e);
@@ -319,18 +489,62 @@ async function loadLeadFormData() {
 	}
 }
 
-// Event Listeners
-document.getElementById('loginBtn').addEventListener('click', async () => {
+// Load cover letter types from stored teams data
+async function loadCoverLetterTypes() {
 	try {
-		hideStatus();
-		const email = document.getElementById('email').value.trim();
-		const password = document.getElementById('password').value;
-
-		if (!email || !password) {
-			showStatus('Please enter email and password', 'error');
+		const teamId = document.getElementById('teamSelect').value;
+		if (!teamId) {
+			// Clear dropdown if no team selected
+			document.getElementById('level').innerHTML = '<option value="">Select team first...</option>';
 			return;
 		}
 
+		// Get teams from storage
+		const storage = await new Promise((resolve) => {
+			chrome.storage.local.get(['teams'], resolve);
+		});
+
+		const teams = storage.teams || [];
+		const selectedTeam = teams.find(t => t.id == teamId);
+
+		if (!selectedTeam) {
+			console.error('Team not found in stored data');
+			document.getElementById('level').innerHTML = '<option value="">Team not found...</option>';
+			return;
+		}
+
+		// Populate cover letter types
+		const levelSelect = document.getElementById('level');
+		levelSelect.innerHTML = '<option value="">Select level...</option>';
+		if (selectedTeam.coverletter_types && Array.isArray(selectedTeam.coverletter_types)) {
+			selectedTeam.coverletter_types.forEach(type => {
+				const option = new Option(type.charAt(0).toUpperCase() + type.slice(1), type);
+				levelSelect.appendChild(option);
+			});
+		}
+	} catch (e) {
+		console.error('Failed to load cover letter types:', e);
+		document.getElementById('level').innerHTML = '<option value="">Error loading types...</option>';
+	}
+}
+
+// Event Listeners - Login Form Submission
+document.getElementById('loginForm').addEventListener('submit', async (e) => {
+	e.preventDefault(); // Prevent default form submission
+	
+	try {
+		hideStatus();
+		
+		// Validate form before submission
+		if (!validateLoginForm()) {
+			showStatus('Please fix the errors in the form', 'error');
+			return;
+		}
+
+		const email = document.getElementById('email').value.trim();
+		const password = document.getElementById('password').value;
+
+		showStatus('Logging in...', 'info');
 		const resp = await chrome.runtime.sendMessage({ type: 'EXT_LOGIN', email, password });
 		if (!resp.ok) throw new Error(resp.error);
 
@@ -371,7 +585,7 @@ document.getElementById('fillJobDescBtn').addEventListener('click', async () => 
 		hideStatus();
 		showStatus('Extracting job description from page...', 'info');
 		const data = await scrapeJobDescription();
-		console.log(data)
+		console.log("returnd data", data)
 		document.getElementById('jobDescription').value = data.description || '';
 		hideStatus();
 		if (data.description) {
@@ -385,10 +599,19 @@ document.getElementById('fillJobDescBtn').addEventListener('click', async () => 
 	}
 });
 
-// Generate cover letter
-document.getElementById('generateCoverBtn').addEventListener('click', async () => {
+// Generate cover letter - Form submission handler
+document.getElementById('coverLetterForm').addEventListener('submit', async (e) => {
+	e.preventDefault(); // Prevent default form submission
+	
 	try {
 		hideStatus();
+		
+		// Validate form before submission
+		if (!validateCoverLetterForm()) {
+			showStatus('Please fix the errors in the form', 'error');
+			return;
+		}
+		
 		const teamId = document.getElementById('teamSelect').value;
 		const jobDescription = document.getElementById('jobDescription').value.trim();
 		const words = document.getElementById('words').value;
@@ -396,11 +619,6 @@ document.getElementById('generateCoverBtn').addEventListener('click', async () =
 
 		if (!teamId) {
 			showStatus('Please select a team', 'error');
-			return;
-		}
-
-		if (!jobDescription) {
-			showStatus('Please enter or auto-fill job description', 'error');
 			return;
 		}
 
@@ -429,6 +647,23 @@ document.getElementById('generateCoverBtn').addEventListener('click', async () =
 	}
 });
 
+// Helper function to select option by matching text (case-insensitive)
+function selectOptionByText(selectElement, searchText) {
+	if (!selectElement || !searchText) return false;
+	
+	const options = Array.from(selectElement.options);
+	const matchingOption = options.find(option => 
+		option.text.toLowerCase().trim() === searchText.toLowerCase().trim()
+	);
+	
+	if (matchingOption) {
+		selectElement.value = matchingOption.value;
+		return true;
+	}
+	
+	return false;
+}
+
 //Auto-fill lead from page
 document.getElementById('fillLeadBtn').addEventListener('click', async () => {
 	try {
@@ -442,6 +677,21 @@ document.getElementById('fillLeadBtn').addEventListener('click', async () => {
 			document.getElementById('leadTitle').value = data.lead.title || '';
 			document.getElementById('leadUrl').value = data.lead.url || '';
 			document.getElementById('leadContact').value = data.lead.contact || '';
+			document.getElementById('leadDescription').value = data.lead.description ? data.lead.description.substring(0, 200) : '';
+			document.getElementById('expectedValue').value = data.lead.cost || '';
+			
+			// Select source by matching text
+			if (data.lead.source) {
+				const sourceSelect = document.getElementById('leadSource');
+				selectOptionByText(sourceSelect, data.lead.source);
+			}
+
+			// Select stage by matching text
+			if (data.lead.stage) {
+				const stageSelect = document.getElementById('leadStage');
+				selectOptionByText(stageSelect, data.lead.stage);
+			}
+			
 			hideStatus();
 			showStatus('Lead information filled successfully', 'success');
 			setTimeout(hideStatus, 2000);
@@ -463,10 +713,19 @@ document.getElementById('teamSelect').addEventListener('change', async function 
 	}
 });
 
-// Submit lead
-document.getElementById('submitLeadBtn').addEventListener('click', async () => {
+// Submit lead - Form submission handler
+document.getElementById('leadForm').addEventListener('submit', async (e) => {
+	e.preventDefault(); // Prevent default form submission
+	
 	try {
 		hideStatus();
+		
+		// Validate form before submission
+		if (!validateLeadForm()) {
+			showStatus('Please fix the errors in the form', 'error');
+			return;
+		}
+		
 		const teamId = document.getElementById('teamSelect').value;
 		const title = document.getElementById('leadTitle').value;
 		const description = document.getElementById('leadDescription').value;
@@ -493,20 +752,198 @@ document.getElementById('submitLeadBtn').addEventListener('click', async () => {
 
 		showStatus(`Lead created successfully! Lead ID: ${resp.data.lead_id}`, 'success');
 
-		// Clear form
-		document.getElementById('leadTitle').value = '';
-		document.getElementById('leadDescription').value = '';
-		//document.getElementById('assignedMember').value = '';
-		document.getElementById('leadSource').value = '';
-		document.getElementById('leadStage').value = '';
-		document.getElementById('expectedValue').value = '';
+		// Reset form after successful submission
+		document.getElementById('leadForm').reset();
+		// Clear hidden fields manually as reset() might not clear them
+		document.getElementById('leadUrl').value = '';
+		document.getElementById('leadContact').value = '';
 	} catch (e) {
 		showStatus('Lead submission error: ' + e.message, 'error');
 	}
 });
 
-// Initialize on load
+// Real-time validation for login form inputs
 document.addEventListener('DOMContentLoaded', () => {
 	initTabs();
 	checkAuth();
+
+	// Email validation on input
+	const emailInput = document.getElementById('email');
+	if (emailInput) {
+		emailInput.addEventListener('blur', () => {
+			const email = emailInput.value.trim();
+			if (email) {
+				if (!validateEmail(email)) {
+					showFieldError('email', 'Please enter a valid email address');
+				} else {
+					showFieldValid('email');
+				}
+			} else {
+				clearFieldValidation('email');
+			}
+		});
+
+		emailInput.addEventListener('input', () => {
+			const email = emailInput.value.trim();
+			if (email && validateEmail(email)) {
+				showFieldValid('email');
+			} else if (emailInput.classList.contains('error')) {
+				// Keep error if already showing
+			}
+		});
+
+		// Move to password field on Enter key press
+		emailInput.addEventListener('keypress', (e) => {
+			if (e.key === 'Enter') {
+				e.preventDefault();
+				const passwordInput = document.getElementById('password');
+				if (passwordInput) {
+					passwordInput.focus();
+				}
+			}
+		});
+	}
+
+	// Password validation on input
+	const passwordInput = document.getElementById('password');
+	if (passwordInput) {
+		passwordInput.addEventListener('blur', () => {
+			const password = passwordInput.value;
+			if (password) {
+				if (!validatePassword(password)) {
+					showFieldError('password', 'Password must be at least 6 characters');
+				} else {
+					showFieldValid('password');
+				}
+			} else {
+				clearFieldValidation('password');
+			}
+		});
+
+		passwordInput.addEventListener('input', () => {
+			const password = passwordInput.value;
+			if (password && validatePassword(password)) {
+				showFieldValid('password');
+			} else if (passwordInput.classList.contains('error')) {
+				// Keep error if already showing
+			}
+		});
+		// Note: Form will handle Enter key submission naturally via the form's submit event
+	}
+
+	// Real-time validation for cover letter form
+	const jobDescriptionInput = document.getElementById('jobDescription');
+	if (jobDescriptionInput) {
+		jobDescriptionInput.addEventListener('blur', () => {
+			const jobDescription = jobDescriptionInput.value.trim();
+			if (jobDescription) {
+				if (jobDescription.length < 50) {
+					showFieldError('jobDescription', 'Job description must be at least 50 characters');
+				} else {
+					showFieldValid('jobDescription');
+				}
+			} else {
+				clearFieldValidation('jobDescription');
+			}
+		});
+
+		jobDescriptionInput.addEventListener('input', () => {
+			const jobDescription = jobDescriptionInput.value.trim();
+			if (jobDescription && jobDescription.length >= 50) {
+				showFieldValid('jobDescription');
+			}
+		});
+	}
+
+	const wordsInput = document.getElementById('words');
+	if (wordsInput) {
+		wordsInput.addEventListener('blur', () => {
+			const words = wordsInput.value;
+			if (words) {
+				const validation = validateNumber(words, 150, 1000, 'Words');
+				if (!validation.valid) {
+					showFieldError('words', validation.message);
+				} else {
+					showFieldValid('words');
+				}
+			} else {
+				clearFieldValidation('words');
+			}
+		});
+
+		wordsInput.addEventListener('input', () => {
+			const words = wordsInput.value;
+			if (words) {
+				const validation = validateNumber(words, 150, 1000, 'Words');
+				if (validation.valid) {
+					showFieldValid('words');
+				}
+			}
+		});
+	}
+
+	const levelSelect = document.getElementById('level');
+	if (levelSelect) {
+		levelSelect.addEventListener('change', () => {
+			const level = levelSelect.value;
+			if (level) {
+				showFieldValid('level');
+			} else {
+				clearFieldValidation('level');
+			}
+		});
+	}
+
+	// Real-time validation for lead form
+	const leadTitleInput = document.getElementById('leadTitle');
+	if (leadTitleInput) {
+		leadTitleInput.addEventListener('blur', () => {
+			const title = leadTitleInput.value.trim();
+			if (title) {
+				if (title.length < 3) {
+					showFieldError('leadTitle', 'Title must be at least 3 characters');
+				} else {
+					showFieldValid('leadTitle');
+				}
+			} else {
+				clearFieldValidation('leadTitle');
+			}
+		});
+
+		leadTitleInput.addEventListener('input', () => {
+			const title = leadTitleInput.value.trim();
+			if (title && title.length >= 3) {
+				showFieldValid('leadTitle');
+			}
+		});
+	}
+
+	const expectedValueInput = document.getElementById('expectedValue');
+	if (expectedValueInput) {
+		expectedValueInput.addEventListener('blur', () => {
+			const expectedValue = expectedValueInput.value;
+			if (expectedValue) {
+				const valueNum = parseFloat(expectedValue);
+				if (isNaN(valueNum)) {
+					showFieldError('expectedValue', 'Expected value must be a valid number');
+				} else if (valueNum < 0) {
+					showFieldError('expectedValue', 'Expected value cannot be negative');
+				} else {
+					showFieldValid('expectedValue');
+				}
+			} else {
+				clearFieldValidation('expectedValue');
+			}
+		});
+
+		expectedValueInput.addEventListener('input', () => {
+			const expectedValue = expectedValueInput.value;
+			if (expectedValue) {
+				const valueNum = parseFloat(expectedValue);
+				if (!isNaN(valueNum) && valueNum >= 0) {
+					showFieldValid('expectedValue');
+				}
+			}
+		});
+	}
 });

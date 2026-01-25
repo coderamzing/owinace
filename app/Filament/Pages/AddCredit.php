@@ -17,7 +17,7 @@ class AddCredit extends Page
 
     public function getTitle(): string
     {
-        return 'Add Credits to Workspace';
+        return '';
     }
 
     public function getCreditPackages(): array

@@ -11,17 +11,13 @@ class UpworkPlatform extends BasePlatform {
   }
 
   async findJobDescription() {
-    // Check if URL matches the apply page pattern
-    const url = window.location.href;
-    const applyPagePattern = /https:\/\/www\.upwork\.com\/nx\/proposals\/job\/[^\/]+\/apply\//;
-    if (applyPagePattern.test(url)) {
-      // Use the specific selector for apply page
-      const element = document.querySelector('div.fe-job-details div.description');
-      if (element) {
-        const text = element.innerText.trim();
-        if (text.length > 50) {
-          return text;
-        }
+    const selectors = [
+      'div.fe-job-details div.description',
+    ];
+    for (const selector of selectors) {
+      const text = this.extractText(selector);
+      if (text && text.length > 0) {
+        return text;
       }
     }
     return '';
@@ -62,19 +58,29 @@ class UpworkPlatform extends BasePlatform {
     return false;
   }
 
+  async getLeadCost() {
+    const cost = await this.extractText('div.fe-job-details ul.fe-ui-job-features div[data-cy="fixed-price"] + strong');
+    let cleanedCost = cost && cost.length > 0 ? cost.replace(/[^0-9.]/g, '') : '';
+    return cleanedCost;
+  }
+
   async findLead() {
     const title = await this.extractText('.fe-job-details h3');
     const contact = await this.extractText('.fe-client-info [data-qa="about-buyer-client-name"] strong');
     const url = await this.extractAttr('.fe-job-details  a[data-test="open-original-posting"]', 'href');
+    const description = await this.extractText('.fe-job-details div.description');
     const source = 'upwork';
     const stage = 'open';
+    const cost = await this.getLeadCost();
     return {
       title,
       contact,
       url: "https://www.upwork.com" + url.trim(),
+      description,
       source,
       stage,
       platform: this.getName(),
+      cost,
     };
   }
 }

@@ -1,2 +1,8 @@
 User-agent: *
-Disallow:
+Allow: /
+Disallow: /admin
+Disallow: /admin/*
+Disallow: /profile
+Disallow: /dashboard
+
+Sitemap: https://leadcliq.ai/sitemap.xml

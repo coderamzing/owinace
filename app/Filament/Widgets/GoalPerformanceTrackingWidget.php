@@ -3,26 +3,31 @@
 namespace App\Filament\Widgets;
 
 use App\Models\AnalyticsGoal;
-use Filament\Tables\Table;
-use Filament\Tables\Columns\TextColumn;
-use Filament\Widgets\TableWidget as BaseWidget;
-use Illuminate\Support\Facades\Session;
 use Carbon\Carbon;
+use Filament\Widgets\Widget;
+use Illuminate\Support\Facades\Session;
 
-class GoalPerformanceTrackingWidget extends BaseWidget
+class GoalPerformanceTrackingWidget extends Widget
 {
+    protected string $view = 'filament.widgets.goal-performance-tracking';
+
     protected int | string | array $columnSpan = 12;
 
     protected static ?string $heading = 'Goal Performance Tracking';
 
     protected static ?int $sort = 6;
 
-    public function table(Table $table): Table
+    /**
+     * Get goals grouped by member for display in cards.
+     *
+     * @return array<int, array<string, mixed>>
+     */
+    public function getMemberGoals(): array
     {
         $teamId = Session::get('team_id');
 
-        if (!$teamId) {
-            return $table->query(AnalyticsGoal::query()->whereRaw('1 = 0'));
+        if (! $teamId) {
+            return [];
         }
 
         // Get period from session
@@ -30,87 +35,95 @@ class GoalPerformanceTrackingWidget extends BaseWidget
         $month = (int) Carbon::parse($selectedPeriod . '-01')->month;
         $year = (int) Carbon::parse($selectedPeriod . '-01')->year;
 
-        return $table
-            ->query(
-                AnalyticsGoal::query()
-                    ->where('team_id', $teamId)
-                    ->where('month', $month)
-                    ->where('year', $year)
-                    ->whereNotNull('user_id')
-            )
-            ->columns([
-                TextColumn::make('fullname')
-                    ->label('Member')
-                    ->sortable()
-                    ->searchable(),
+        $goals = AnalyticsGoal::query()
+            ->where('team_id', $teamId)
+            ->where('month', $month)
+            ->where('year', $year)
+            ->whereNotNull('user_id')
+            ->with('user')
+            ->get()
+            ->groupBy('user_id');
 
-                TextColumn::make('goal_type')
-                    ->label('Goal Type')
-                    ->sortable(),
+        $result = [];
 
-                TextColumn::make('target_value')
-                    ->label('Target')
-                    ->numeric()
-                    ->sortable(),
+        foreach ($goals as $userId => $userGoals) {
+            $first = $userGoals->first();
+            $user = $first?->user;
 
-                TextColumn::make('progress_value')
-                    ->label('Progress')
-                    ->numeric()
-                    ->sortable(),
+            $memberGoals = [];
 
-                TextColumn::make('progress_percentage')
-                    ->label('Progress %')
-                    ->getStateUsing(function (AnalyticsGoal $record) {
-                        $target = $record->target_value ?? 0;
-                        if ($target == 0) return '0%';
+            foreach ($userGoals as $goal) {
+                $target = (float) ($goal->target_value ?? 0);
+                $progress = (float) ($goal->progress_value ?? 0);
+                $percentage = $target > 0 ? min(100, ($progress / $target) * 100) : 0;
 
-                        $progress = $record->progress_value ?? 0;
-                        $percentage = min(100, ($progress / $target) * 100);
-                        return number_format($percentage, 1) . '%';
-                    })
-                    ->badge()
-                    ->color(function (AnalyticsGoal $record) {
-                        $target = $record->target_value ?? 0;
-                        if ($target == 0) return 'gray';
+                // Format value & unit similar to other goals widgets
+                $value = $progress;
+                $unit = '';
 
-                        $progress = $record->progress_value ?? 0;
-                        $percentage = ($progress / $target) * 100;
+                if ($value >= 1000) {
+                    $value = $value / 1000;
+                    $unit = 'Gb';
+                } else {
+                    $unit = 'Mb';
+                }
 
-                        if ($percentage >= 100) return 'success';
-                        if ($percentage >= 75) return 'warning';
-                        if ($percentage >= 50) return 'danger';
-                        return 'danger';
-                    }),
+                if ($value >= 100) {
+                    $formattedValue = number_format($value, 0);
+                } else {
+                    $formattedValue = number_format($value, 1);
+                }
 
-                TextColumn::make('status')
-                    ->label('Status')
-                    ->state(function (AnalyticsGoal $record) {
-                        $target = $record->target_value ?? 0;
-                        if ($target == 0) return 'No Target';
+                $memberGoals[] = [
+                    'type' => $goal->goal_type,
+                    'label' => $this->getGoalLabel((string) $goal->goal_type),
+                    'target' => $target,
+                    'progress' => $progress,
+                    'value' => $formattedValue,
+                    'unit' => $unit,
+                    'percentage' => round($percentage, 1),
+                    'color' => $this->getColorForPercentage($percentage),
+                    'is_active' => $percentage >= 75,
+                ];
+            }
 
-                        $progress = $record->progress_value ?? 0;
-                        $percentage = ($progress / $target) * 100;
+            $result[] = [
+                'id' => $userId,
+                'name' => $first?->fullname ?: ($user?->name ?? 'Unknown'),
+                'role' => 'Member',
+                'avatar_url' => $user?->avatar_url ?? asset('/images/avatars/avatar-1.png'),
+                'goals' => $memberGoals,
+            ];
+        }
 
-                        if ($percentage >= 100) return 'Achieved';
-                        if ($percentage >= 75) return 'On Track';
-                        if ($percentage >= 50) return 'Behind';
-                        return 'Critical';
-                    })
-                    ->badge()
-                    ->color(function (AnalyticsGoal $record) {
-                        $target = $record->target_value ?? 0;
-                        if ($target == 0) return 'gray';
+        return $result;
+    }
 
-                        $progress = $record->progress_value ?? 0;
-                        $percentage = ($progress / $target) * 100;
+    protected function getGoalLabel(string $goalType): string
+    {
+        return match ($goalType) {
+            'lead_generation' => 'Lead Generation',
+            'conversion' => 'Conversion',
+            'open_leads' => 'Open Leads',
+            'general' => 'General Goals',
+            default => ucfirst(str_replace('_', ' ', $goalType)),
+        };
+    }
 
-                        if ($percentage >= 100) return 'success';
-                        if ($percentage >= 75) return 'warning';
-                        if ($percentage >= 50) return 'danger';
-                        return 'danger';
-                    }),
-            ])
-            ->defaultSort('created_at', 'desc')
-            ->paginated(false);
+    protected function getColorForPercentage(float $percentage): string
+    {
+        if ($percentage >= 100) {
+            return 'success';
+        }
+
+        if ($percentage >= 75) {
+            return 'primary';
+        }
+
+        if ($percentage >= 50) {
+            return 'warning';
+        }
+
+        return 'danger';
     }
 }

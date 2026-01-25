@@ -9,7 +9,7 @@
                  data-aos-easing="ease-in-out">
                 <div class="lg:mb-12.5 md:mb-10 mb-7.5 text-center">
                     <h1 class="lg:text-6xl md:text-5.5xl text-4xl">Sign up</h1>
-                    <p class="mb-2.5">Create an account and start using Owinace.</p>
+                    <p class="mb-2.5">Create an account and start using LeadCliq.</p>
                 </div>
 
                 <div class="bg-body-bg md:p-10 p-5 rounded-2xl">

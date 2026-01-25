@@ -1,6 +1,6 @@
 @extends('layouts.frontend')
 
-@section('title', 'Terms & Conditions - ' . config('app.name', 'Owinace'))
+@section('title', 'Terms & Conditions - ' . config('app.name', 'Leadcliq'))
 
 @push('styles')
 <style>
@@ -79,11 +79,9 @@
 <section class="w-full lg:py-25 md:py-22.5 py-17.5">
     <div class="max-w-7xl mx-auto">
         <!-- Header -->
-        <div class="text-center lg:mb-12.5 mb-7.5">
-            <h1 class="lg:text-5.5xl md:text-4.6xl text-3.4xl mb-2.5">Terms & Conditions</h1>
-            <p class="text-base text-dark">
-                Please read these terms carefully before using our service
-            </p>
+        <div class="text-center lg:mb-12.5 mb-7.5 aos-init aos-animate" data-aos="fade-up" data-aos-delay="150" data-aos-duration="500" data-aos-easing="ease-in-out">
+            <h1 class="lg:text-6xl md:text-5.5xl text-4xl mb-2.5">Terms & Conditions</h1>
+            <p class="mb-2.5">Please read these terms carefully before using our service</p>
         </div>
 
         <div class="terms-content">
@@ -97,14 +95,14 @@
             <div class="important-notice">
                 <p class="text-sm font-semibold text-dark mb-0">
                     <i class="fas fa-exclamation-triangle mr-2 text-amber-500"></i>
-                    By accessing and using {{ config('app.name', 'Owinace') }}, you accept and agree to be bound by the terms and provision of this agreement.
+                    By accessing and using {{ config('app.name', 'Leadcliq') }}, you accept and agree to be bound by the terms and provision of this agreement.
                 </p>
             </div>
 
             <div class="terms-section">
                 <h2>1. Acceptance of Terms</h2>
                 <p>
-                    By accessing and using {{ config('app.name', 'Owinace') }} (the "Service"), you accept and agree to be bound by the terms 
+                    By accessing and using {{ config('app.name', 'Leadcliq') }} (the "Service"), you accept and agree to be bound by the terms 
                     and provision of this agreement. If you do not agree to these Terms, please do not use the Service.
                 </p>
             </div>
@@ -162,7 +160,7 @@
             <div class="terms-section">
                 <h2>6. Intellectual Property</h2>
                 <p>
-                    The Service and its original content, features, and functionality are owned by {{ config('app.name', 'Owinace') }} 
+                    The Service and its original content, features, and functionality are owned by {{ config('app.name', 'Leadcliq') }} 
                     and are protected by international copyright, trademark, patent, trade secret, and other intellectual property laws.
                 </p>
                 <h3>User Content</h3>
@@ -191,7 +189,7 @@
             <div class="terms-section">
                 <h2>8. Disclaimer</h2>
                 <p>
-                    The materials on the Service are provided on an 'as is' basis. {{ config('app.name', 'Owinace') }} makes no warranties, 
+                    The materials on the Service are provided on an 'as is' basis. {{ config('app.name', 'Leadcliq') }} makes no warranties, 
                     expressed or implied, and hereby disclaims and negates all other warranties including, without limitation, implied 
                     warranties or conditions of merchantability, fitness for a particular purpose, or non-infringement of intellectual 
                     property or other violation of rights.
@@ -201,9 +199,9 @@
             <div class="terms-section">
                 <h2>9. Limitations</h2>
                 <p>
-                    In no event shall {{ config('app.name', 'Owinace') }} or its suppliers be liable for any damages (including, without 
+                    In no event shall {{ config('app.name', 'Leadcliq') }} or its suppliers be liable for any damages (including, without 
                     limitation, damages for loss of data or profit, or due to business interruption) arising out of the use or inability 
-                    to use the Service, even if {{ config('app.name', 'Owinace') }} or an authorized representative has been notified 
+                    to use the Service, even if {{ config('app.name', 'Leadcliq') }} or an authorized representative has been notified 
                     orally or in writing of the possibility of such damage.
                 </p>
             </div>
@@ -225,7 +223,7 @@
                 <h2>11. Governing Law</h2>
                 <p>
                     These Terms shall be governed and construed in accordance with the laws of the jurisdiction in which 
-                    {{ config('app.name', 'Owinace') }} operates, without regard to its conflict of law provisions.
+                    {{ config('app.name', 'Leadcliq') }} operates, without regard to its conflict of law provisions.
                 </p>
             </div>
 
@@ -247,9 +245,9 @@
                     If you have any questions about these Terms, please contact us:
                 </p>
                 <ul>
-                    <li><strong>Email:</strong> legal@owinace.com</li>
-                    <li><strong>Phone:</strong> +1 (234) 567-890</li>
-                    <li><strong>Address:</strong> 123 Business St, Suite 100, City, State 12345</li>
+                    <li><strong>Email:</strong> support@leadcliq.ai</li>
+                    <li><strong>Phone:</strong> +91 7710113366</li>
+                    <li><strong>Address:</strong> F-427, 2nd Floor, Sector 91, Mohali, Punjab, India 140307</li>
                 </ul>
             </div>
         </div>

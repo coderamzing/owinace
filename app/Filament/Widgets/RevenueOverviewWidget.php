@@ -14,7 +14,7 @@ class RevenueOverviewWidget extends StatsOverviewWidget
 {
     public ?string $filter = null;
 
-    protected static ?int $sort = 8;
+    protected static ?int $sort = 0;
 
     protected function getStats(): array
     {

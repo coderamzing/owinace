@@ -1,6 +1,30 @@
 @extends('layouts.frontend')
 
-@section('title', 'How Owinace Works | Generate AI Proposals - ' . config('app.name', 'Owinace'))
+@section('title', 'How LeadCliq Works | Lead CRM + AI Cover Letters for Teams - ' . config('app.name', 'LeadCliq'))
+
+@push('meta')
+<!-- Hreflang -->
+<link rel="alternate" hreflang="en" href="{{ url()->current() }}" />
+<link rel="alternate" hreflang="x-default" href="{{ url()->current() }}" />
+
+<meta name="description" content="Learn how LeadCliq works. Discover how to generate AI-powered proposals, manage leads, track analytics, and streamline your sales workflow in 4 easy steps.">
+<meta name="keywords" content="how LeadCliq works, AI proposal generation, lead management workflow, sales automation, CRM tutorial">
+<meta name="author" content="LeadCliq">
+
+<!-- Open Graph / Facebook -->
+<meta property="og:type" content="website">
+<meta property="og:url" content="{{ url()->current() }}">
+<meta property="og:title" content="How LeadCliq Works - AI Proposals & Lead CRM">
+<meta property="og:description" content="Learn how LeadCliq works. Generate AI-powered proposals, manage leads, track analytics, and streamline your sales workflow in 4 easy steps.">
+<meta property="og:image" content="{{ asset('images/leadcliq-og.png') }}">
+
+<!-- Twitter -->
+<meta property="twitter:card" content="summary_large_image">
+<meta property="twitter:url" content="{{ url()->current() }}">
+<meta property="twitter:title" content="How LeadCliq Works - AI Proposals & Lead CRM">
+<meta property="twitter:description" content="Learn how LeadCliq works. Generate AI-powered proposals, manage leads, track analytics, and streamline your sales workflow.">
+<meta property="twitter:image" content="{{ asset('images/leadcliq-og.png') }}">
+@endpush
 
 
 
@@ -251,22 +275,85 @@
 @endpush
 
 @section('content')
+<script type="application/ld+json">
+@php
+echo json_encode([
+    "@context" => "https://schema.org",
+    "@type" => "BreadcrumbList",
+    "itemListElement" => [
+        [
+            "@type" => "ListItem",
+            "position" => 1,
+            "name" => "Home",
+            "item" => url('/')
+        ],
+        [
+            "@type" => "ListItem",
+            "position" => 2,
+            "name" => "How It Works",
+            "item" => url()->current()
+        ]
+    ]
+], JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT);
+@endphp
+</script>
+
+<script type="application/ld+json">
+@php
+echo json_encode([
+    "@context" => "https://schema.org",
+    "@type" => "HowTo",
+    "name" => "How to Use LeadCliq for AI Proposals and Lead Management",
+    "description" => "Step-by-step guide to using LeadCliq for generating AI proposals and managing leads",
+    "step" => [
+        [
+            "@type" => "HowToStep",
+            "position" => 1,
+            "name" => "Sign up",
+            "text" => "Create your workspace, invite teammates, and start with AI proposal templates."
+        ],
+        [
+            "@type" => "HowToStep",
+            "position" => 2,
+            "name" => "Set up your profile",
+            "text" => "Add services, rates, and portfolio items so proposals auto-match every job."
+        ],
+        [
+            "@type" => "HowToStep",
+            "position" => 3,
+            "name" => "Customize your workspace",
+            "text" => "Set up pipelines, SLAs, and roles; connect files and comments to every lead."
+        ],
+        [
+            "@type" => "HowToStep",
+            "position" => 4,
+            "name" => "Launch and optimize",
+            "text" => "Monitor costs, track goals, and optimize proposals with real-time analytics."
+        ]
+    ]
+], JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT);
+@endphp
+</script>
+
 <!-- Main Content -->
 <section class="w-full lg:py-25 md:py-22.5 py-17.5">
     <div class="max-w-7xl mx-auto">
         <!-- How It Works Section -->
         <section class="mb-16">
+            <div class="text-center mb-12 aos-init aos-animate" data-aos="fade-up" data-aos-delay="150" data-aos-duration="500" data-aos-easing="ease-in-out">
+                <h1 class="lg:text-6xl md:text-5.5xl text-4xl mb-2.5">How It Works</h1>
+                <p class="mb-2.5">A simple workflow to track leads, follow up on time, and write better cover letters</p>
+            </div>
             <div class="flex flex-wrap items-center -mx-4">
                 <div class="w-full lg:w-1/2 px-4 mb-8 lg:mb-0">
-                    <h1 class="lg:text-5.5xl md:text-4.6xl text-3.4xl mb-2.5 section-title">How It Works</h1>
                     <p class="text-dark mb-4 leading-relaxed">
-                        Owinace begins with a simple setup process where admins create the workspace, add team members, assign roles, and define permissions. This ensures everyone is aligned and ready to collaborate. Once the team is set, you can build your core assets, including proposals, portfolios, services, and structured lead pipelines that every member can use.
+                        LeadCliq starts with a clean workspace setup: create a company or agency workspace, invite members, and assign roles so everyone has the right access. Then add your portfolios and services once—so every proposal stays consistent and professional.
                     </p>
                     <p class="text-dark mb-4 leading-relaxed">
-                        Leads can be added through Kanban, list view, or imports, and each one stores conversations, files, costs, tasks, comments, and activities in a single timeline. As the team engages with leads, admins set performance goals and targets, giving members clear direction on expectations and achievements.
+                        Next, track your pipeline in a Kanban board built for freelancers, agencies, and small companies. Each lead keeps contacts, notes, attachments, comments, follow-up reminders, and proposal history together—so nothing gets lost between chats, tabs, and tools.
                     </p> 
                     <p class="text-dark mb-6 leading-relaxed">
-                        When it's time to pitch, the AI Proposal Generator creates personalized proposals instantly. All lead records, proposal interactions, team activities, and analytics are automatically tracked—providing complete visibility into performance, conversions, and growth.
+                        Finally, generate AI cover letters that automatically match your portfolio, monitor lead costs and ROI, and set member goals. With performance dashboards and AI insights, you can see what’s working and improve your win rate over time.
                     </p>
                 </div>
                 <div class="w-full lg:w-1/2 px-4">
@@ -276,12 +363,12 @@
                                 width="560" 
                                 height="315" 
                                 src="https://www.youtube.com/embed/a1bwjUTeYUs?si=iN9ieI44ieWJt7cg" 
-                                title="YouTube video player" 
-                                frameborder="0" 
+                                title="How LeadCliq Works - Video Tutorial" 
                                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
                                 referrerpolicy="strict-origin-when-cross-origin" 
                                 allowfullscreen
-                                class="w-full aspect-video">
+                                class="w-full aspect-video"
+                                style="border: none;">
                             </iframe>
                         </div>
                     </div>
@@ -291,30 +378,30 @@
         
         <!-- FAQ Section -->
         <section class="mt-16">
-            <div class="mb-12 text-center">
-                <h2 class="lg:text-5.5xl md:text-4.6xl text-3.4xl mb-2.5">How Owinace Works</h2>
-                <p class="text-base text-dark">Everything you need to know about Owinace</p>
+            <div class="mb-12 text-center aos-init aos-animate" data-aos="fade-up" data-aos-delay="150" data-aos-duration="500" data-aos-easing="ease-in-out">
+                <h2 class="lg:text-6xl md:text-5.5xl text-4xl mb-2.5">How LeadCliq Works</h2>
+                <p class="mb-2.5">Step-by-step guide to using LeadCliq for generating AI proposals and managing leads</p>
             </div>
 
             <div class="max-w-5xl mx-auto space-y-4">
                 <!-- FAQ Item 1 -->
                 <div class="accordion-item">
                     <button class="accordion-button active" onclick="toggleAccordion(this)">
-                        <span>Curious About Your Team's Performance?</span>
+                        <span>How do I track member performance and goals?</span>
                         <svg class="accordion-icon w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
                         </svg>
                     </button>
                     <div class="accordion-content active">
                         <p class="text-dark mb-4">
-                            Visualize every team member's progress with dynamic graphs and analytics. Track growth over time, compare with past performance, and gain actionable insights to maximize productivity and drive success.
+                            Use dashboards to review member performance, set clear goals, and spot gaps in follow-ups and conversions. LeadCliq helps you coach with data—without adding admin overhead.
                         </p>
                         <iframe 
                             width="100%" 
                             height="315" 
                             src="https://www.youtube.com/embed/a1bwjUTeYUs?si=iN9ieI44ieWJt7cg" 
-                            title="YouTube video player" 
-                            frameborder="0" 
+                            title="Team Performance Analytics Video" 
+                            style="border: none;" 
                             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
                             referrerpolicy="strict-origin-when-cross-origin" 
                             allowfullscreen
@@ -326,21 +413,21 @@
                 <!-- FAQ Item 2 -->
                 <div class="accordion-item">
                     <button class="accordion-button" onclick="toggleAccordion(this)">
-                        <span>Want to Keep Track of Every Cost?</span>
+                        <span>How does LeadCliq track lead cost and ROI?</span>
                         <svg class="accordion-icon w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
                         </svg>
                     </button>
                     <div class="accordion-content">
                         <p class="text-dark mb-4">
-                            Easily monitor how resources are spent across different channels and team members. Gain complete visibility into expenses and make informed decisions to manage your budget efficiently.
+                            Track cost-per-lead by source and monitor ROI based on outcomes in your pipeline. You’ll know which channels and campaigns deserve more budget—and which ones to stop.
                         </p>
                         <iframe 
                             width="100%" 
                             height="315" 
                             src="https://www.youtube.com/embed/a1bwjUTeYUs?si=iN9ieI44ieWJt7cg" 
-                            title="YouTube video player" 
-                            frameborder="0" 
+                            title="Team Performance Analytics Video" 
+                            style="border: none;" 
                             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
                             referrerpolicy="strict-origin-when-cross-origin" 
                             allowfullscreen
@@ -352,21 +439,21 @@
                 <!-- FAQ Item 3 -->
                 <div class="accordion-item">
                     <button class="accordion-button" onclick="toggleAccordion(this)">
-                        <span>Want to Onboard Your Team in Just Minutes?</span>
+                        <span>Can I manage multiple teams and admins?</span>
                         <svg class="accordion-icon w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
                         </svg>
                     </button>
                     <div class="accordion-content">
                         <p class="text-dark mb-4">
-                            Launch your workspace by adding team members, assigning smart roles, and sending quick invitations. Each person enters with the right permissions, creating a well-organized, collaborative environment from the very first step.
+                            Yes. Create multiple teams, invite members, and assign multiple admins with role-based access. Everyone sees what they need—while you keep control of permissions and workflows.
                         </p>
                         <iframe 
                             width="100%" 
                             height="315" 
                             src="https://www.youtube.com/embed/a1bwjUTeYUs?si=iN9ieI44ieWJt7cg" 
-                            title="YouTube video player" 
-                            frameborder="0" 
+                            title="Team Performance Analytics Video" 
+                            style="border: none;" 
                             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
                             referrerpolicy="strict-origin-when-cross-origin" 
                             allowfullscreen
@@ -391,8 +478,8 @@
                             width="100%" 
                             height="315" 
                             src="https://www.youtube.com/embed/a1bwjUTeYUs?si=iN9ieI44ieWJt7cg" 
-                            title="YouTube video player" 
-                            frameborder="0" 
+                            title="Team Performance Analytics Video" 
+                            style="border: none;" 
                             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
                             referrerpolicy="strict-origin-when-cross-origin" 
                             allowfullscreen
@@ -417,8 +504,8 @@
                             width="100%" 
                             height="315" 
                             src="https://www.youtube.com/embed/a1bwjUTeYUs?si=iN9ieI44ieWJt7cg" 
-                            title="YouTube video player" 
-                            frameborder="0" 
+                            title="Team Performance Analytics Video" 
+                            style="border: none;" 
                             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
                             referrerpolicy="strict-origin-when-cross-origin" 
                             allowfullscreen
@@ -430,21 +517,21 @@
                 <!-- FAQ Item 6 -->
                 <div class="accordion-item">
                     <button class="accordion-button" onclick="toggleAccordion(this)">
-                        <span>How Do Credits Work in Owinace?</span>
+                        <span>How do AI credits work in LeadCliq?</span>
                         <svg class="accordion-icon w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
                         </svg>
                     </button>
                     <div class="accordion-content">
                         <p class="text-dark mb-4">
-                            Creating proposals is easy with our flexible credit system—simply use credits when generating proposals, while all other features remain completely free. Control your usage and enjoy full access without hidden costs.
+                            LeadCliq uses a simple credit system for AI actions (like generating cover letters). Use credits only when you generate with AI—everything else (lead CRM, Kanban, follow-ups, goals, analytics, and team management) stays available so you can scale at your own pace.
                         </p>
                         <iframe 
                             width="100%" 
                             height="315" 
                             src="https://www.youtube.com/embed/a1bwjUTeYUs?si=iN9ieI44ieWJt7cg" 
-                            title="YouTube video player" 
-                            frameborder="0" 
+                            title="Team Performance Analytics Video" 
+                            style="border: none;" 
                             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
                             referrerpolicy="strict-origin-when-cross-origin" 
                             allowfullscreen

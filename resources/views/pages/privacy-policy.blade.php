@@ -1,6 +1,31 @@
 @extends('layouts.frontend')
 
-@section('title', 'Privacy Policy - ' . config('app.name', 'Owinace'))
+@section('title', 'Privacy Policy - ' . config('app.name', 'LeadCliq'))
+
+@push('meta')
+<!-- Hreflang -->
+<link rel="alternate" hreflang="en" href="{{ url()->current() }}" />
+<link rel="alternate" hreflang="x-default" href="{{ url()->current() }}" />
+
+<meta name="description" content="LeadCliq Privacy Policy. Learn how we collect, use, and protect your personal data and information.">
+<meta name="keywords" content="privacy policy, data protection, GDPR, personal information, LeadCliq privacy">
+<meta name="author" content="LeadCliq">
+<meta name="robots" content="index, follow">
+
+<!-- Open Graph / Facebook -->
+<meta property="og:type" content="website">
+<meta property="og:url" content="{{ url()->current() }}">
+<meta property="og:title" content="Privacy Policy - LeadCliq">
+<meta property="og:description" content="LeadCliq Privacy Policy. Learn how we collect, use, and protect your personal data and information.">
+<meta property="og:image" content="{{ asset('images/leadcliq-og.png') }}">
+
+<!-- Twitter -->
+<meta property="twitter:card" content="summary_large_image">
+<meta property="twitter:url" content="{{ url()->current() }}">
+<meta property="twitter:title" content="Privacy Policy - LeadCliq">
+<meta property="twitter:description" content="LeadCliq Privacy Policy. Learn how we collect, use, and protect your personal data and information.">
+<meta property="twitter:image" content="{{ asset('images/leadcliq-og.png') }}">
+@endpush
 
 @push('styles')
 <style>
@@ -61,14 +86,35 @@
 @endpush
 
 @section('content')
+<script type="application/ld+json">
+@php
+echo json_encode([
+    "@context" => "https://schema.org",
+    "@type" => "BreadcrumbList",
+    "itemListElement" => [
+        [
+            "@type" => "ListItem",
+            "position" => 1,
+            "name" => "Home",
+            "item" => url('/')
+        ],
+        [
+            "@type" => "ListItem",
+            "position" => 2,
+            "name" => "Privacy Policy",
+            "item" => url()->current()
+        ]
+    ]
+], JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT);
+@endphp
+</script>
+
 <section class="w-full lg:py-25 md:py-22.5 py-17.5">
     <div class="max-w-7xl mx-auto">
         <!-- Header -->
-        <div class="text-center lg:mb-12.5 mb-7.5">
-            <h1 class="lg:text-5.5xl md:text-4.6xl text-3.4xl mb-2.5">Privacy Policy</h1>
-            <p class="text-base text-dark">
-                Your privacy is important to us
-            </p>
+        <div class="text-center lg:mb-12.5 mb-7.5 aos-init aos-animate" data-aos="fade-up" data-aos-delay="150" data-aos-duration="500" data-aos-easing="ease-in-out">
+            <h1 class="lg:text-6xl md:text-5.5xl text-4xl mb-2.5">Privacy Policy</h1>
+            <p class="mb-2.5">Your privacy is important to us</p>
         </div>
 
         <div class="policy-content">
@@ -82,7 +128,7 @@
             <div class="policy-section">
                 <h2>1. Introduction</h2>
                 <p>
-                    Welcome to {{ config('app.name', 'Owinace') }}. We respect your privacy and are committed to protecting your personal data. 
+                    Welcome to {{ config('app.name', 'LeadCliq') }}. We respect your privacy and are committed to protecting your personal data. 
                     This privacy policy will inform you about how we look after your personal data when you visit our website and tell you 
                     about your privacy rights and how the law protects you.
                 </p>
@@ -167,8 +213,9 @@
                     If you have any questions about this privacy policy or our privacy practices, please contact us at:
                 </p>
                 <ul>
-                    <li><strong>Email:</strong> privacy@owinace.com</li>
-                    <li><strong>Address:</strong> 123 Business St, Suite 100, City, State 12345</li>
+                    <li><strong>Email:</strong> support@leadcliq.ai</li>
+                    <li><strong>Phone:</strong> +91 7710113366</li>
+                    <li><strong>Address:</strong> F-427, 2nd Floor, Sector 91, Mohali, Punjab, India 140307</li>
                 </ul>
             </div>
 

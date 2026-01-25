@@ -3,7 +3,7 @@
         <div class="grid md:grid-cols-2 md:gap-12.5 lg:grid-cols-8 lg:gap-5 gap-10">
             <div class="lg:col-span-3">
                 <a href="{{ route('home') }}">
-                    <img src="/images/leadcliq.png" alt="LeadCliq" class="h-11 invert">
+                    <img src="/images/leadcliq.svg" alt="LeadCliq" class="h-11 invert">
                 </a>
                 <p class="mt-2.5 text-white">
                     Trusted solutions for your growing business
@@ -107,7 +107,7 @@
             </div>
 
             <div class="text-sm text-white">
-                Crafted with ❤️ By <a href="#" class="underline">Coderthemes</a>
+                Developed By <a href="https://bronzebyte.com" target="_blank" class="underline">Bronzebyte</a>
             </div>
         </div>
     </div>

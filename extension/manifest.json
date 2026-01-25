@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
-  "name": "Owinace Assistant",
-  "version": "0.2.0",
+  "name": "LeadCliq",
+  "version": "1.0.0",
   "description": "Generate proposals and create leads directly from job pages. Currently supports Upwork with more platforms coming soon.",
   "permissions": [
     "storage",
@@ -20,7 +20,7 @@
     "128": "icons/icon128.png"
   },
   "action": {
-    "default_title": "Owinace",
+    "default_title": "LeadCliq",
     "default_popup": "popup.html",
     "default_icon": {
       "16": "icons/icon16.png",

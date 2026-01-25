@@ -67,21 +67,20 @@ class CreateProposal extends Page implements HasForms
                     ->placeholder('Enter your proposal description...')
                     ->required()
                     ->minLength(100)
-                    ->rows(8)
+                    ->rows(12)
                     ->columnSpanFull()
                     ->extraAttributes(['class' => 'text-lg']),
                 Radio::make('words')
-                    ->label('Word Count')
+                    ->label('')
                     ->options([
                         '150' => '150',
                         '215' => '215',
                         '300' => '300',
                     ])
                     ->default('215')
-                    ->inline()
                     ->required(),
                 Radio::make('type')
-                    ->label('Proposal Type')
+                    ->label('')
                     ->options([
                         'beginner' => '🌱 Beginner',
                         'intermediate' => '💼 Intermediate',
@@ -98,12 +97,26 @@ class CreateProposal extends Page implements HasForms
                         'experience' => 'Proven results',
                         'approach' => 'Strategic thinking',
                     ])
-                    ->inline()
                     ->inlineLabel(false)
                     ->default('intermediate')
                     ->required(),
             ])
             ->statePath('data');
+    }
+
+    public function getDescriptionFieldProperty()
+    {
+        return $this->form->getComponent('description');
+    }
+
+    public function getWordsFieldProperty()
+    {
+        return $this->form->getComponent('words');
+    }
+
+    public function getTypeFieldProperty()
+    {
+        return $this->form->getComponent('type');
     }
 
     public function generate(): void

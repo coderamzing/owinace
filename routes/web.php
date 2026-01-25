@@ -4,17 +4,18 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\RazorpayController;
 use App\Http\Controllers\RazorpayWebhookController;
+use App\Http\Controllers\ImageController;
 
 Route::get('/', function () {
-    return view('home');
+    return view('pages.home');
 })->name('home');
 
 Route::get('/how-it-works', function () {
-    return view('how-it-works');
+    return view('pages.how-it-works');
 })->name('how-it-works');
 
 Route::get('/contact', function () {
-    return view('contact');
+    return view('pages.contact');
 })->name('contact');
 
 Route::get('/pricing', function () {
@@ -23,7 +24,7 @@ Route::get('/pricing', function () {
 })->name('pricing');
 
 Route::get('/privacy-policy', function () {
-    return view('privacy-policy');
+    return view('pages.privacy-policy');
 })->name('privacy-policy');
 
 Route::get('/terms', function () {
@@ -35,12 +36,25 @@ Route::get('/refund-policy', function () {
 })->name('refund-policy');
 
 Route::get('/support', function () {
-    return view('support');
+    return view('pages.support');
 })->name('support');
 
 Route::get('/faq', function () {
-    return view('faq');
+    return view('pages.faq');
 })->name('faq');
+
+Route::get('/image-example', function () {
+    return view('pages.image-example');
+})->name('image-example');
+
+// Sitemap
+Route::get('/sitemap.xml', [\App\Http\Controllers\SitemapController::class, 'index'])->name('sitemap');
+
+// Optimized Image Serving
+Route::get('/images/{dimensions}/{path}', [ImageController::class, 'serve'])
+    ->where('dimensions', '\d+x?\d*')
+    ->where('path', '.*')
+    ->name('image.serve');
 
 Route::get('/email-confirmation', function () {
     return view('pages.email-confirmation');

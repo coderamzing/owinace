@@ -6,9 +6,20 @@
         <meta name="csrf-token" content="{{ csrf_token() }}">
         <link rel="icon" type="image/png" href="{{ asset('images/leadcliq-favicon.png') }}">
 
+        <!-- Canonical URL -->
+        <link rel="canonical" href="{{ url()->current() }}">
+        
+        <!-- Sitemap -->
+        <link rel="sitemap" type="application/xml" href="{{ url('/sitemap.xml') }}">
+
         <title>@yield('title', config('app.name', 'Laravel'))</title>
 
         @stack('meta')
+
+        <!-- DNS Prefetch & Preconnect -->
+        <link rel="preconnect" href="https://fonts.bunny.net" crossorigin>
+        <link rel="dns-prefetch" href="https://fonts.bunny.net">
+        <link rel="dns-prefetch" href="https://cdnjs.cloudflare.com">
 
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net">
