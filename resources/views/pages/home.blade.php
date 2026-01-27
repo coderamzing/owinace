@@ -325,7 +325,8 @@ echo json_encode([
             <div data-aos="fade-up" data-aos-delay="150" data-aos-duration="500" data-aos-easing="ease-in-out">
                 <div class="flex items-center gap-2.5 flex-row">
                     <div class="size-10 bg-dark rounded-full inline-flex items-center justify-center min-h-[40px] min-w-[40px]">
-                        <i class="iconify solar--headphones-round-outline size-5.5 text-primary"></i>
+                        <!-- <i class="iconify solar--headphones-round-outline size-5.5 text-primary"></i> -->
+                        <img src="/images/mail.png" alt="Email icon" class="size-5.5 text-primary">
                     </div>
                     <div class=" text-black ">
                         <h4 class="lg:text-1.5xl text-lg font-medium">Email notifications</h4>
@@ -337,7 +338,8 @@ echo json_encode([
             <div data-aos="fade-up" data-aos-delay="200" data-aos-duration="500" data-aos-easing="ease-in-out">
                 <div class="flex items-center gap-2.5 flex-row">
                     <div class="size-10 bg-dark rounded-full inline-flex items-center justify-center min-h-[40px] min-w-[40px]">
-                        <i class="iconify solar--lightbulb-outline size-5.5 text-primary"></i>
+                        <!-- <i class="iconify solar--lightbulb-outline size-5.5 text-primary"></i> -->
+                        <img src="/images/ai-assistant.png" alt="AI icon" class="size-5.5 text-primary">
                     </div>
                     <div class=" text-black ">
                         <h4 class="lg:text-1.5xl text-lg font-medium">AI insights</h4>
@@ -442,7 +444,8 @@ echo json_encode([
             <div class="flex gap-4 flex-row" data-aos="fade-up" data-aos-delay="50" data-aos-duration="500" data-aos-easing="ease-in-out">
                 <div>
                     <div class="size-12.5 bg-dark rounded-full inline-flex items-center justify-center">
-                        <i class="iconify solar--bolt-linear size-7 text-primary"></i>
+                        <!-- <i class="iconify solar--bolt-linear size-7 text-primary"></i> -->
+                        <img src="/images/cover-letter.png" alt="Cover letter" class="size-7 text-primary">
                     </div>
                 </div>
 
@@ -456,7 +459,8 @@ echo json_encode([
             <div class="flex gap-4 flex-row" data-aos="fade-up" data-aos-duration="500" data-aos-easing="ease-in-out">
                 <div>
                     <div class="size-12.5 bg-dark rounded-full inline-flex items-center justify-center">
-                        <i class="iconify solar--shield-check-outline size-7 text-primary"></i>
+                        <!-- <i class="iconify solar--shield-check-outline size-7 text-primary"></i> -->
+                        <img src="/images/puzzle.png" alt="Chrome extension" class="size-7 text-primary">
                     </div>
                 </div>
 
@@ -470,7 +474,8 @@ echo json_encode([
             <div class="flex gap-4 flex-row" data-aos="fade-up" data-aos-delay="150" data-aos-duration="500" data-aos-easing="ease-in-out">
                 <div>
                     <div class="size-12.5 bg-dark rounded-full inline-flex items-center justify-center">
-                        <i class="iconify solar--smartphone-2-outline size-7 text-primary"></i>
+                        <!-- <i class="iconify solar--smartphone-2-outline size-7 text-primary"></i> -->
+                        <img src="/images/network-connection.png" alt="Teams icon" class="size-7 text-primary">
                     </div>
                 </div>
 
