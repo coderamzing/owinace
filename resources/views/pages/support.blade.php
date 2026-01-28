@@ -63,7 +63,7 @@ echo json_encode([
 </script>
 
 <section class="w-full lg:py-25 md:py-22.5 py-17.5">
-    <div class="max-w-7xl mx-auto">
+    <div class="max-w-7xl mx-auto px-5">
         <!-- Header -->
         <div class="text-center lg:mb-12.5 mb-7.5">
             <h1 class="lg:text-5.5xl md:text-4.6xl text-3.4xl mb-2.5">Support Center</h1>

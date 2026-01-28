@@ -337,7 +337,7 @@ echo json_encode([
 
 <!-- Main Content -->
 <section class="w-full lg:py-25 md:py-22.5 py-17.5">
-    <div class="max-w-7xl mx-auto">
+    <div class="max-w-7xl mx-auto px-5">
         <!-- How It Works Section -->
         <section class="mb-16">
             <div class="text-center mb-12 aos-init aos-animate" data-aos="fade-up" data-aos-delay="150" data-aos-duration="500" data-aos-easing="ease-in-out">

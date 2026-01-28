@@ -24,7 +24,7 @@
             </div>
 
             <div class="lg:col-span-3">
-                <h4 class="text-1.5xl mb-5 text-white">Pages</h4>
+                <h3 class="text-1.5xl mb-5 text-white">Pages</h3>
                 <div class="grid grid-cols-2 md:gap-12.5 lg:gap-5 gap-2.5">
                     <div>
                         <ul class="flex flex-col justify-start gap-2.5 leading-normal">
@@ -60,7 +60,7 @@
             </div>
 
             <div class="lg:col-span-2">
-                <h4 class="text-1.5xl mb-5 text-white">Contact us</h4>
+                <h3 class="text-1.5xl mb-5 text-white">Contact us</h3>
                 <div>
                     <p class="mb-3.75 text-sm text-white md:text-base">
                         F-427, 2nd Floor, Sector 91, Mohali, Punjab, India 140307
@@ -81,16 +81,8 @@
 
                         <div class="flex gap-4">
                             <a href="#" class="flex">
-                                <i class="iconify tabler--brand-meta size-5 text-white transform transition duration-300 hover:scale-110"></i>
-                            </a>
-                            <a href="#" class="flex">
-                                <i class="iconify tabler--brand-dribbble size-5 text-white transform transition duration-300 hover:scale-110"></i>
-                            </a>
-                            <a href="#" class="flex">
-                                <i class="iconify tabler--brand-linkedin size-5 text-white transform transition duration-300 hover:scale-110"></i>
-                            </a>
-                            <a href="#" class="flex">
-                                <i class="iconify tabler--brand-x size-5 text-white transform transition duration-300 hover:scale-110"></i>
+                                <!-- <i class="iconify tabler--brand-linkedin size-5 text-white transform transition duration-300 hover:scale-110"></i> -->
+                                <img src="/images/linkedin.png" alt="linkedin" class="max-w-[24px]">
                             </a>
                         </div>
                     </div>

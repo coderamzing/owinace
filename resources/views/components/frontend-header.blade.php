@@ -29,7 +29,7 @@
                             Dashboard
                         </a>
                     @else
-                        <a href="{{ route('login') }}" class="bg-white text-dark hover:text-primary hover:bg-primary border border-neutral-200 rounded-2xl px-7.5 py-3.5 font-medium transition-all duration-300">
+                        <a href="{{ route('login') }}" class="bg-white text-dark hover:bg-primary border border-neutral-200 rounded-2xl px-7.5 py-3.5 font-medium transition-all duration-300">
                             Login
                         </a>
                         <a href="{{ route('register') }}" class="bg-primary text-dark hover:text-primary hover:bg-dark rounded-2xl px-7.5 py-3.5 font-medium transition-all duration-300">

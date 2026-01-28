@@ -109,7 +109,7 @@ echo json_encode([
 @endphp
 </script>
 
-<section class="bg-body-bg lg:py-25 md:py-12.5 py-7.5">
+<section class="bg-body-bg lg:py-25 md:py-12.5 py-7.5 px-5">
         <div class="container">
             <div class="text-center aos-init aos-animate" data-aos="fade-up" data-aos-delay="150" data-aos-duration="500" data-aos-easing="ease-in-out">
                 <h1 class="lg:text-6xl md:text-5.5xl text-4xl mb-2.5">Frequently asked questions</h1>
