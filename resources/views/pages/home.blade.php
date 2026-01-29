@@ -151,6 +151,33 @@ echo json_encode([
 @endphp
 </script>
 
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const testiSwiper = new Swiper(".testiSwiper", {
+        loop: true,
+        slidesPerView: 1,
+        spaceBetween: 30,
+        speed: 600,
+
+        navigation: {
+            nextEl: ".custom-next",
+            prevEl: ".custom-prev",
+        },
+
+        autoplay: {
+            delay: 4000,
+            disableOnInteraction: false,
+        },
+
+        breakpoints: {
+            1024: {
+            slidesPerView: 1,
+            }
+        }
+        });
+    });
+</script>
+
 <main>
 
     <!-- Hero Section -->

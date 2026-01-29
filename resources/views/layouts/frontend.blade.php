@@ -28,6 +28,38 @@
         <!-- Font Awesome -->
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
+        <!-- Swiper Slider -->
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
+        <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                const testiSwiper = new Swiper(".testiSwiper", {
+                loop: true,
+                slidesPerView: 1,
+                spaceBetween: 30,
+                speed: 600,
+
+                navigation: {
+                    nextEl: ".custom-next",
+                    prevEl: ".custom-prev",
+                },
+
+                autoplay: {
+                    delay: 4000,
+                    disableOnInteraction: false,
+                },
+
+                breakpoints: {
+                    1024: {
+                    slidesPerView: 1,
+                    }
+                }
+                });
+            });
+        </script>
+
+
         <!-- Styles / Scripts -->
         @vite(['resources/css/frontend.css', 'resources/css/app.css',  'resources/js/app.js'])
 
