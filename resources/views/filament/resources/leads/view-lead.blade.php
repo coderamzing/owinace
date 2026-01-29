@@ -8,9 +8,9 @@
         <div class="dark:bg-gray-800 shadow-sm border border-gray-200 dark:border-gray-700 rounded-lg p-6">
             <div class="flex items-start justify-between">
                 <div class="flex-1">
-                    <h1 class="text-3xl font-bold text-[#fff] dark:text-white mb-2">{{ $record->title }}</h1>
+                    <h1 class="text-3xl font-bold text-[#000] dark:text-white mb-2">{{ $record->title }}</h1>
                     @if($record->description)
-                        <p class="text-[#fff] dark:text-gray-400 mt-2">{{ $record->description }}</p>
+                        <p class="text-[#000] dark:text-gray-400 mt-2">{{ $record->description }}</p>
                     @endif
                 </div>
                 <div class="flex items-center gap-3">

@@ -48,7 +48,7 @@
                             id="search"
                             wire:model.live.debounce.300ms="search"
                             placeholder="Search leads by title, description..."
-                            class="w-full rounded-lg border-gray-300 bg-[#fff] dark:border-gray-600 dark:bg-gray-800 dark:text-gray-300 focus:border-primary-500 focus:ring-primary-500 focus:ring-2 transition-all"
+                            class="w-full rounded-lg border-gray-300 bg-[#fff] dark:border-gray-600 dark:bg-gray-800 dark:text-gray-300 focus:border-primary-500 focus:ring-primary-500 focus:ring-2 transition-all px-[12px] py-[6px] border border-[#e3e3e3]"
                         >
                     </div>
 
@@ -60,7 +60,7 @@
                         <select
                             id="memberFilter"
                             wire:model.live="memberFilter"
-                            class="w-full rounded-lg bg-[#fff] border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-300 focus:border-primary-500 focus:ring-primary-500 focus:ring-2 transition-all"
+                            class="w-full rounded-lg bg-[#fff] border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-300 focus:border-primary-500 focus:ring-primary-500 focus:ring-2 transition-all px-[12px] py-[6px] border border-[#e3e3e3]"
                         >
                             <option value="">All Members</option>
                             @foreach($members as $member)
@@ -77,7 +77,7 @@
                         <select
                             id="sourceFilter"
                             wire:model.live="sourceFilter"
-                            class="w-full rounded-lg bg-[#fff] border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-300 focus:border-primary-500 focus:ring-primary-500 focus:ring-2 transition-all"
+                            class="w-full rounded-lg bg-[#fff] border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-300 focus:border-primary-500 focus:ring-primary-500 focus:ring-2 transition-all px-[12px] py-[6px] border border-[#e3e3e3]"
                         >
                             <option value="">All Sources</option>
                             @foreach($sources as $source)

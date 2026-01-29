@@ -241,3 +241,44 @@ Topbar
 .fi-topbar .fi-no-database{
     order: 3;
 }
+
+.fi-radio-input {
+  display: none;
+}
+
+.fi-fo-radio-label {
+  display: block;
+  cursor: pointer;
+}
+
+.fi-fo-radio-label-text {
+  background-color: #e5e7eb; 
+  color: #111827;
+  padding: 12px 20px;
+  border-radius: 8px;
+  text-align: center;
+  font-weight: 500;
+}
+
+.fi-radio-input:checked + .fi-fo-radio-label-text,
+.fi-radio-input:checked + .fi-fo-radio-label-text .fi-fo-radio-label-description {
+  background-color: #b8ff90; 
+  color: #000;
+}
+
+.fi-fo-radio-label:hover .fi-fo-radio-label-text,
+.fi-fo-radio-label:hover .fi-fo-radio-label-text .fi-fo-radio-label-description {
+  background-color: #62bd2e;
+  color: #ffffff;
+}
+
+.lead-generation-form textarea{
+    min-height: 700px;
+}
+
+@media (max-width: 1024px) {
+    .lead-generation-form textarea{
+        min-height: auto;
+    }
+}
+
