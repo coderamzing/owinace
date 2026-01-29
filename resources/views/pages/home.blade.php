@@ -194,17 +194,17 @@ echo json_encode([
                 </div>
             </div>
 
-
+ 
             <div class="grid md:grid-cols-4 lg:gap-7.5 md:gap-5 lg:my-25 md:my-17.5 my-15 gap-5">
                 <div class="md:col-span-1" data-aos="fade-up" data-aos-duration="500" data-aos-easing="ease-in-out">
                     <div class="relative lg:pe-10">
-                        <img src="/images/2-igymsciv.png" alt="LeadCliq dashboard preview" class="rounded-2xl" width="600" height="800" loading="lazy">
+                        <img src="/images/home-banner-1.png" alt="LeadCliq dashboard preview" class="rounded-2xl" width="600" height="800" loading="lazy">
                         <img src="/images/3-BdEAuNWq.svg" alt="Analytics chart preview" class="md:absolute md:block md:top-11.75 md:-end-2.5 md:border md:border-neutral-200 md:rounded-2xl hidden" width="200" height="200" loading="lazy">
                     </div>
                 </div>
 
                 <div class="md:col-span-1" data-aos="fade-up" data-aos-delay="500" data-aos-duration="600" data-aos-easing="ease-in-out">
-                    <img src="/images/banner-2.png" alt="LeadCliq CRM features" class="h-full rounded-2xl object-cover max-w-full" width="400" height="800" loading="lazy">
+                    <img src="/images/home-middle-banner.png" alt="LeadCliq CRM features" class="h-full rounded-2xl object-cover max-w-full shadow-[0_0_10px_#00000026]" width="400" height="800" loading="lazy">
                 </div>
 
                 <div class="md:col-span-2" data-aos="fade-up" data-aos-delay="700" data-aos-duration="600" data-aos-easing="ease-in-out">
@@ -520,7 +520,7 @@ echo json_encode([
                     <p class="mt-2.5">Understand cost-per-lead, ROI, and which sources convert.</p>
                 </div>
 
-                <!-- Client Item 3  -->
+                <!-- Client Item 3  --> 
                 <div data-aos="fade-up" data-aos-duration="600" data-aos-easing="ease-in-out">
                     <!-- <div class="flex justify-center items-center bg-white rounded-2xl px-[10px] py-[30px] mb-4">
                         <img src="/images/kanban-pipeline.png" alt="repeat" class="max-w-[200px]">
