@@ -40,13 +40,13 @@
     <div class="max-w-full min-w-full mx-auto">
         <!-- Simple Hero Header -->
         <div class="mb-10 text-center p-5 text-white">
-            <div class="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg">
+            <div class="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg hidden">
                 <x-filament::icon icon="heroicon-o-sparkles" class="w-9 h-9 text-white" />
             </div>
-            <h1 class="text-4xl font-extrabold text-white dark:text-white mb-3">
+            <h1 class="text-4xl font-extrabold text-dark dark:text-white mb-3">
                 AI Proposal Generator
             </h1>
-            <p class="text-lg text-white dark:text-gray-400 max-w-2xl mx-auto">
+            <p class="text-lg text-dark dark:text-gray-400 max-w-2xl mx-auto">
                 Create compelling cover letters in seconds using AI. Simply paste the job description and let our AI craft the perfect proposal.
             </p>
         </div>
@@ -55,8 +55,8 @@
         <form wire:submit="generate" class="space-y-6">
             <div class="flex flex-col lg:flex-row gap-6">
                 <!-- Left Panel: 80% - Job Description -->
-                <div class="w-full lg:w-4/5 space-y-6">
-                    <div>
+                <div class="w-full lg:w-4/5 space-y-6 flex flex-col justify-between items-stretch">
+                    <div class="min-h-[80%]">
                         <label class="block mb-3">
                             <span class="text-lg font-bold text-gray-900 dark:text-white flex items-center gap-2">
                                 <x-filament::icon icon="heroicon-o-document-text" class="w-5 h-5 text-primary-600" />
@@ -66,7 +66,7 @@
                                 Paste the complete job description for best results
                             </span>
                         </label>
-                        <div class="lead-generation-form">
+                        <div class="lead-generation-form min-h-[90%]">
                             {{ $this->descriptionField }}
                         </div>
                     </div>
@@ -91,11 +91,11 @@
                                     />
                                     <x-filament::icon
                                         icon="heroicon-o-sparkles"
-                                        class="w-6 h-6"
+                                        class="w-6 h-6 text-dark"
                                         wire:loading.remove
                                         wire:target="generate"
                                     />
-                                    <span wire:loading.remove wire:target="generate" class="text-lg font-bold">Generate Proposal</span>
+                                    <span wire:loading.remove wire:target="generate" class="text-lg font-bold text-dark">Generate Proposal</span>
                                     <span wire:loading wire:target="generate" class="text-lg font-bold">Generating...</span>
                                 </span>
                             </x-filament::button>
@@ -109,7 +109,7 @@
                 </div>
 
                 <!-- Right Panel: 20% - Word Count & Proposal Type -->
-                <div class="w-full lg:w-1/5 space-y-6">
+                <div class="w-full lg:w-1/5 space-y-6 min-w-[300px]">
                     <!-- Word Count -->
                     <div class="bg-white dark:bg-gray-800 rounded-lg p-4 shadow-sm border border-gray-200 dark:border-gray-700">
                         <label class="block mb-3">
@@ -151,10 +151,10 @@
                         class="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" 
                     />
                     <div>
-                        <p class="text-sm font-semibold text-gray-900 group-hover:text-white dark:text-white">
+                        <p class="text-sm font-semibold text-gray-900 dark:text-white">
                             Include complete details
                         </p>
-                        <p class="text-sm text-gray-600 group-hover:text-white dark:text-white">
+                        <p class="text-sm text-gray-600 dark:text-white">
                             Paste entire job description for best results
                         </p>
                     </div>
@@ -163,24 +163,24 @@
                 <div class="group flex gap-3 border border-[#e3e3e3] p-4 !rounded-lg">
                     <x-filament::icon icon="heroicon-o-check-circle" class="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
                     <div>
-                        <p class="text-sm font-semibold text-gray-900 group-hover:text-white dark:text-white">Choose right length</p>
-                        <p class="text-sm text-gray-600 group-hover:text-white dark:text-white">150 quick, 215 standard, 300 detailed</p>
+                        <p class="text-sm font-semibold text-gray-900 dark:text-white">Choose right length</p>
+                        <p class="text-sm text-gray-600 dark:text-white">150 quick, 215 standard, 300 detailed</p>
                     </div>
                 </div>
 
                 <div class="group flex gap-3 border border-[#e3e3e3] p-4 !rounded-lg">
                     <x-filament::icon icon="heroicon-o-check-circle" class="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
                     <div>
-                        <p class="text-sm font-semibold text-gray-900 group-hover:text-white dark:text-white">Match the tone</p>
-                        <p class="text-sm text-gray-600 group-hover:text-white dark:text-white">PITCH for startups, EXPERIENCE for agencies</p>
+                        <p class="text-sm font-semibold text-gray-900 dark:text-white">Match the tone</p>
+                        <p class="text-sm text-gray-600 dark:text-white">PITCH for startups, EXPERIENCE for agencies</p>
                     </div>
                 </div>
 
                 <div class="group flex gap-3 border border-[#e3e3e3] p-4 !rounded-lg">
                     <x-filament::icon icon="heroicon-o-check-circle" class="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
                     <div>
-                        <p class="text-sm font-semibold text-gray-900 group-hover:text-white dark:text-white">Review before sending</p>
-                        <p class="text-sm text-gray-600 group-hover:text-white dark:text-white">Always customize for each client</p>
+                        <p class="text-sm font-semibold text-gray-900 dark:text-white">Review before sending</p>
+                        <p class="text-sm text-gray-600 dark:text-white">Always customize for each client</p>
                     </div>
                 </div>
             </div>

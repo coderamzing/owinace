@@ -18,8 +18,8 @@
                             </x-filament::badge>
                         @endif
                     </div>
-                    <h1 class="text-3xl font-bold text-[#fff] dark:text-white mb-2">{{ $record->title }}</h1>
-                    <p class="text-sm text-[#fff] dark:text-gray-400">
+                    <h1 class="text-3xl font-bold text-[#000] dark:text-white mb-2">{{ $record->title }}</h1>
+                    <p class="text-sm text-[#000] dark:text-gray-400">
                         Created {{ $record->created_at?->format('M d, Y g:i A') }}
                         · by {{ $record->user?->name ?? 'Unknown' }}
                     </p>

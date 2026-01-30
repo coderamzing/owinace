@@ -529,7 +529,7 @@ echo json_encode([
                 <!-- Client Item 1  -->
                 <div data-aos="fade-up" data-aos-duration="600" data-aos-easing="ease-in-out">
                     <div class="flex justify-center items-center bg-white rounded-2xl mb-4">
-                        <img src="/images/followup_email_2.png" alt="flash" class=" rounded-2xl min-h-[180px] object-cover">
+                        <img src="/images/followup_email_2.png" alt="flash" class=" rounded-2xl min-h-[180px] object-cover md:max-h-[180px]">
                     </div>
                     <h2>Follow-up reminders</h2>
                     <p class="mt-2.5">Never forget a follow-up—LeadCliq keeps your pipeline moving.</p>
@@ -541,7 +541,7 @@ echo json_encode([
                         <img src="/images/donut-chart.png" alt="donut-chart" class="max-w-[200px]">
                     </div> -->
                     <div class="flex justify-center items-center bg-white rounded-2xl mb-4">
-                        <img src="/images/Creating-customer-profiles.svg" alt="flash" class=" rounded-2xl min-h-[180px] object-cover">
+                        <img src="/images/Creating-customer-profiles.svg" alt="flash" class=" rounded-2xl min-h-[180px] object-cover md:max-h-[180px]">
                     </div>
                     <h2>ROI & lead cost</h2>
                     <p class="mt-2.5">Understand cost-per-lead, ROI, and which sources convert.</p>
@@ -553,7 +553,7 @@ echo json_encode([
                         <img src="/images/kanban-pipeline.png" alt="repeat" class="max-w-[200px]">
                     </div> -->
                     <div class="flex justify-center items-center bg-white rounded-2xl mb-4">
-                        <img src="/images/kanban-pipeline.png" alt="flash" class=" rounded-2xl min-h-[180px] object-cover">
+                        <img src="/images/kanban-pipeline.png" alt="flash" class=" rounded-2xl min-h-[180px] object-cover md:max-h-[180px]">
                     </div>
                     <h2>Kanban pipeline</h2>
                     <p class="mt-2.5">Drag, drop, and track every lead stage in seconds.</p>
@@ -565,7 +565,7 @@ echo json_encode([
                         <img src="/images/conversion-rate.png" alt="conversion-rate" class="max-w-[200px]">
                     </div> -->
                     <div class="flex justify-center items-center bg-white rounded-2xl mb-4">
-                        <img src="/images/portfolio.jpg" alt="flash" class=" rounded-2xl min-h-[180px] object-cover">
+                        <img src="/images/portfolio.jpg" alt="flash" class=" rounded-2xl min-h-[180px] object-cover md:max-h-[180px]">
                     </div>
                     <h2>Portfolio matching</h2>
                     <p class="mt-2.5">Auto-match portfolios inside AI cover letters for stronger bids.</p>
