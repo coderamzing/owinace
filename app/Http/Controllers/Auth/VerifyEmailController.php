@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
-use Illuminate\Auth\Events\Verified;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 
@@ -28,9 +27,8 @@ class VerifyEmailController extends Controller
         }
 
         // Verify the email
-        if ($user->markEmailAsVerified()) {
-            event(new Verified($user));
-        }
+        // markEmailAsVerified() already fires the Verified event, so we don't need to fire it again
+        $user->markEmailAsVerified();
 
         return redirect()->route('login')->with('status', 'Your email has been verified successfully! You can now log in.');
     }

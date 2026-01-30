@@ -22,6 +22,7 @@ class Workspace extends Model
         'description',
         'owner_id',
         'tier_id',
+        'tier_status',
         'trial_end',
         'expire_at',
         'start_at',

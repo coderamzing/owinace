@@ -175,6 +175,7 @@ class Profile extends Page implements HasForms
         $this->profileData = [
             'name' => $user->name,
             'email' => $user->email,
+            'phone_number' => $user->phone_number,
         ];
 
         $this->passwordData = [
@@ -215,6 +216,12 @@ class Profile extends Page implements HasForms
                     ->email()
                     ->required()
                     ->maxLength(255),
+
+                TextInput::make('phone_number')
+                    ->label('Phone Number')
+                    ->tel()
+                    ->maxLength(20)
+                    ->placeholder('+1 (555) 000-0000'),
             ])
             ->statePath('profileData')
             ->model(Auth::user());
@@ -277,6 +284,7 @@ class Profile extends Page implements HasForms
 
         Auth::user()->update([
             'name' => $data['name'],
+            'phone_number' => $data['phone_number'] ?? null,
         ]);
 
         Notification::make()

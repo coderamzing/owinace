@@ -16,6 +16,31 @@
                     <form method="POST" action="{{ route('register') }}" class="mb-3.75 space-y-5">
                         @csrf
 
+                        <!-- General Error Messages -->
+                        @if($errors->any())
+                            <div class="mb-5 p-4 bg-red-50 border border-red-200 rounded-2xl">
+                                <div class="flex">
+                                    <div class="flex-shrink-0">
+                                        <svg class="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
+                                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
+                                        </svg>
+                                    </div>
+                                    <div class="ml-3 flex-1">
+                                        <h3 class="text-sm font-medium text-red-800">
+                                            {{ __('There were errors with your submission:') }}
+                                        </h3>
+                                        <div class="mt-2 text-sm text-red-700">
+                                            <ul class="list-disc list-inside space-y-1">
+                                                @foreach($errors->all() as $error)
+                                                    <li>{{ $error }}</li>
+                                                @endforeach
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        @endif
+
                         <!-- Name -->
                         <div class="mb-5">
                             <x-input-label for="name" :value="__('Full name')" class="mb-1.25 block font-normal" />
@@ -47,6 +72,22 @@
                                 placeholder="Your email"
                             />
                             <x-input-error :messages="$errors->get('email')" class="mt-2" />
+                        </div>
+
+                        <!-- Phone Number -->
+                        <div class="mb-5">
+                            <x-input-label for="phone_number" :value="__('Phone number')" class="mb-1.25 block font-normal" />
+                            <x-text-input
+                                id="phone_number"
+                                class="rounded-2xl py-2.5 px-5 border border-neutral-200 w-full h-14 block mt-1"
+                                type="tel"
+                                name="phone_number"
+                                :value="old('phone_number')"
+                                required
+                                autocomplete="tel"
+                                placeholder="+1 (555) 000-0000"
+                            />
+                            <x-input-error :messages="$errors->get('phone_number')" class="mt-2" />
                         </div>
 
                         <!-- Workspace Name -->

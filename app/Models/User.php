@@ -29,6 +29,7 @@ class User extends Authenticatable implements MustVerifyEmail, HasMedia, HasAppA
     protected $fillable = [
         'name',
         'email',
+        'phone_number',
         'password',
         'workspace_id',
         'type',

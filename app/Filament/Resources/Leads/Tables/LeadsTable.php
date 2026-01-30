@@ -5,6 +5,7 @@ namespace App\Filament\Resources\Leads\Tables;
 use App\Models\LeadKanban;
 use App\Models\LeadSource;
 use App\Models\TeamMember;
+use Filament\Actions\ActionGroup;
 use Filament\Forms\Components\TextInput;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\EditAction;
@@ -184,29 +185,31 @@ class LeadsTable
             ->filtersFormColumns(3)
             ->filtersResetActionPosition(FiltersResetActionPosition::Footer)
             ->recordActions([
-                \Filament\Actions\ViewAction::make()
-                    ->visible(fn ($record) => self::hasPermissionTo('leads.view')),
-                EditAction::make()
-                    ->modalHeading('Edit Lead')
-                    ->modalSubmitActionLabel('Save')
-                    ->slideOver()
-                    ->visible(fn ($record) => self::hasPermissionTo('leads.edit'))
-                    ->mutateFormDataUsing(function (array $data): array {
-                        // Auto-set team_id from session
-                        $teamId = session('team_id');
-                        if ($teamId) {
-                            $data['team_id'] = $teamId;
-                        }
-                        
-                        return $data;
-                    }),
-                DeleteAction::make()
-                    ->requiresConfirmation()
-                    ->modalHeading('Delete Lead')
-                    ->modalDescription('This will permanently remove the lead.')
-                    ->modalSubmitActionLabel('Delete')
-                    ->visible(fn ($record) => self::hasPermissionTo('leads.delete'))
-                    ->color('danger'),
+                ActionGroup::make([
+                    \Filament\Actions\ViewAction::make()
+                        ->visible(fn ($record) => self::hasPermissionTo('leads.view')),
+                    EditAction::make()
+                        ->modalHeading('Edit Lead')
+                        ->modalSubmitActionLabel('Save')
+                        ->slideOver()
+                        ->visible(fn ($record) => self::hasPermissionTo('leads.edit'))
+                        ->mutateFormDataUsing(function (array $data): array {
+                            // Auto-set team_id from session
+                            $teamId = session('team_id');
+                            if ($teamId) {
+                                $data['team_id'] = $teamId;
+                            }
+                            
+                            return $data;
+                        }),
+                    DeleteAction::make()
+                        ->requiresConfirmation()
+                        ->modalHeading('Delete Lead')
+                        ->modalDescription('This will permanently remove the lead.')
+                        ->modalSubmitActionLabel('Delete')
+                        ->visible(fn ($record) => self::hasPermissionTo('leads.delete'))
+                        ->color('danger'),
+                ]),
             ]);
     }
 }

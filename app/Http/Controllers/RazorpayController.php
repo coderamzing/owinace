@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Tier;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Razorpay\Api\Api;
@@ -23,11 +24,49 @@ class RazorpayController extends Controller
         $tier = Tier::findOrFail($request->tier_id);
 
         if (!$tier->is_active) {
-            return redirect()->route('pricing')
-                ->with('error', 'This plan is not available.');
+            return response()->json([
+                'error' => 'This plan is not available.'
+            ], 400);
         }
 
-        $amount = $tier->price;
+        // Check if user exists with this email and has an active tier
+        $existingUser = User::where('email', $request->email)->first();
+        $currentTier = null;
+        $isUpgrade = false;
+        $amount = $tier->special_price ?? $tier->price;
+        
+        if ($existingUser && $existingUser->workspace_id) {
+            $workspace = $existingUser->workspace;
+            if ($workspace && $workspace->tier_status === 'active' && $workspace->tier_id) {
+                $currentTier = $workspace->tier;
+                $currentTierPrice = $currentTier->special_price ?? $currentTier->price;
+                $newTierPrice = $tier->special_price ?? $tier->price;
+                
+                // If same tier, don't allow
+                if ($tier->id === $currentTier->id) {
+                    return response()->json([
+                        'error' => 'This is your current plan.'
+                    ], 400);
+                }
+                
+                // If downgrade, don't allow
+                if ($newTierPrice < $currentTierPrice) {
+                    return response()->json([
+                        'error' => 'Downgrading is not allowed. Please contact support for assistance.'
+                    ], 400);
+                }
+                
+                // If upgrade, calculate difference
+                if ($newTierPrice > $currentTierPrice) {
+                    $isUpgrade = true;
+                    $amount = $newTierPrice - $currentTierPrice;
+                } else {
+                    // Same price but different tier (shouldn't happen, but handle it)
+                    $amount = $newTierPrice;
+                }
+            }
+        }
+        
         $amountPaise = (int)($amount * 100);
 
         // Initialize Razorpay
@@ -35,8 +74,9 @@ class RazorpayController extends Controller
         $razorpayKeySecret = config('services.razorpay.key_secret');
         
         if (!$razorpayKeyId || !$razorpayKeySecret) {
-            return redirect()->route('pricing')
-                ->with('error', 'Payment gateway is not configured.');
+            return response()->json([
+                'error' => 'Payment gateway is not configured.'
+            ], 400);
         }
 
         $api = new Api($razorpayKeyId, $razorpayKeySecret);
@@ -46,6 +86,15 @@ class RazorpayController extends Controller
             'type' => 'TIER',
             'tier_id' => (string)$tier->id,
         ];
+        
+        // Store upgrade information if applicable
+        if ($isUpgrade && $currentTier) {
+            $notes['is_upgrade'] = 'true';
+            $notes['current_tier_id'] = (string)$currentTier->id;
+            $notes['current_tier_price'] = (string)($currentTier->special_price ?? $currentTier->price);
+            $notes['new_tier_price'] = (string)($tier->special_price ?? $tier->price);
+            $notes['upgrade_amount'] = (string)$amount;
+        }
 
         if (Auth::check()) {
             $user = Auth::user();
@@ -73,17 +122,22 @@ class RazorpayController extends Controller
                 'notes' => $notes,
             ]);
 
-            // Keep using the public-facing checkout page for tier purchases
-            return view('razorpay.checkout', [
-                'order' => $order,
+            // Return JSON response with order data for Razorpay checkout
+            return response()->json([
+                'order_id' => $order->id,
+                'amount' => $amountPaise,
+                'currency' => 'USD',
                 'key_id' => $razorpayKeyId,
-                'callback_url' => route('razorpay.success'),
-                'tier' => $tier,
-                'user' => Auth::user(),
+                'tier_id' => $tier->id,
+                'tier_title' => $tier->title,
+                'success_url' => route('razorpay.success'),
+                'cancel_url' => route('razorpay.cancel'),
+                'name' => config('app.name'),
             ]);
         } catch (\Exception $e) {
-            return redirect()->route('pricing')
-                ->with('error', 'Failed to create payment order: ' . $e->getMessage());
+            return response()->json([
+                'error' => 'Failed to create payment order: ' . $e->getMessage()
+            ], 400);
         }
     }
 

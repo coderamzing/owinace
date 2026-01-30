@@ -18,6 +18,7 @@ use App\Filament\Widgets\MonthlyCostPerLeadWidget;
 use App\Filament\Widgets\WeeklyAiInsightsWidget;
 use App\Filament\Widgets\LeadAnalyticWidget;
 use App\Filament\Widgets\PPAnalyticWidget;
+use App\Filament\Widgets\DailyLeadStatusWidget;
 use App\Models\Team;
 use Filament\Pages\Page;
 use Illuminate\Support\Facades\Session;
@@ -180,6 +181,9 @@ class AnalyticsDashboard extends Page
             
             // B. PP Analytics Widget - 4 cards in full span
             PPAnalyticWidget::class,
+
+            // B1. Daily New / Won / Lost
+            DailyLeadStatusWidget::class,
             
             // C. Leads by Source - cols 6
             LeadsBySourceWidget::class,

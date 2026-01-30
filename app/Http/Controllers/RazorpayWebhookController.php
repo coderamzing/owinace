@@ -12,9 +12,16 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Spatie\Permission\Models\Role;
+use App\Services\OnBoardService;
 
 class RazorpayWebhookController extends Controller
 {
+    public function __construct(
+        protected OnBoardService $onBoardService
+    ) {
+        // Middleware is applied in routes/auth.php
+    }
+
     public function handle(Request $request)
     {
         $webhookSecret = config('services.razorpay.webhook_secret');
@@ -74,11 +81,14 @@ class RazorpayWebhookController extends Controller
 
             $workspaceId = null;
             $userId = null;
+            $user = null;
 
             // Check if user is logged in (existing user)
             if (isset($notes['user_id']) && isset($notes['workspace_id'])) {
                 $userId = (int)$notes['user_id'];
                 $workspaceId = (int)$notes['workspace_id'];
+                // Fetch the user for later use
+                $user = User::find($userId);
             } else {
                 // Create new user and workspace
                 $firstName = $notes['first_name'] ?? '';
@@ -87,56 +97,24 @@ class RazorpayWebhookController extends Controller
                 $phone = $notes['phone'] ?? '';
                 $workspaceName = $notes['workspace_name'] ?? 'My Workspace';
 
-                // Check if user already exists
-                $user = User::where('email', $email)->first();
-
-                if (!$user) {
-                    // Create new user
-                    $user = User::create([
-                        'name' => "{$firstName} {$lastName}",
+                $result = $this->onBoardService->createWorkspaceWithAdmin(
+                    [
+                        'name' => $firstName . ' ' . $lastName,
                         'email' => $email,
+                        'phone_number' => $phone,
                         'password' => Hash::make(bin2hex(random_bytes(16))), // Random password
-                        'type' => 'admin',
-                        'email_verified_at' => now(), // Skip email verification
-                    ]);
-
-                    // Create workspace
-                    $workspace = Workspace::create([
+                        'email_verified_at' => now(),
+                    ],
+                    [
                         'name' => $workspaceName,
-                        'owner_id' => $user->id,
-                    ]);
+                        'description' => null,
+                    ]
+                );
+                $user = $result['user'];
+                $workspace = $result['workspace'];
 
-                    // Set user's workspace
-                    $user->update([
-                        'workspace_id' => $workspace->id,
-                    ]);
-
-                    // Assign Admin role
-                    $role = Role::where('name', 'Admin')
-                        ->where('workspace_id', $workspace->id)
-                        ->first();
-
-                    if ($role) {
-                        $user->roles()->attach($role->id, ['workspace_id' => $workspace->id]);
-                    }
-
-                    $workspaceId = $workspace->id;
-                    $userId = $user->id;
-                } else {
-                    // User exists, find or create their workspace
-                    if (!$user->workspace_id) {
-                        // Create workspace for existing user
-                        $workspace = Workspace::create([
-                            'name' => $workspaceName,
-                            'owner_id' => $user->id,
-                        ]);
-                        $user->update(['workspace_id' => $workspace->id]);
-                        $workspaceId = $workspace->id;
-                    } else {
-                        $workspaceId = $user->workspace_id;
-                    }
-                    $userId = $user->id;
-                }
+                $workspaceId = $workspace->id;
+                $userId = $user->id;
             }
 
             // Create TierOrder
@@ -156,9 +134,23 @@ class RazorpayWebhookController extends Controller
             if ($workspace) {
                 $workspace->update([
                     'tier_id' => $tierId,
+                    'tier_status' => 'active',
                     'start_at' => now(),
                     'expire_at' => now()->addYears(3), // 3 years
                 ]);
+
+                // Add free credits from tier
+                $freeCredits = $tier->free_credit ?? 100;
+                if ($freeCredits > 0) {
+                    WorkspaceCredit::create([
+                        'transaction_type' => 'CREDIT',
+                        'credits' => $freeCredits,
+                        'transaction_id' => $paymentId,
+                        'note' => 'Free credits from tier purchase - ' . $tier->title,
+                        'triggered_by_id' => $userId,
+                        'workspace_id' => $workspaceId,
+                    ]);
+                }
             }
 
             DB::commit();

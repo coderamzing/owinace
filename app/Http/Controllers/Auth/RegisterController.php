@@ -40,6 +40,7 @@ class RegisterController extends Controller
         $validator = Validator::make($request->all(), [
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
+            'phone_number' => ['required', 'string', 'max:20'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
             'workspace_name' => ['required', 'string', 'max:255', 'unique:workspaces,name'],
         ]);
@@ -55,6 +56,7 @@ class RegisterController extends Controller
                 [
                     'name' => $request->name,
                     'email' => $request->email,
+                    'phone_number' => $request->phone_number,
                     'password' => $request->password,
                 ],
                 [
@@ -65,13 +67,11 @@ class RegisterController extends Controller
 
             $user = $result['user'];
             $workspace = $result['workspace'];
-
             event(new Registered($user));
-
             // Don't auto-login - user must verify email first
             return redirect()->route('email-confirmation')->with('status', 'Thanks for signing up! Please check your email to verify your account before logging in.');
         } catch (\Exception $e) {
-            Log::error("RegisterController: ".$e->getMessage());
+            Log::error("RegisterController: ".$e->getMessage() . $e->getTraceAsString());
             return redirect()->back()
                 ->withErrors(['error' => $e->getMessage()])
                 ->withInput();

@@ -2,9 +2,11 @@
 
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\RazorpayController;
 use App\Http\Controllers\RazorpayWebhookController;
 use App\Http\Controllers\ImageController;
+use App\Http\Controllers\SupportEnquiryController;
 
 Route::get('/', function () {
     return view('pages.home');
@@ -18,9 +20,18 @@ Route::get('/contact', function () {
     return view('pages.contact');
 })->name('contact');
 
+Route::post('/support-enquiry', [SupportEnquiryController::class, 'store'])->name('support-enquiry.store');
+
 Route::get('/pricing', function () {
     $tiers = \App\Models\Tier::where('is_active', true)->orderBy('price', 'asc')->get();
-    return view('pages.pricing', compact('tiers'));
+    $currentTier = null;
+    if (Auth::check() && Auth::user()->workspace_id) {
+        $workspace = Auth::user()->workspace;
+        if ($workspace && $workspace->tier_id) {
+            $currentTier = $workspace->tier;
+        }
+    }
+    return view('pages.pricing', compact('tiers', 'currentTier'));
 })->name('pricing');
 
 Route::get('/privacy-policy', function () {

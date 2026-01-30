@@ -171,7 +171,18 @@
                                 one_click_checkout: true,
                                 show_coupons: false,
                                 handler: function(res) {
-                                    window.location.href = data.success_url + '?payment_id=' + res.razorpay_payment_id;
+                                    // Show success modal instead of redirecting
+                                    const successModal = document.getElementById('payment-success-modal');
+                                    if (successModal) {
+                                        const idSpan = successModal.querySelector('[data-payment-id]');
+                                        if (idSpan) {
+                                            idSpan.textContent = res.razorpay_payment_id || '';
+                                        }
+                                        successModal.classList.remove('hidden');
+                                    } else {
+                                        // Fallback to redirect if modal not found
+                                        window.location.href = data.success_url + '?payment_id=' + res.razorpay_payment_id;
+                                    }
                                 },
                                 prefill: {
                                     @if(Auth::user())
@@ -218,6 +229,18 @@
                     modal.classList.add('hidden');
                 }
             });
+
+            // Close handlers for the success modal
+            document.addEventListener('click', function(event) {
+                const modal = document.getElementById('payment-success-modal');
+                if (!modal) return;
+
+                if (event.target.matches('[data-success-modal-close]') || event.target === modal) {
+                    modal.classList.add('hidden');
+                    // Reload page to show updated credits
+                    window.location.reload();
+                }
+            });
         </script>
         @endpush
 
@@ -238,6 +261,39 @@
                         type="button"
                         data-cancel-modal-close
                         class="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-dark rounded-lg hover:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-dark">
+                        Close
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        {{-- Payment Success Modal --}}
+        <div
+            id="payment-success-modal"
+            class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+            <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl max-w-md w-full mx-4 p-6">
+                <div class="flex items-center justify-center mb-4">
+                    <div class="w-16 h-16 bg-green-100 dark:bg-green-900/20 rounded-full flex items-center justify-center">
+                        <svg class="w-8 h-8 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                        </svg>
+                    </div>
+                </div>
+                <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2 text-center">
+                    Payment Successful
+                </h3>
+                <p class="text-sm text-gray-600 dark:text-gray-300 mb-4 text-center">
+                    Thank you! Your credits have been added to your account successfully.
+                </p>
+                <p class="text-xs text-gray-400 dark:text-gray-500 mb-6 text-center">
+                    Payment reference:
+                    <span class="font-mono block mt-1" data-payment-id></span>
+                </p>
+                <div class="flex justify-end gap-3">
+                    <button
+                        type="button"
+                        data-success-modal-close
+                        class="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-300">
                         Close
                     </button>
                 </div>

@@ -23,6 +23,7 @@ class Tier extends Model
         'is_active',
         'max_members',
         'max_storage',
+        'free_credit',
     ];
 
     /**

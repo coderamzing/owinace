@@ -11,8 +11,10 @@ use App\Models\Workspace;
 use App\Models\WorkspaceCredit;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use Spatie\Permission\Models\Role;
+use Illuminate\Database\UniqueConstraintViolationException;
 
 class OnBoardService
 {
@@ -32,8 +34,10 @@ class OnBoardService
             $user = User::create([
                 'name' => $userData['name'],
                 'email' => $userData['email'],
+                'phone_number' => $userData['phone_number'] ?? null,
                 'password' => Hash::make($userData['password']),
                 'type' => 'admin',
+                'email_verified_at' => $userData['email_verified_at'] ?? null,
             ]);
 
             // Generate slug if not provided
@@ -53,9 +57,8 @@ class OnBoardService
                 'owner_id' => $user->id,
                 'description' => $workspaceData['description'] ?? null,
                 'slug' => $slug,
+                'tier_status' => 'trial',
                 'trial_end' => now()->addDays(14),
-                'expire_at' => now()->addDays(30),
-                'start_at' => now(),
                 'tier_id' => 1,
             ]);
 
@@ -82,16 +85,6 @@ class OnBoardService
                 'created_by_id' => $user->id,
             ]);
 
-            // Add the workspace owner as the first team member with admin role
-            TeamMember::create([
-                'team_id' => $team->id,
-                'user_id' => $user->id,
-                'role' => 'admin',
-                'status' => 'active',
-                'email' => $user->email,
-                'joined_at' => now(),
-            ]);
-
             // Add welcome credits to the workspace
             WorkspaceCredit::create([
                 'workspace_id' => $workspace->id,
@@ -102,14 +95,9 @@ class OnBoardService
                 'transaction_id' => null,
             ]);
 
-            // Note: Default kanban stages and lead sources are automatically created
-            // via the TeamObserver when the team is created
-
-            // Create sample data if requested
-            if ($withSampleData) {
+            if($withSampleData){
                 $this->createSampleData($workspace);
             }
-
             return ['user' => $user, 'workspace' => $workspace, 'team' => $team];
         });
     }
@@ -125,15 +113,22 @@ class OnBoardService
         $defaultStages = config('defaults.kanban_stages', []);
 
         foreach ($defaultStages as $stageData) {
-            LeadKanban::create([
-                'team_id' => $team->id,
-                'name' => $stageData['name'],
-                'code' => $stageData['code'],
-                'color' => $stageData['color'],
-                'sort_order' => $stageData['sort_order'],
-                'is_system' => $stageData['is_system'] ?? false,
-                'is_active' => true,
-            ]);
+            try {
+                LeadKanban::create([
+                    'team_id' => $team->id,
+                    'name' => $stageData['name'],
+                    'code' => $stageData['code'],
+                    'color' => $stageData['color'],
+                    'sort_order' => $stageData['sort_order'],
+                    'is_system' => $stageData['is_system'] ?? false,
+                    'is_active' => true,
+                ]);
+            } catch (UniqueConstraintViolationException $e) {
+                // If it's a duplicate key error, ignore it - stage already exists
+                // This can happen in race conditions where create is called simultaneously
+                // The unique constraint will prevent the duplicate, so we can safely ignore this
+                // Just continue - we still need to create lead sources
+            }
         }
     }
 
@@ -148,14 +143,17 @@ class OnBoardService
         $defaultSources = config('defaults.lead_sources', []);
 
         foreach ($defaultSources as $sourceData) {
-            LeadSource::create([
-                'team_id' => $team->id,
-                'name' => $sourceData['name'],
-                'description' => $sourceData['description'],
-                'color' => $sourceData['color'],
-                'sort_order' => $sourceData['sort_order'],
-                'is_active' => true,
-            ]);
+            try {
+                LeadSource::create([
+                    'team_id' => $team->id,
+                    'name' => $sourceData['name'],
+                    'description' => $sourceData['description'],
+                    'color' => $sourceData['color'],
+                    'sort_order' => $sourceData['sort_order'],
+                    'is_active' => true,
+                ]);
+            } catch (UniqueConstraintViolationException $e) {
+            }
         }
     }
 

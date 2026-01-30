@@ -154,30 +154,56 @@ echo json_encode([
                     </div>
                 </div>
 
-                <form action="#" method="POST">
+                <form action="{{ route('support-enquiry.store') }}" method="POST">
                     @csrf
+                    
+                    @if(session('success'))
+                        <div class="mb-5 p-4 bg-green-100 border border-green-400 text-green-700 rounded-2xl">
+                            {{ session('success') }}
+                        </div>
+                    @endif
+
+                    @if($errors->any())
+                        <div class="mb-5 p-4 bg-red-100 border border-red-400 text-red-700 rounded-2xl">
+                            <ul class="list-disc list-inside">
+                                @foreach($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endif
                     <!-- Name  -->
                     <div class="mb-5">
                         <label for="name" class="mb-1.25 block font-normal">Name</label>
                         <input
-                            class="rounded-2xl py-2.5 px-5 border border-neutral-200 w-full h-14"
+                            class="rounded-2xl py-2.5 px-5 border border-neutral-200 w-full h-14 @error('name') border-red-500 @enderror"
                             maxlength="256"
                             name="name"
                             id="name"
                             placeholder="John Deo"
-                            type="text">
+                            type="text"
+                            value="{{ old('name') }}"
+                            required>
+                        @error('name')
+                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                        @enderror
                     </div>
 
                     <!-- Email Address  -->
                     <div class="mb-5">
                         <label for="email" class="mb-1.25 block font-normal">Email address</label>
                         <input
-                            class="rounded-2xl py-2.5 px-5 border border-neutral-200 w-full h-14"
+                            class="rounded-2xl py-2.5 px-5 border border-neutral-200 w-full h-14 @error('email') border-red-500 @enderror"
                             maxlength="256"
                             name="email"
                             id="email"
                             placeholder="hello@example.com"
-                            type="email">
+                            type="email"
+                            value="{{ old('email') }}"
+                            required>
+                        @error('email')
+                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                        @enderror
                     </div>
 
                     <div class="mb-5 flex gap-5 lg:flex-row flex-col">
@@ -185,21 +211,29 @@ echo json_encode([
                         <div class="w-full">
                             <label for="phone" class="mb-1.25 block font-normal">Phone</label>
                             <input
-                                class="rounded-2xl py-2.5 px-5 border border-neutral-200 w-full h-14"
+                                class="rounded-2xl py-2.5 px-5 border border-neutral-200 w-full h-14 @error('phone') border-red-500 @enderror"
                                 name="phone"
                                 id="phone"
                                 placeholder="+2 123 456 66"
-                                type="text">
+                                type="text"
+                                value="{{ old('phone') }}">
+                            @error('phone')
+                                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                            @enderror
                         </div>
                         <!-- Subject  -->
                         <div class="w-full">
                             <label for="subject" class="mb-1.25 block font-normal">Subject</label>
                             <input
-                                class="rounded-2xl py-2.5 px-5 border border-neutral-200 w-full h-14"
+                                class="rounded-2xl py-2.5 px-5 border border-neutral-200 w-full h-14 @error('subject') border-red-500 @enderror"
                                 name="subject"
                                 id="subject"
                                 placeholder="Subject"
-                                type="text">
+                                type="text"
+                                value="{{ old('subject') }}">
+                            @error('subject')
+                                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                            @enderror
                         </div>
                     </div>
 
@@ -207,11 +241,15 @@ echo json_encode([
                     <div class="mb-5">
                         <label for="message" class="mb-1.25 block font-normal">Message</label>
                         <textarea
-                            class="rounded-2xl py-2.5 px-5 border border-neutral-200 w-full h-50"
+                            class="rounded-2xl py-2.5 px-5 border border-neutral-200 w-full h-50 @error('message') border-red-500 @enderror"
                             name="message"
                             id="message"
                             maxlength="5000"
-                            placeholder="Comment"></textarea>
+                            placeholder="Comment"
+                            required>{{ old('message') }}</textarea>
+                        @error('message')
+                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                        @enderror
                     </div>
 
                     <div>

@@ -3,9 +3,11 @@
 namespace App\Observers;
 
 use App\Events\LeadWon;
+use App\Models\LeadHistory;
 use App\Models\Lead;
 use App\Models\LeadKanban;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Auth;
 
 /**
  * Observer for Lead model
@@ -41,13 +43,13 @@ class LeadObserver
                     if ($oldKanbanId && $oldKanbanId !== $newKanbanId) {
                         // Store a flag to dispatch the event after save
                         $lead->shouldDispatchWonEvent = true;
-                        $lead->convertedByIdForEvent = auth()->id();
+                        $lead->convertedByIdForEvent = Auth::id();
                         
                         Log::info("Lead status changing to 'won'", [
                             'lead_id' => $lead->id,
                             'old_kanban_id' => $oldKanbanId,
                             'new_kanban_id' => $newKanbanId,
-                            'converted_by' => auth()->id(),
+                            'converted_by' => Auth::id(),
                         ]);
                     }
                 }
@@ -70,8 +72,8 @@ class LeadObserver
         if (isset($lead->shouldDispatchWonEvent) && $lead->shouldDispatchWonEvent) {
             // Dispatch the LeadWon event
             LeadWon::dispatch(
-                lead: $lead,
-                convertedById: $lead->convertedByIdForEvent ?? null
+                $lead,
+                $lead->convertedByIdForEvent ?? null
             );
 
             Log::info("LeadWon event dispatched", [
@@ -84,6 +86,58 @@ class LeadObserver
             unset($lead->shouldDispatchWonEvent);
             unset($lead->convertedByIdForEvent);
         }
+
+        // Log kanban change history if applicable
+        if ($lead->wasChanged('kanban_id')) {
+            $oldKanbanId = $lead->getOriginal('kanban_id');
+            $newKanbanId = $lead->kanban_id;
+
+            $oldKanban = $oldKanbanId
+                ? LeadKanban::find($oldKanbanId)
+                : null;
+            $newKanban = $newKanbanId
+                ? LeadKanban::find($newKanbanId)
+                : null;
+
+            $oldStage = $oldKanban?->name ?? 'N/A';
+            $newStage = $newKanban?->name ?? 'N/A';
+
+            $note = sprintf(
+                'Moved to %s from stage %s',
+                $newKanban?->code ? strtoupper($newKanban->code) : $newStage,
+                $oldStage
+            );
+
+            LeadHistory::create([
+                'lead_id' => $lead->id,
+                'kanban_id' => $newKanbanId,
+                'note' => $note,
+            ]);
+        }
+    }
+
+    /**
+     * Handle the Lead "created" event.
+     *
+     * Log the initial stage of the lead for history tracking.
+     *
+     * @param Lead $lead
+     * @return void
+     */
+    public function created(Lead $lead): void
+    {
+        $kanban = $lead->kanban_id ? LeadKanban::find($lead->kanban_id) : null;
+
+        LeadHistory::create([
+            'lead_id' => $lead->id,
+            'kanban_id' => $lead->kanban_id,
+            'note' => $kanban
+                ? sprintf(
+                    'Lead created in stage %s',
+                    $kanban->name
+                )
+                : 'Lead created',
+        ]);
     }
 }
 
