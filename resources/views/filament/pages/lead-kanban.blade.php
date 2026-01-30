@@ -48,7 +48,7 @@
                             id="search"
                             wire:model.live.debounce.300ms="search"
                             placeholder="Search leads by title, description..."
-                            class="w-full rounded-lg border-gray-300 bg-[#fff] dark:border-gray-600 dark:bg-gray-800 dark:text-gray-300 focus:border-primary-500 focus:ring-primary-500 focus:ring-2 transition-all px-[12px] py-[6px] border border-[#e3e3e3]"
+                            class="w-full rounded-lg border-gray-300 bg-[#fff] dark:border-gray-600 dark:bg-gray-800 dark:text-gray-300 focus:border-primary-500 focus:ring-primary-500 focus:ring-2 transition-all px-[12px] py-[5px] border border-[#e3e3e3]"
                         >
                     </div>
 
@@ -87,12 +87,12 @@
                     </div>
                 </div>
                 <div class="fi-ta-filters-actions-ctn">
-                    <button class="fi-color fi-color-primary leading-[16px] fi-bg-color-400 hover:fi-bg-color-300 dark:fi-bg-color-600 dark:hover:fi-bg-color-700 fi-text-color-950 hover:fi-text-color-800 dark:fi-text-color-0 dark:hover:fi-text-color-0 fi-btn fi-size-md  fi-ac-btn-action py-[9px]" type="button">                                    
+                    <button class="fi-color fi-color-primary leading-[16px] fi-bg-color-400 hover:fi-bg-color-300 dark:fi-bg-color-600 dark:hover:fi-bg-color-700 fi-text-color-950 hover:fi-text-color-800 dark:fi-text-color-0 dark:hover:fi-text-color-0 fi-btn fi-size-md  fi-ac-btn-action py-[10px]" type="button">                                    
                         Apply Filters
                     </button>     
                 </div>
                 <div>
-                    <button class="fi-color fi-color-danger fi-text-color-700 bg-[#fff] px-[10px] py-[7px] dark:fi-text-color-400 fi-link fi-size-md" type="button">   
+                    <button class="fi-color fi-color-danger fi-bg-color-600 hover:fi-bg-color-500 dark:fi-bg-color-600 dark:hover:fi-bg-color-500 fi-text-color-0 hover:fi-text-color-0 dark:fi-text-color-0 dark:hover:fi-text-color-0 fi-btn fi-size-md" type="button">   
                         Reset
                     </button>            
                 </div>

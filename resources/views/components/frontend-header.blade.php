@@ -25,6 +25,10 @@
             <div class="flex flex-row justify-center items-center md:gap-4 gap-2.5">
                 <div class="md:flex hidden gap-3">
                     @auth
+                        <a href="#" class="bg-dark text-white hover:text-primary hover:bg-dark rounded-2xl px-7.5 py-3.5 font-medium transition-all duration-300">
+                            <img src="/images/extension.png" alt="Browser Extension" class="inline h-5 w-5 mr-1.5 -mt-0.5">
+                            Download
+                        </a>
                         <a href="{{ url('/dashboard') }}" class="bg-primary text-dark hover:text-primary hover:bg-dark rounded-2xl px-7.5 py-3.5 font-medium transition-all duration-300">
                             Dashboard
                         </a>

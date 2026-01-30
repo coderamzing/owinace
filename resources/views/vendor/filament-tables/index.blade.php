@@ -615,8 +615,15 @@
                     {{ FilamentView::renderHook(TablesRenderHook::TOOLBAR_END) }}
                 </div>
 
+                 <div class="absolute flex gap-1 top-full double-line" style="height: 48px; left: 50px;">
+                    <div class="w-0.5 h-full bg-gray-200 dark:bg-gray-700"></div>
+                    <div class="w-0.5 h-full bg-gray-200 dark:bg-gray-700"></div>
+                </div>
+
                 {{ FilamentView::renderHook(TablesRenderHook::TOOLBAR_AFTER) }}
             </div>
+
+           
 
             @if ($isReordering)
                 <div

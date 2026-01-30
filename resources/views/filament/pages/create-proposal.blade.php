@@ -154,7 +154,7 @@
                         <p class="text-sm font-semibold text-gray-900 dark:text-white">
                             Include complete details
                         </p>
-                        <p class="text-sm text-gray-600">
+                        <p class="text-sm text-gray-600 dark:text-white">
                             Paste entire job description for best results
                         </p>
                     </div>
