@@ -5,7 +5,7 @@
 
 <x-filament-panels::page>
     {{-- Custom search section styled like Bootstrap form-floating --}}
-    <div class="mb-4 relative px-4 py-5 rounded-2xl border-[1px] border-gray-200 dark:border-gray-700 dark:bg-gray-800">
+    <div class="mb-4 relative px-4 py-5 rounded-2xl border-[1px] border-gray-200 dark:border-gray-700 dark:bg-gray-800 bg-[#fafafa] dark:bg-gray-800">
         <div class="flex items-center">
             <div class="flex-1">
                 <div 

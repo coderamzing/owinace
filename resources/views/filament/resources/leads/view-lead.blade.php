@@ -154,8 +154,8 @@
                     <div>
                         <label class="text-sm font-medium text-gray-500 dark:text-gray-400">URL</label>
                         <p class="mt-1">
-                            <a href="{{ $record->url }}" target="_blank" class="text-primary-600 dark:text-primary-400 hover:underline flex items-center">
-                                <x-filament::icon icon="heroicon-o-link" class="w-4 h-4 mr-2" />
+                            <a href="{{ $record->url }}" target="_blank" class="text-primary-600 dark:text-primary-400 hover:underline flex items-center break-all">
+                                <x-filament::icon icon="heroicon-o-link" class="w-4 h-4 mr-2 min-w-[20px]" />
                                 {{ $record->url }}
                             </a>
                         </p>
@@ -253,14 +253,14 @@
         <div class="bg-[#fff4f4] dark:bg-gray-800 shadow-sm border border-gray-200 dark:border-gray-700 rounded-lg p-6">
             <h3 class="text-lg font-semibold text-[#d14b55] dark:text-white mb-4">Team & Ownership</h3>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div class="p-4 border border-gray-200 dark:border-gray-700 !rounded-lg bg-[#fff]">
+                <div class="p-4 border border-gray-200 dark:border-gray-700 !rounded-lg bg-[#fff] dark:bg-gray-900">
                     <label class="text-sm font-medium text-gray-500 dark:text-gray-400">Team</label>
                     <p class="mt-1 text-sm text-gray-900 dark:text-white flex items-center">
                         <x-filament::icon icon="heroicon-o-user-group" class="w-4 h-4 mr-2" />
                         {{ $record->team?->name ?? 'No team assigned' }}
                     </p>
                 </div>
-                <div class="p-4 border border-gray-200 dark:border-gray-700 !rounded-lg bg-[#fff]">
+                <div class="p-4 border border-gray-200 dark:border-gray-700 !rounded-lg bg-[#fff] dark:bg-gray-900">
                     <label class="text-sm font-medium text-gray-500 dark:text-gray-400">Created By</label>
                     <p class="mt-1 text-sm text-gray-900 dark:text-white flex items-center">
                         <x-filament::icon icon="heroicon-o-user-plus" class="w-4 h-4 mr-2" />
@@ -268,7 +268,7 @@
                     </p>
                 </div>
                 @if($record->conversionBy)
-                    <div class="p-4 border border-gray-200 dark:border-gray-700 !rounded-lg bg-[#fff]">
+                    <div class="p-4 border border-gray-200 dark:border-gray-700 !rounded-lg bg-[#fff] dark:bg-gray-900">
                         <label class="text-sm font-medium text-gray-500 dark:text-gray-400">Converted By</label>
                         <p class="mt-1 text-sm text-success-600 dark:text-success-400 flex items-center">
                             <x-filament::icon icon="heroicon-o-trophy" class="w-4 h-4 mr-2" />

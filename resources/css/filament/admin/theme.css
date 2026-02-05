@@ -352,7 +352,6 @@ Topbar
 .fi-resource-leads .fi-page-main .fi-page-content .fi-sc .fi-ta-ctn-with-footer,
 .fi-resource-proposals .fi-page-main .fi-page-content .fi-sc .fi-ta-ctn-with-footer{
     box-shadow: none;
-    background-color: #fafafa;
 }
 
 .fi-resource-leads .fi-pagination,
@@ -390,6 +389,19 @@ Topbar
     flex-wrap: wrap;
 }
 
+.analytics-dashboard:last-child div.lg\:col-span-6:last-of-type .rounded-xl{
+    border-radius: 0px 0px 16px 16px !important;
+}
+
+.analytics-dashboard:last-child div.lg\:col-span-6:last-of-type .fi-ta-header-ctn{
+    border-radius: 16px 16px 0 0 !important;
+}
+
+.analytics-dashboard:last-child div.lg\:col-span-6:last-of-type .fi-ta-main,
+.analytics-dashboard:last-child div.lg\:col-span-6:last-of-type .fi-ta-header-ctn{
+    border-radius: 16px !important;
+}
+
 
 @media (max-width: 1024px) {
     .lead-generation-form textarea{
@@ -422,6 +434,13 @@ Topbar
     }
     .fi-header-actions-ctn{
         flex-shrink: 1;
+    }
+    .fi-resource-notice-boards table tbody tr{
+        display: flex;
+        flex-direction: column;
+        min-width: 100%;
+        width: 100%;
+        align-items: flex-start;
     }
 }
 
