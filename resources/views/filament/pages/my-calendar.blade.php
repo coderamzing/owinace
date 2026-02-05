@@ -72,7 +72,7 @@
                 @else
                     <div class="text-center py-16 px-6">
                         <div class="w-16 h-16 bg-primary-100 dark:bg-primary-900/50 rounded-full flex items-center justify-center mx-auto mb-4">
-                            <x-filament::icon icon="heroicon-o-calendar" class="w-8 h-8 text-primary-400 dark:text-primary-500" />
+                            <x-filament::icon icon="heroicon-o-calendar" class="w-8 h-8 text-primary-600 dark:text-primary-500" />
                         </div>
                         <p class="text-gray-600 dark:text-gray-400 font-medium">No follow-ups scheduled for today</p>
                         <p class="text-sm text-gray-500 dark:text-gray-500 mt-1">You're all caught up! 🎉</p>

@@ -9,7 +9,7 @@
 
     <div class="space-y-6">
         {{-- Header Section --}}
-        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 mb-2">
+        <div class="flex flex-wrap flex-row items-center justify-between gap-6 mb-2">
             <!-- Title Area -->
             <div>
                 <div class="flex items-center gap-3">

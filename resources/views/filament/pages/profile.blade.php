@@ -20,42 +20,45 @@
                     {{ auth()->user()->email }}
                 </div>
             </div>
-            {{-- Tabs Header --}}
-            <x-filament::tabs>
-                <x-filament::tabs.item
-                    wire:click="$set('activeTab', 'profile')"
-                    :active="$activeTab === 'profile'"
-                    icon="heroicon-o-user"
-                >
-                    Profile
-                </x-filament::tabs.item>
 
-                <x-filament::tabs.item
-                    wire:click="$set('activeTab', 'password')"
-                    :active="$activeTab === 'password'"
-                    icon="heroicon-o-key"
-                >
-                    Password
-                </x-filament::tabs.item>
-
-                @if(Filament\Facades\Filament::hasMultiFactorAuthentication())
+            <div class="px-4">
+                {{-- Tabs Header --}}
+                <x-filament::tabs>
                     <x-filament::tabs.item
-                        wire:click="$set('activeTab', 'mfa')"
-                        :active="$activeTab === 'mfa'"
-                        icon="heroicon-o-shield-check"
+                        wire:click="$set('activeTab', 'profile')"
+                        :active="$activeTab === 'profile'"
+                        icon="heroicon-o-user"
                     >
-                        MFA
+                        Profile
                     </x-filament::tabs.item>
-                @endif
 
-                <x-filament::tabs.item
-                    wire:click="$set('activeTab', 'sessions')"
-                    :active="$activeTab === 'sessions'"
-                    icon="heroicon-o-computer-desktop"
-                >
-                    Sessions
-                </x-filament::tabs.item>
-            </x-filament::tabs>
+                    <x-filament::tabs.item
+                        wire:click="$set('activeTab', 'password')"
+                        :active="$activeTab === 'password'"
+                        icon="heroicon-o-key"
+                    >
+                        Password
+                    </x-filament::tabs.item>
+
+                    @if(Filament\Facades\Filament::hasMultiFactorAuthentication())
+                        <x-filament::tabs.item
+                            wire:click="$set('activeTab', 'mfa')"
+                            :active="$activeTab === 'mfa'"
+                            icon="heroicon-o-shield-check"
+                        >
+                            MFA
+                        </x-filament::tabs.item>
+                    @endif
+
+                    <x-filament::tabs.item
+                        wire:click="$set('activeTab', 'sessions')"
+                        :active="$activeTab === 'sessions'"
+                        icon="heroicon-o-computer-desktop"
+                    >
+                        Sessions
+                    </x-filament::tabs.item>
+                </x-filament::tabs>
+            </div>
 
             {{-- Tabs Content --}}
             <div class="p-6">

@@ -73,16 +73,16 @@
     --color-gray-200: #e2e8f0;
 
     --color-primary: #b8ff90;
-    --color-primary-50: #fef2f2;
-    --color-primary-100: #fee2e2;
-    --color-primary-200: #fecaca;
-    --color-primary-300: #fca5a5;
-    --color-primary-400: #f87171;
-    --color-primary-500: #F37B7F;
-    --color-primary-600: #dc2626;
-    --color-primary-700: #b91c1c;
-    --color-primary-800: #991b1b;
-    --color-primary-900: #7f1d1d;
+    --color-primary-50: #dbffc5;
+    --color-primary-100: #b8ff90;
+    --color-primary-200: oklch(0.905 0.135 135);
+    --color-primary-300: #b8ff90;
+    --color-primary-400: #b8ff90;
+    --color-primary-500: oklch(0.810 0.185 135);
+    --color-primary-600: oklch(0.810 0.185 135);
+    --color-primary-700: oklch(0.550 0.110 165);
+    --color-primary-800: oklch(0.430 0.080 180);
+    --color-primary-900: oklch(0.300 0.045 190);
 
     --color-neutral-50: #f8fafc;
     --color-neutral-100: #f1f5f9;
@@ -112,6 +112,7 @@ main.fi-main,
 .fi-main[class*="fi-width"] {
     max-width: 100% !important;
     width: 100% !important;
+    background-color: #fff;
 }
 
 /* .fi-layout{
@@ -260,15 +261,60 @@ Topbar
   font-weight: 500;
 }
 
+@layer components {
+  .fi-sidebar-item {
+    &.fi-active {
+      > .fi-sidebar-item-btn {
+        background-color: #6ABE32;
+        color: #fff;
+
+        span {
+          color: #fff !important;
+        }
+
+        svg {
+          color: #fff !important;
+        }
+      }
+    }
+  }
+}
+
+
+@layer components {
+  @media (hover: hover) {
+    .fi-sidebar-item.fi-sidebar-item-has-url > .fi-sidebar-item-btn:hover {
+      background-color: #6ABE32;
+    }
+    .fi-sidebar-item.fi-sidebar-item-has-url > .fi-sidebar-item-btn:hover span,
+    .fi-sidebar-item.fi-sidebar-item-has-url > .fi-sidebar-item-btn:hover svg {
+      color: #fff;
+    }
+  }
+}
+
+.fi-topbar{
+    background-color: #fafafa;
+}
+
+@layer components {
+  .fi-sidebar-item-btn {
+    & > .fi-icon {
+      color: #000;
+    }
+  }
+}
+
+
 .fi-radio-input:checked + .fi-fo-radio-label-text,
 .fi-radio-input:checked + .fi-fo-radio-label-text .fi-fo-radio-label-description {
-  background-color: #b8ff90; 
-  color: #000;
+  background-color: #6ABE32; 
+  color: #fff;
 }
 
 .fi-fo-radio-label:hover .fi-fo-radio-label-text,
 .fi-fo-radio-label:hover .fi-fo-radio-label-text .fi-fo-radio-label-description {
-  background-color: #62bd2e;
+  background-color: #6ABE32;
   color: #ffffff;
 }
 
@@ -305,8 +351,8 @@ Topbar
 
 .fi-resource-leads .fi-page-main .fi-page-content .fi-sc .fi-ta-ctn-with-footer,
 .fi-resource-proposals .fi-page-main .fi-page-content .fi-sc .fi-ta-ctn-with-footer{
-     box-shadow: none;
-     background-color: #fafafa;
+    box-shadow: none;
+    background-color: #fafafa;
 }
 
 .fi-resource-leads .fi-pagination,
@@ -333,9 +379,68 @@ Topbar
     min-height: 700px;
 }
 
+.fi-breadcrumbs{
+    display: block !important;
+}
+
+.fi-header.fi-header-has-breadcrumbs{
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+
 @media (max-width: 1024px) {
     .lead-generation-form textarea{
         min-height: auto;
+    }
+    .fi-topbar{
+        position: relative;
+    }
+    .fi-topbar .fi-topbar-open-sidebar-btn{
+        margin-left: 120px !important;
+        position: absolute;
+        left: 140px;
+    }
+    .fi-resource-leads .fi-page-main .fi-page-content .fi-sc .fi-ta-main .fi-ta-header-ctn .filter-section .fi-ta-filters .filter-form .fi-sc,
+    .filter-form .fi-sc{
+        min-width: 100%;
+    }
+    .fi-ta-filters-actions-ctn{
+        min-width: 100%;
+        justify-content: space-between;
+    }
+    .kanban-board-buttons .fi-ta-filters-actions-ctn{
+        min-width: auto !important;   
+    }
+}
+
+@media (max-width: 639px) {
+    .fi-topbar .fi-topbar-open-sidebar-btn{
+        left: 100px;
+    }
+    .fi-header-actions-ctn{
+        flex-shrink: 1;
+    }
+}
+
+@media (max-width: 468px) {
+    .label-placeholder{
+        max-width: 200px;
+        overflow: hidden;
+        max-height: 20px;
+    }
+    .fi-ta-filters-actions-ctn{
+        justify-content: space-between;
+        min-width: 100%;
+    }
+    
+}
+
+@media (max-width: 398px) {
+    .label-placeholder{
+        max-width: 160px;
     }
 }
 
@@ -377,4 +482,23 @@ Topbar
             background-color: #27272a;
         }
     }
+}
+
+@layer components {
+  .fi-sidebar-item-btn {
+    & > .fi-icon {
+      &:where(.dark, .dark *) {
+        color: #fff;
+      }
+    }
+  }
+}
+
+@layer components {
+  .fi-main,
+  .fi-topbar {
+    &:where(.dark, .dark *) {
+      background-color: #000 !important;
+    }
+  }
 }

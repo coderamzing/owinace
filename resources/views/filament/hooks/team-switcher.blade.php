@@ -4,11 +4,15 @@
     $teams = $workspaceId ? \App\Models\Team::where('workspace_id', $workspaceId)->get() : collect([]);
 @endphp
 
+<a href="http://127.0.0.1:8000/admin" class="absolute left-0 block lg:hidden">
+    <img alt="Laravel logo" src="http://127.0.0.1:8000/images/leadcliq.svg" class="fi-logo sm:min-w-[150px] sm:h-[2rem] min-w-[100px] h-[1.5rem]">
+</a>
+
 <div class="fi-topbar-items flex items-center gap-4 w-full">
     <!-- Add Credit Button (left) -->
     <a
         href="{{ \App\Filament\Pages\AddCredit::getUrl() }}"
-        class="fi-topbar-item-button fi-btn fi-btn-size-md fi-btn-color-gray fi-btn-variant-ghost gap-x-2 rounded-lg px-3 py-2 text-sm font-semibold shadow-sm ring-1 transition duration-75 fi-color-gray fi-btn-color-gray hover:bg-gray-50 dark:hover:bg-white/5"
+        class="sm:block hidden fi-topbar-item-button fi-btn fi-btn-size-md fi-btn-color-gray fi-btn-variant-ghost gap-x-2 rounded-lg px-3 py-2 text-sm font-semibold shadow-sm ring-1 transition duration-75 fi-color-gray fi-btn-color-gray hover:bg-gray-50 dark:hover:bg-white/5"
         title="Add Credits"
     >
         <i class="iconify tabler--credit-card size-5"></i>
@@ -38,7 +42,7 @@
 
     <!-- Team Switcher (right of search, before notifications) -->
     @if($teams->count() > 0)
-        <div class="fi-topbar-team-switcher flex items-center gap-2">
+        <div class="fi-topbar-team-switcher flex items-center gap-2 ">
             <form method="POST" action="" id="team-switch-form" class="inline">
                 @csrf
                 <select 

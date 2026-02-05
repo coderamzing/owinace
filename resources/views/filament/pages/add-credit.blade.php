@@ -45,7 +45,7 @@
                     <p class="text-sm text-gray-600 dark:text-gray-400">
                         Current Workspace Balance
                     </p>
-                    <p class="text-2xl font-bold text-[#ad3a43] dark:text-[#ad3a43] mt-1">
+                    <p class="text-2xl font-bold text-[#b8ff90] mt-1">
                         {{ $user->workspace->totalCredits() }} Credits
                     </p>
                 </div>
@@ -69,19 +69,22 @@
                 <div
                     class="md:p-10 p-5 rounded-2xl md:gap-20 flex flex-col lg:justify-between h-full
                         {{ $package['popular'] ? 'bg-primary' : 'bg-white' }}
-                        dark:bg-gray-800 shadow-md hover:shadow-xl transition-shadow duration-300">
+                         {{ $package['popular'] ? 'dark:bg-primary' : 'dark:bg-gray-800' }}
+                         shadow-[2px_1px_10px_#e3e3e3] hover:shadow-[2px_1px_10px_#E5E5E5] dark:shadow-[2px_1px_10px_#706f6fa1] transition-shadow duration-300">
                     <div>
                         <div class="gap-5 flex items-center mb-5">
-                            <div class="lg:size-13.5 size-12.5 bg-primary rounded-full flex items-center justify-center">
+                            <div class="lg:size-13.5 size-12.5 rounded-full flex items-center justify-center {{ $package['popular'] ? 'bg-dark' : 'bg-primary' }}">
                                 <i class="iconify solar--chart-square-linear lg:size-7.5 size-6.5 {{ $package['popular'] ? 'text-primary' : 'text-dark' }}"></i>
                             </div>
 
-                            <h3 class="text-1.5xl {{ $package['popular'] ? 'text-black' : 'text-black' }}">
+                            <h3 class="text-1.5xl {{ $package['popular'] ? 'text-black' : 'text-black' }}
+                            {{ $package['popular'] ? 'dark:text-black' : 'dark:text-white' }}">
                                 {{ $package['name'] ?? ($package['credits'] . ' Credits') }}
                             </h3>
                         </div>
 
-                        <h4 class="{{ $package['popular'] ? 'text-black' : 'text-black' }} lg:text-4.5xl text-4xl flex items-center">
+                        <h4 class="{{ $package['popular'] ? 'text-black' : 'text-black' }} lg:text-4.5xl text-4xl flex items-center
+                         {{ $package['popular'] ? 'dark:text-black' : 'dark:text-white' }}">
                             <span>$</span>
                             <span>
                                 {{ number_format($package['price'], 2) }}
@@ -90,23 +93,26 @@
                         </h4>
 
                         <div class="mt-5">
-                            <div class="flex gap-2.5 mb-2.5">
-                                <i class="iconify tabler--circle-check size-6 {{ $package['popular'] ? 'text-black' : 'text-black' }}"></i>
-                                <div class="text-base">
+                            <div class="flex gap-2.5 mb-2.5 items-center">
+                                <i class="iconify tabler--circle-check size-6 {{ $package['popular'] ? 'text-black' : 'text-black' }}
+                                {{ $package['popular'] ? 'dark:text-black' : 'dark:text-white' }}"></i>
+                                <div class="text-base {{ $package['popular'] ? 'dark:text-black' : 'dark:text-white' }}">
                                     {{ $package['description'] }}
                                 </div>
                             </div>
 
-                            <div class="flex gap-2.5 mb-2.5">
-                                <i class="iconify tabler--circle-check size-6 {{ $package['popular'] ? 'text-black' : 'text-black' }}"></i>
-                                <div class="text-base">
+                            <div class="flex gap-2.5 mb-2.5 items-center">
+                                <i class="iconify tabler--circle-check size-6 {{ $package['popular'] ? 'text-black' : 'text-black' }}
+                                {{ $package['popular'] ? 'dark:text-black' : 'dark:text-white' }}"></i>
+                                <div class="text-base {{ $package['popular'] ? 'dark:text-black' : 'dark:text-white' }}">
                                     {{ $package['credits'] }} total credits
                                 </div>
                             </div>
 
-                            <div class="flex gap-2.5 mb-2.5">
-                                <i class="iconify tabler--circle-check size-6 {{ $package['popular'] ? 'text-black' : 'text-black' }}"></i>
-                                <div class="text-base">
+                            <div class="flex gap-2.5 mb-2.5 items-center">
+                                <i class="iconify tabler--circle-check size-6 {{ $package['popular'] ? 'text-black' : 'text-black' }}
+                                {{ $package['popular'] ? 'dark:text-black' : 'dark:text-white' }}"></i>
+                                <div class="text-base {{ $package['popular'] ? 'dark:text-black' : 'dark:text-white' }}">
                                     ${{ number_format($package['price'] / $package['credits'], 2) }} per credit
                                 </div>
                             </div>

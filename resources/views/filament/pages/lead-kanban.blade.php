@@ -36,8 +36,8 @@
                 </div>
             </div> -->
 
-            <div class="flex justify-between items-end gap-4">
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 w-[86%]">
+            <div class="flex justify-between items-end gap-4 lg:flex-nowrap flex-wrap">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 lg:w-[86%] w-[100%]">
                     <!-- Full Text Search -->
                     <div>
                         <!-- <label for="search" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2 text-white">
@@ -86,15 +86,17 @@
                         </select>
                     </div>
                 </div>
-                <div class="fi-ta-filters-actions-ctn">
-                    <button class="fi-color fi-color-primary leading-[16px] fi-bg-color-400 hover:fi-bg-color-300 dark:fi-bg-color-600 dark:hover:fi-bg-color-700 fi-text-color-950 hover:fi-text-color-800 dark:fi-text-color-0 dark:hover:fi-text-color-0 fi-btn fi-size-md  fi-ac-btn-action py-[10px]" type="button">                                    
-                        Apply Filters
-                    </button>     
-                </div>
-                <div>
-                    <button class="fi-color fi-color-danger fi-bg-color-600 hover:fi-bg-color-500 dark:fi-bg-color-600 dark:hover:fi-bg-color-500 fi-text-color-0 hover:fi-text-color-0 dark:fi-text-color-0 dark:hover:fi-text-color-0 fi-btn fi-size-md" type="button">   
-                        Reset
-                    </button>            
+                <div class="flex items-center gap-2 lg:w-auto w-full justify-between kanban-board-buttons">
+                    <div class="fi-ta-filters-actions-ctn">
+                        <button class="fi-color fi-color-primary leading-[16px] fi-bg-color-400 hover:fi-bg-color-300 dark:fi-bg-color-600 dark:hover:fi-bg-color-700 fi-text-color-950 hover:fi-text-color-800 dark:fi-text-color-0 dark:hover:fi-text-color-0 fi-btn fi-size-md  fi-ac-btn-action py-[10px]" type="button">                                    
+                            Apply Filters
+                        </button>     
+                    </div>
+                    <div>
+                        <button class="fi-color fi-color-danger fi-bg-color-600 hover:fi-bg-color-500 dark:fi-bg-color-600 dark:hover:fi-bg-color-500 fi-text-color-0 hover:fi-text-color-0 dark:fi-text-color-0 dark:hover:fi-text-color-0 fi-btn fi-size-md" type="button">   
+                            Reset
+                        </button>            
+                    </div>
                 </div>
             </div>
 
@@ -113,7 +115,7 @@
         </div>
 
         <!-- Kanban Board -->
-        <div class="flex gap-6 overflow-x-auto min-h-[calc(100vh-320px)] dark:bg-gray-900 rounded-lg" id="kanban-board">
+        <div class="flex gap-6 overflow-x-auto min-h-[calc(100vh-320px)] rounded-lg" id="kanban-board">
             @foreach($kanbans as $kanban)
                 @php
                     $kanbanData = $this->getLeadsForKanban($kanban->id);
@@ -142,13 +144,13 @@
                             @if($leads->count() > 0)
                                 @foreach($leads as $lead)
                                     <div 
-                                        class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-4 cursor-grab hover:border-primary-300 dark:hover:border-primary-600 transition-all duration-200 hover:shadow-md group"
+                                        class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-4 cursor-grab hover:border-[#6abe32] dark:hover:border-primary-600 transition-all duration-200 hover:shadow-md group"
                                         data-lead-id="{{ $lead->id }}"
                                         wire:key="lead-{{ $lead->id }}-{{ $kanban->id }}"
-                                        style="border-left: 2px solid {{ $lead->source->color ?? '#3b82f6' }}"
+                                        style="border-left: 2px solid {{ $lead->source->color ?? '#6abe32' }}"
                                         onclick="if (!window.isDragging) { event.stopPropagation(); @this.openLeadSidebar({{ $lead->id }}); }"
                                     >
-                                        <div class="text-[#ad3a43] dark:text-gray-100 mb-2 text-sm group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors">
+                                        <div class="text-[#6abe32] dark:text-gray-100 mb-2 text-sm group-hover:text-[#6abe32] dark:group-hover:text-primary-400 transition-colors">
                                             {{ $lead->title }}
                                         </div>
                                         
@@ -168,7 +170,7 @@
                                                 
                                                 @if($lead->assignedMember)
                                                     <div 
-                                                        class="w-6 h-6 rounded-full bg-gradient-to-br from-primary-400 to-primary-600 flex items-center justify-center text-white text-xs font-bold shadow-sm"
+                                                        class="w-6 h-6 rounded-full bg-gradient-to-br from-[#6abe32] to-[#6abe32] flex items-center justify-center text-white text-xs font-bold shadow-sm"
                                                         title="{{ $lead->assignedMember->name }}"
                                                     >
                                                         {{ strtoupper(substr($lead->assignedMember->name, 0, 1)) }}
@@ -269,7 +271,7 @@
                                             @endif
                                             @if($selectedLead->source)
                                                 <span 
-                                                    class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium !text-[#fff] !bg-[#ff8488]"
+                                                    class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium !text-[#fff] !bg-[#0fbb51]"
                                                     style="background-color: {{ $selectedLead->source->color }}20; color: {{ $selectedLead->source->color }}"
                                                 >
                                                     {{ $selectedLead->source->name }}
