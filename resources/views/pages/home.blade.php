@@ -256,7 +256,7 @@ echo json_encode([
     <!-- Why choose Section  -->
     <section id="why-choose" class="lg:py-25 md:py-22.5 py-17.5">
         <div class="max-w-7xl mx-auto px-5">
-            <div class="lg:mb-12.5 lg:mx-auto text-center mb-7.5" data-aos="fade-up" data-aos-duration="500" data-aos-easing="ease-in-out">
+            <div class="lg:mb-12.5 lg:mx-auto lg:text-center mb-7.5" data-aos="fade-up" data-aos-duration="500" data-aos-easing="ease-in-out">
                 <h2 class="mb-2.5 lg:text-[40px] md:text-4.6xl text-3.4xl">Why freelancers, agencies, and small teams choose LeadCliq</h2>
                 <p class="text-base mb-2.5">Stop juggling spreadsheets, notes, and tabs. LeadCliq helps you follow up on time, understand ROI, and write better proposals—with clear visibility for every member, every lead, and every stage.</p>
             </div>
@@ -522,17 +522,17 @@ echo json_encode([
     <section id="clients" class="lg:py-25 md:py-22.5 py-17.5">
         <div class="max-w-7xl mx-auto px-5">
             <div class="text-center mb-10" data-aos="fade-up" data-aos-duration="600" data-aos-easing="ease-in-out">
-                <h2 class="mb-2.5 lg:text-[40px] md:text-4.6xl text-3.4xl">Everything you need to win more leads</h2>
+                <h2 class="mb-2.5 lg:text-[40px] md:text-[25px] text-[20px]">Everything you need to win more leads</h2>
             </div>
 
             <div class="grid lg:grid-cols-4 md:grid-cols-2 lg:gap-12.5 gap-7.5">
                 <!-- Client Item 1  -->
                 <div data-aos="fade-up" data-aos-duration="600" data-aos-easing="ease-in-out">
-                    <div class="flex justify-center items-center bg-white rounded-2xl mb-4">
+                    <div class="flex justify-center items-center rounded-2xl mb-4">
                         <img src="/images/followup_email_2.png" alt="flash" class=" rounded-2xl min-h-[180px] object-cover md:max-h-[180px]">
                     </div>
-                    <h2>Follow-up reminders</h2>
-                    <p class="mt-2.5">Never forget a follow-up—LeadCliq keeps your pipeline moving.</p>
+                    <h2 class="text-center">Follow-up reminders</h2>
+                    <p class="mt-2.5 text-center">Never forget a follow-up—LeadCliq keeps your pipeline moving.</p>
                 </div>
 
                 <!-- Client Item 2  -->
@@ -540,11 +540,11 @@ echo json_encode([
                     <!-- <div class="flex justify-center items-center bg-white rounded-2xl px-[10px] py-[30px] mb-4">
                         <img src="/images/donut-chart.png" alt="donut-chart" class="max-w-[200px]">
                     </div> -->
-                    <div class="flex justify-center items-center bg-white rounded-2xl mb-4">
+                    <div class="flex justify-center items-center rounded-2xl mb-4">
                         <img src="/images/Creating-customer-profiles.svg" alt="flash" class=" rounded-2xl min-h-[180px] object-cover md:max-h-[180px]">
                     </div>
-                    <h2>ROI & lead cost</h2>
-                    <p class="mt-2.5">Understand cost-per-lead, ROI, and which sources convert.</p>
+                    <h2 class="text-center">ROI & lead cost</h2>
+                    <p class="mt-2.5 text-center">Understand cost-per-lead, ROI, and which sources convert.</p>
                 </div>
 
                 <!-- Client Item 3  --> 
@@ -552,11 +552,11 @@ echo json_encode([
                     <!-- <div class="flex justify-center items-center bg-white rounded-2xl px-[10px] py-[30px] mb-4">
                         <img src="/images/kanban-pipeline.png" alt="repeat" class="max-w-[200px]">
                     </div> -->
-                    <div class="flex justify-center items-center bg-white rounded-2xl mb-4">
+                    <div class="flex justify-center items-center rounded-2xl mb-4">
                         <img src="/images/kanban-pipeline.png" alt="flash" class=" rounded-2xl min-h-[180px] object-cover md:max-h-[180px]">
                     </div>
-                    <h2>Kanban pipeline</h2>
-                    <p class="mt-2.5">Drag, drop, and track every lead stage in seconds.</p>
+                    <h2 class="text-center">Kanban pipeline</h2>
+                    <p class="mt-2.5 text-center">Drag, drop, and track every lead stage in seconds.</p>
                 </div>
 
                 <!-- Client Item 4  -->
@@ -564,11 +564,11 @@ echo json_encode([
                     <!-- <div class="flex justify-center items-center bg-white rounded-2xl px-[10px] py-[30px] mb-4">
                         <img src="/images/conversion-rate.png" alt="conversion-rate" class="max-w-[200px]">
                     </div> -->
-                    <div class="flex justify-center items-center bg-white rounded-2xl mb-4">
+                    <div class="flex justify-center items-center rounded-2xl mb-4">
                         <img src="/images/portfolio.jpg" alt="flash" class=" rounded-2xl min-h-[180px] object-cover md:max-h-[180px]">
                     </div>
-                    <h2>Portfolio matching</h2>
-                    <p class="mt-2.5">Auto-match portfolios inside AI cover letters for stronger bids.</p>
+                    <h2 class="text-center">Portfolio matching</h2>
+                    <p class="mt-2.5 text-center">Auto-match portfolios inside AI cover letters for stronger bids.</p>
                 </div>
             </div>
 
@@ -587,9 +587,9 @@ echo json_encode([
         <div class="max-w-7xl mx-auto px-5">
             <div class="grid lg:grid-cols-2 lg:gap-15 gap-5" data-aos="fade-up" data-aos-duration="600" data-aos-easing="ease-in-out">
                 <div>
-                    <div class="relative">
-                        <img src="/images/4-step-banner.png" alt="4 easy steps workflow diagram" class="rounded-2xl" width="500" height="400" loading="lazy">
-                        <div class="bg-primary py-0.5 px-3.75 rounded-full font-medium text-sm inline-flex text-dark absolute -top-2.5 start-7.5">Get started in 4 easy steps</div>
+                    <div class="relative flex justify-center lg:justify-start">
+                        <img src="/images/4-step-banner.png" alt="4 easy steps workflow diagram" class="rounded-2xl text-center" width="500" height="400" loading="lazy">
+                        <div class="hidden lg:inline-flex bg-primary py-0.5 px-3.75 rounded-full font-medium text-sm text-dark absolute -top-2.5 start-7.5">Get started in 4 easy steps</div>
                     </div>
 
                     <div class="flex mt-7.5 gap-2.5 md:flex-row flex-col">
@@ -681,8 +681,8 @@ echo json_encode([
 
                 <!-- Blog Item 1  -->
                 <a href="#">
-                    <div class="overflow-hidden rounded-2xl max-h-[480px] object-cover">
-                        <img src="/images/Cover.png" alt="Blog article cover: AI-matched portfolios" class="duration-300 hover:scale-105 transition-all" width="400" height="480" loading="lazy">
+                    <div class="overflow-hidden rounded-2xl max-h-[480px] object-cover text-center">
+                        <img src="/images/Cover.png" alt="Blog article cover: AI-matched portfolios" class="duration-300 hover:scale-105 transition-all w-full lg:w-[400px]" loading="lazy">
                     </div>
 
                     <div class="md:mt-5 mt-2.5">
@@ -693,8 +693,8 @@ echo json_encode([
 
                 <!-- Blog Item 2  -->
                 <a href="#">
-                    <div class="overflow-hidden rounded-2xl max-h-[480px] object-cover">
-                        <img src="/images/Cover-2.png" alt="Blog article cover: Cost-per-lead tracking" class="duration-300 hover:scale-105 transition-all" width="400" height="480" loading="lazy">
+                    <div class="overflow-hidden rounded-2xl max-h-[480px] object-cover text-center">
+                        <img src="/images/Cover-2.png" alt="Blog article cover: Cost-per-lead tracking" class="duration-300 hover:scale-105 transition-all w-full lg:w-[400px]" loading="lazy">
                     </div>
 
                     <div class="md:mt-5 mt-2.5">
@@ -705,8 +705,8 @@ echo json_encode([
 
                 <!-- Blog Item 3  -->
                 <a href="#">
-                    <div class="overflow-hidden rounded-2xl max-h-[480px] object-cover">
-                        <img src="/images/banner-5.png" alt="Blog article cover: Lead routing and team alignment" class="duration-300 hover:scale-105 transition-all" width="400" height="480" loading="lazy">
+                    <div class="overflow-hidden rounded-2xl max-h-[480px] object-cover text-center">
+                        <img src="/images/banner-5.png" alt="Blog article cover: Lead routing and team alignment" class="duration-300 hover:scale-105 transition-all w-full lg:w-[400px]" loading="lazy">
                     </div>
 
                     <div class="md:mt-5 mt-2.5">

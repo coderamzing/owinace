@@ -22,8 +22,7 @@
                         :class="{
                             'top-2 text-xs text-primary-600 dark:text-primary-400 font-medium': focused || hasValue,
                             'top-1/2 -translate-y-1/2 text-base text-gray-500 dark:text-gray-400': !focused && !hasValue
-                        }"
-                    >
+                        }">
                         {{ $searchPlaceholder ?? 'Search by name, email, company...' }}
                     </label>
                     
@@ -39,8 +38,7 @@
                                bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100
                                transition-all duration-200 outline-none border-[1px]"
                         
-                        autocomplete="off"
-                    />
+                        autocomplete="off"/>
                     
                     {{-- Search button positioned inside input on the right --}}
                     <button 

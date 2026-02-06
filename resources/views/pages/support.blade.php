@@ -29,45 +29,45 @@
 @section('content')
 <script type="application/ld+json">
 @php
-echo json_encode([
-    "@context" => "https://schema.org",
-    "@type" => "BreadcrumbList",
-    "itemListElement" => [
-        [
-            "@type" => "ListItem",
-            "position" => 1,
-            "name" => "Home",
-            "item" => url('/')
-        ],
-        [
-            "@type" => "ListItem",
-            "position" => 2,
-            "name" => "Support",
-            "item" => url()->current()
+    echo json_encode([
+        "@context" => "https://schema.org",
+        "@type" => "BreadcrumbList",
+        "itemListElement" => [
+            [
+                "@type" => "ListItem",
+                "position" => 1,
+                "name" => "Home",
+                "item" => url('/')
+            ],
+            [
+                "@type" => "ListItem",
+                "position" => 2,
+                "name" => "Support",
+                "item" => url()->current()
+            ]
         ]
-    ]
-], JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT);
+    ], JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT);
 @endphp
 </script>
 
 <script type="application/ld+json">
 @php
-echo json_encode([
-    "@context" => "https://schema.org",
-    "@type" => "WebPage",
-    "name" => "Support Center - LeadCliq",
-    "description" => "LeadCliq Support Center and Documentation",
-    "url" => url()->current()
-], JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT);
+    echo json_encode([
+        "@context" => "https://schema.org",
+        "@type" => "WebPage",
+        "name" => "Support Center - LeadCliq",
+        "description" => "LeadCliq Support Center and Documentation",
+        "url" => url()->current()
+    ], JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT);
 @endphp
 </script>
 
 <section class="w-full lg:py-25 md:py-22.5 py-17.5">
     <div class="max-w-7xl mx-auto px-5">
         <!-- Header -->
-        <div class="text-center lg:mb-12.5 mb-7.5">
-            <h1 class="lg:text-5.5xl md:text-4.6xl text-3.4xl mb-2.5">Support Center</h1>
-            <p class="text-base text-dark">
+        <div class="text-center lg:mb-12.5 mb-7.5 aos-init aos-animate" data-aos="fade-up" data-aos-duration="500" data-aos-easing="ease-in-out">
+            <h1 class="lg:text-6xl md:text-5.5xl text-4xl mb-2.5">Support Center</h1>
+            <p class="text-base text-dark">    
                 Get help with LeadCliq's AI proposals, lead CRM, Chrome extension, team management, and billing
             </p>
         </div>

@@ -416,6 +416,14 @@ Topbar
     color: white;
 }
 
+.team-select option:hover,
+.team-select option:hover:checked,
+.team-select option:focus,
+.team-select option:focus:checked {
+    background: #6ABE32 !important;
+    color: white;
+}
+
 .fi-fo-rich-editor-toolbar-group{
     flex-wrap: wrap;
 }
