@@ -174,7 +174,7 @@
                                                     <span class="font-medium">Last Activity:</span> {{ \Carbon\Carbon::createFromTimestamp($session['last_activity'])->diffForHumans() }}
                                                 </div>
                                                 @if($session['user_agent'])
-                                                    <div class="text-xs text-gray-500 dark:text-gray-500 truncate max-w-md">
+                                                    <div class="text-xs text-gray-500 dark:text-gray-500 max-w-md word-break-all">
                                                         {{ $session['user_agent'] }}
                                                     </div>
                                                 @endif

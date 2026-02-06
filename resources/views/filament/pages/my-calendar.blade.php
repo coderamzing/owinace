@@ -11,7 +11,7 @@
             <div class="px-6 py-4 bg-white dark:bg-primary-900/30 dark:border-primary-700 flex items-center justify-between">
                 <div class="flex items-center gap-3">
                     <div class="w-10 h-10 bg-primary-100 dark:bg-primary-900/50 rounded-lg flex items-center justify-center">
-                        <x-filament::icon icon="heroicon-o-calendar" class="w-5 h-5 text-primary-600 dark:text-primary-400" />
+                        <x-filament::icon icon="heroicon-o-calendar" class="w-5 h-5 text-primary-800 dark:text-primary-400" />
                     </div>
                     <h2 class="text-lg font-bold text-gray-900 dark:text-gray-100">Today's Follow-ups</h2>
                 </div>
@@ -72,7 +72,7 @@
                 @else
                     <div class="text-center py-16 px-6">
                         <div class="w-16 h-16 bg-primary-100 dark:bg-primary-900/50 rounded-full flex items-center justify-center mx-auto mb-4">
-                            <x-filament::icon icon="heroicon-o-calendar" class="w-8 h-8 text-primary-600 dark:text-primary-500" />
+                            <x-filament::icon icon="heroicon-o-calendar" class="w-8 h-8 text-primary-800 dark:text-primary-500" />
                         </div>
                         <p class="text-gray-600 dark:text-gray-400 font-medium">No follow-ups scheduled for today</p>
                         <p class="text-sm text-gray-500 dark:text-gray-500 mt-1">You're all caught up! 🎉</p>

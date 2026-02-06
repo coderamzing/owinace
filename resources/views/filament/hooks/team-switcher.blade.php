@@ -37,22 +37,21 @@
         action="#"
         method="GET"
         class="hidden md:flex flex-1 justify-center"
-        role="search"
-    >
+        role="search">
         <div class="relative w-full max-w-xl">
             <span class="pointer-events-none absolute inset-y-0 left-3 flex items-center text-gray-400">
                 <svg
-                xmlns="http://www.w3.org/2000/svg"
-                class="h-4 w-4"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="1.5"
-                stroke-linecap="round"
-                stroke-linejoin="round">
-                <circle cx="11" cy="11" r="8" />
-                <line x1="21" y1="21" x2="16.65" y2="16.65" />
-            </svg>
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="h-4 w-4"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.5"
+                    stroke-linecap="round"
+                    stroke-linejoin="round">
+                    <circle cx="11" cy="11" r="8" />
+                    <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                </svg>
 
             </span>
             <input
@@ -60,8 +59,7 @@
                 name="q"
                 class="w-full rounded-lg border border-gray-300 bg-white/80 pl-9 pr-3 py-1.5 text-sm text-gray-900 shadow-sm placeholder:text-gray-400 focus:border-primary-500 focus:ring-1 focus:ring-primary-500 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100"
                 placeholder="Search leads, contacts, teams..."
-                autocomplete="off"
-            />
+                autocomplete="off"/>
         </div>
     </form>
 
@@ -73,7 +71,7 @@
                 <select 
                     name="team_id"
                     onchange="const teamId = this.value; const form = document.getElementById('team-switch-form'); form.action = '/team/switch/' + teamId; form.submit();"
-                    class="text-md rounded-md border-gray-300 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300 focus:border-primary-500 focus:ring-primary-500 outline-none"
+                    class="team-select text-md rounded-md border-gray-300 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300 focus:border-primary-500 focus:ring-primary-500 outline-none"
                 >
                     @foreach($teams as $team)
                         <option value="{{ $team->id }}" {{ $currentTeamId == $team->id ? 'selected' : '' }}>

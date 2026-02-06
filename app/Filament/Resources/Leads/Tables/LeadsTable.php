@@ -118,7 +118,7 @@ class LeadsTable
                             : null;
                     }),
                 SelectFilter::make('assigned_member_id')
-                    ->label('')
+                    ->label('Assigned Member')
                     ->placeholder('Assigned Member')
                     ->options(function () {
                         $teamId = session('team_id');
@@ -143,7 +143,7 @@ class LeadsTable
                     ->searchable()
                     ->preload(),
                 SelectFilter::make('source_id')
-                    ->label('')
+                    ->label('Select Source')
                     ->placeholder('Source')
                     ->options(function () {
                         $teamId = session('team_id');
@@ -162,7 +162,7 @@ class LeadsTable
                     ->searchable()
                     ->preload(),
                 SelectFilter::make('kanban_id')
-                    ->label('')
+                    ->label('Select Kanban')
                     ->placeholder('Kanban')
                     ->options(function () {
                         $teamId = session('team_id');

@@ -62,7 +62,7 @@
                         <p class="text-[#d14b55] text-[12px]">Goals for this period</p>
                     </div>
                     <div class="p-3 bg-primary-100 dark:bg-primary-900/20 rounded-lg">
-                        <x-filament::icon icon="heroicon-o-flag" class="w-6 h-6 text-primary-600 dark:text-primary-400" />
+                        <x-filament::icon icon="heroicon-o-flag" class="w-6 h-6 text-primary-800 dark:text-primary-400" />
                     </div>
                 </div>
             </div>
@@ -76,7 +76,7 @@
                         <p class="text-[#009d62] text-[12px]">Goals Completed</p>
                     </div>
                     <div class="p-3 bg-success-100 dark:bg-success-900/20 rounded-lg">
-                        <x-filament::icon icon="heroicon-o-check-circle" class="w-6 h-6 text-success-600 dark:text-success-400" />
+                        <x-filament::icon icon="heroicon-o-check-circle" class="w-6 h-6 text-success-800 dark:text-success-400" />
                     </div>
                 </div>
             </div>
@@ -123,7 +123,7 @@
                         <p class="text-[#d14b55] text-[12px]">Leads this period</p>
                     </div>
                     <div class="p-3 bg-primary-100 dark:bg-primary-900/20 rounded-lg">
-                        <x-filament::icon icon="heroicon-o-user-group" class="w-5 h-5 text-primary-600 dark:text-primary-400" />
+                        <x-filament::icon icon="heroicon-o-user-group" class="w-5 h-5 text-primary-800 dark:text-primary-400" />
                     </div>
                 </div>
             </div>
@@ -179,19 +179,19 @@
                         <p class="text-[#d14b55] text-[12px]">Created this period</p>
                     </div>
                     <div class="p-3 bg-primary-100 dark:bg-primary-900/20 rounded-lg">
-                        <x-filament::icon icon="heroicon-o-document-text" class="w-5 h-5 text-primary-600 dark:text-primary-400" />
+                        <x-filament::icon icon="heroicon-o-document-text" class="w-5 h-5 text-primary-800 dark:text-primary-400" />
                     </div>
                 </div>
             </div>
         </div>
 
         {{-- Goals Table --}}
-        <div class="border border-gray-200 dark:bg-gray-900/50 border border-gray-300 dark:border-gray-600 rounded-lg overflow-hidden">
+        <div class="border border-gray-200 dark:border-danger-700 rounded-lg overflow-hidden">
 
-            <div class="p-6 border-b-2 border-primary-200 dark:border-primary-700 bg-[#fff5f6] dark:bg-[#2a1a1c]">
+            <div class="p-6 bg-[#fff5f6] dark:bg-[#2a1a1c]">
                 <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 bg-primary-600 dark:bg-primary-500 rounded-lg flex items-center justify-center">
-                        <x-filament::icon icon="heroicon-o-flag" class="w-6 h-6 text-white" />
+                    <div class="w-10 h-10 bg-danger-100 dark:bg-danger-900/20 rounded-lg flex items-center justify-center">
+                        <x-filament::icon icon="heroicon-o-flag" class="w-6 h-6 text-danger-600 dark:text-danger-400" />
                     </div>
                     <div>
                         <h3 class="text-lg font-bold text-gray-900 dark:text-white">
@@ -314,7 +314,7 @@
                     <h3 class="text-xl font-bold text-gray-900 dark:text-white">Goal Achievement Tips</h3>
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <div class="bg-white dark:bg-gray-800 rounded-xl p-5 border border-primary-200 dark:border-primary-700 hover:shadow-lg transition-all">
+                    <div class="bg-white dark:bg-[#000] rounded-xl p-5 border border-primary-200 dark:border-primary-700 hover:shadow-lg transition-all">
                         <div class="flex items-start space-x-4">
                             <div class="flex-shrink-0 p-3 bg-primary-100 dark:bg-primary-900/30 rounded-lg">
                                 <x-filament::icon icon="heroicon-o-chart-bar" class="w-6 h-6 text-primary-600 dark:text-primary-400" />
@@ -327,7 +327,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="bg-white dark:bg-gray-800 rounded-xl p-5 border border-success-200 dark:border-success-700 hover:shadow-lg transition-all">
+                    <div class="bg-white dark:bg-[#000] rounded-xl p-5 border border-success-200 dark:border-success-700 hover:shadow-lg transition-all">
                         <div class="flex items-start space-x-4">
                             <div class="flex-shrink-0 p-3 bg-success-100 dark:bg-success-900/30 rounded-lg">
                                 <x-filament::icon icon="heroicon-o-star" class="w-6 h-6 text-success-600 dark:text-success-400" />
@@ -340,7 +340,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="bg-white dark:bg-gray-800 rounded-xl p-5 border border-info-200 dark:border-info-700 hover:shadow-lg transition-all">
+                    <div class="bg-white dark:bg-[#000] rounded-xl p-5 border border-info-200 dark:border-info-700 hover:shadow-lg transition-all">
                         <div class="flex items-start space-x-4">
                             <div class="flex-shrink-0 p-3 bg-info-100 dark:bg-info-900/30 rounded-lg">
                                 <x-filament::icon icon="heroicon-o-user-group" class="w-6 h-6 text-info-600 dark:text-info-400" />

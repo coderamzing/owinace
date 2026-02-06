@@ -92,7 +92,7 @@ class WorkspaceCreditsTable
                             : null;
                     }),
                 SelectFilter::make('transaction_type')
-                    ->label('')
+                    ->label('Select Type')
                     ->placeholder('Type')
                     ->options([
                         'credit' => 'Credit',

@@ -70,7 +70,7 @@ class ProposalsTable
                             : null;
                     }),
                 SelectFilter::make('user_id')
-                    ->label('')
+                    ->label('Select Member')
                     ->placeholder('Member')
                     ->options(function () {
                         $teamId = session('team_id');

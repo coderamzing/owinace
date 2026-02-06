@@ -40,9 +40,9 @@
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4 lg:w-[86%] w-[100%]">
                     <!-- Full Text Search -->
                     <div>
-                        <!-- <label for="search" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2 text-white">
+                        <label for="search" class="block text-sm font-semibold text-[#000] dark:text-gray-300 mb-2">
                             Search
-                        </label> -->
+                        </label>
                         <input
                             type="text"
                             id="search"
@@ -54,9 +54,9 @@
 
                     <!-- Member Filter -->
                     <div>
-                        <!-- <label for="memberFilter" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2 text-white">
+                        <label for="memberFilter" class="block text-sm font-semibold text-[#000] dark:text-gray-300 mb-2">
                             Assigned Member
-                        </label> -->
+                        </label>
                         <select
                             id="memberFilter"
                             wire:model.live="memberFilter"
@@ -71,9 +71,9 @@
 
                     <!-- Source Filter -->
                     <div>
-                        <!-- <label for="sourceFilter" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2 text-white">
+                        <label for="sourceFilter" class="block text-sm font-semibold text-[#000] dark:text-gray-300 mb-2">
                             Lead Source
-                        </label> -->
+                        </label>
                         <select
                             id="sourceFilter"
                             wire:model.live="sourceFilter"

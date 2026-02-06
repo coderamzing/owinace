@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\NoticeBoards\Tables;
 
+use App\Traits\HasPermission;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
@@ -10,11 +11,11 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\ViewColumn;
 use Filament\Tables\Table;
 use Illuminate\Support\HtmlString;
-use App\Traits\HasPermission;
 
 class NoticeBoardsTable
 {
     use HasPermission;
+
     public static function configure(Table $table): Table
     {
         return $table
@@ -23,29 +24,37 @@ class NoticeBoardsTable
                 ViewColumn::make('notice_card')
                     ->label('')
                     ->view('filament.resources.notice-boards.table.notice-card'),
+
                 // Hidden helper columns keep search/sort working
                 TextColumn::make('title')
                     ->searchable()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
+
                 TextColumn::make('description')
                     ->searchable()
                     ->toggleable(isToggledHiddenByDefault: true),
+
                 TextColumn::make('team.name')
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
+
                 TextColumn::make('status')
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
+
                 TextColumn::make('published_at')
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
+
                 TextColumn::make('expire_at')
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
+
                 IconColumn::make('notify')
                     ->boolean()
                     ->toggleable(isToggledHiddenByDefault: true),
+
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -58,12 +67,16 @@ class NoticeBoardsTable
                 ViewAction::make()
                     ->label('View')
                     ->modalHeading(fn ($record) => $record->title)
-                    ->modalContent(fn ($record) => view('filament.resources.notice-boards.table.view-notice', [
-                        'record' => $record,
-                    ]))
+                    ->modalContent(
+                        fn ($record) => view(
+                            'filament.resources.notice-boards.table.view-notice',
+                            ['record' => $record]
+                        )
+                    )
                     ->modalSubmitAction(false)
                     ->modalCancelActionLabel('Close')
                     ->visible(fn ($record) => self::hasPermissionTo('noticeboard.view')),
+
                 EditAction::make()
                     ->modalHeading('Edit Notice')
                     ->modalSubmitActionLabel('Save')
@@ -72,9 +85,10 @@ class NoticeBoardsTable
                     ->mutateFormDataUsing(function (array $data, $record): array {
                         // Preserve workspace_id - don't allow it to be changed
                         $data['workspace_id'] = $record->workspace_id;
-                        
+
                         return $data;
                     }),
+
                 DeleteAction::make()
                     ->requiresConfirmation()
                     ->modalHeading('Delete Notice')
@@ -86,4 +100,3 @@ class NoticeBoardsTable
             ->bulkActions([]);
     }
 }
-
