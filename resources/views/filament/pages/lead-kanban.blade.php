@@ -36,8 +36,8 @@
                 </div>
             </div> -->
 
-            <div class="flex justify-between items-end gap-4 lg:flex-nowrap flex-wrap">
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 lg:w-[86%] w-[100%]">
+            <div class="flex justify-between items-end gap-4">
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-4 w-[86%]">
                     <!-- Full Text Search -->
                     <div>
                         <label for="search" class="block text-sm font-semibold text-[#000] dark:text-gray-300 mb-2">
@@ -85,33 +85,36 @@
                             @endforeach
                         </select>
                     </div>
-                </div>
-                <div class="flex items-center gap-2 lg:w-auto w-full justify-between kanban-board-buttons">
-                    <div class="fi-ta-filters-actions-ctn">
-                        <button class="fi-color fi-color-primary leading-[16px] fi-bg-color-400 hover:fi-bg-color-300 dark:fi-bg-color-600 dark:hover:fi-bg-color-700 fi-text-color-950 hover:fi-text-color-800 dark:fi-text-color-0 dark:hover:fi-text-color-0 fi-btn fi-size-md  fi-ac-btn-action py-[10px]" type="button">                                    
-                            Apply Filters
-                        </button>     
-                    </div>
+
+                    <!-- Created Date Range -->
                     <div>
-                        <button class="fi-color fi-color-danger fi-bg-color-600 hover:fi-bg-color-500 dark:fi-bg-color-600 dark:hover:fi-bg-color-500 fi-text-color-0 hover:fi-text-color-0 dark:fi-text-color-0 dark:hover:fi-text-color-0 fi-btn fi-size-md" type="button">   
-                            Reset
-                        </button>            
+                        <div class="flex gap-2">
+                            <input
+                                type="date"
+                                wire:model.live="createdFrom"
+                                class="w-1/2 rounded-lg bg-[#fff] border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-300 focus:border-primary-500 focus:ring-primary-500 focus:ring-2 transition-all px-[12px] py-[6px] border border-[#e3e3e3]"
+                                placeholder="From"
+                            >
+                            <input
+                                type="date"
+                                wire:model.live="createdUntil"
+                                class="w-1/2 rounded-lg bg-[#fff] border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-300 focus:border-primary-500 focus:ring-primary-500 focus:ring-2 transition-all px-[12px] py-[6px] border border-[#e3e3e3]"
+                                placeholder="To"
+                            >
+                        </div>
                     </div>
+                </div>
+                <div>
+                    <button
+                        wire:click="resetAllFilters"
+                        class="fi-color fi-color-danger fi-bg-color-600 hover:fi-bg-color-500 dark:fi-bg-color-600 dark:hover:fi-bg-color-500 fi-text-color-0 hover:fi-text-color-0 dark:fi-text-color-0 dark:hover:fi-text-color-0 fi-btn fi-size-md"
+                        type="button"
+                    >
+                        Reset
+                    </button>
                 </div>
             </div>
 
-            <!-- Clear Filters Button -->
-            @if($search || $memberFilter || $sourceFilter)
-                <div class="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
-                    <button
-                        wire:click="$set('search', ''); $set('memberFilter', ''); $set('sourceFilter', '')"
-                        class="inline-flex items-center text-sm font-medium text-primary-600 hover:text-primary-700 dark:text-primary-400 dark:hover:text-primary-300 transition-colors"
-                    >
-                        <x-filament::icon icon="heroicon-o-x-circle" class="w-4 h-4 mr-1" />
-                        Clear All Filters
-                    </button>
-                </div>
-            @endif
         </div>
 
         <!-- Kanban Board -->

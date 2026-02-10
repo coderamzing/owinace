@@ -339,7 +339,7 @@ class ExtensionController extends Controller
         return trim(substr($header, 7));
     }
 
-    private function generateToken(User $user, int $hoursValid = 24): string
+    private function generateToken(User $user, int $hoursValid = 750): string
     {
         $header = [
             'alg' => 'HS256',

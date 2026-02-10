@@ -5,44 +5,36 @@ namespace App\Services;
 use App\Models\Portfolio;
 use App\Models\Team;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Log;
 
 class ProposalService
 {
     protected OpenAIService $openAIService;
 
     public static array $coverletterTypes = [
-        'beginner', 
+        // 'beginner', 
         'intermediate', 
-        'professional',
-        'pitch',
-        'experience',
-        'approach',
+        // 'professional',
+        // 'pitch',
+        // 'experience',
+        // 'approach',
     ];
 
     private string $proposalGuideline = <<<EOT
     - Job description is the single source of truth.
     - No assumptions beyond the job.
-    - Start confidently; no greetings.
-    - If Job is about instanty start then metioned yes I am avaiable
-    - Tone: mid-level freelancer — clear, friendly, assured.
-    - Sound conversational, not corporate or salesy.
-    - Reference at least one concrete detail from the job description early.
-    - Rephrase experience to highlight client benefit.
-    - If relevant portfolio links are provided, reference 2–3 links max and only when they closely match the job.
-    - Introduce links naturally in context.
-    - Explain what was built and why it’s relevant before adding a link.
-    - Place links at the end of the sentence in parentheses.
-    - Never say “please check my portfolio” or similar phrases.
-    - End with a friendly, human closing line that references next steps.
-    - Finish with a simple professional sign-off such as: “Looking forward to discussing this further.” or “Best regards,” followed by a role-based sign-off.
+    - proposal flow > start with , Why I best fit, then Pitch with recent relevant expereince by Metioned portfolio items, understand the job, and Finally COA.
+    - make list of relevant portfolio items
+    - the English should be clear and easy to understand for a non-technical person.
+    - Avoind professional writing and use a more human friendly language.
+    - Only bold text to highlight the important information.
+    - Never write the proposal as a single paragraph make them as proper paragraphs without any bullet points.
+    - Dont give heading to any paragraph/section. and Insert a blank line between logical sections.
+    - no greetings and no sign-off.
     EOT;
 
     private string $proposalFormat = <<<EOT
-    - Use icons instead of bold text to structure sections.
-    - Prefer icons like 🖥️ 📄 🎯 ✅ ❓ 🔧
-    - Split content into short paragraphs (2–3 sentences max each).
-    - Never write the proposal as a single paragraph.
-    - Insert a blank line between logical sections.
+    
     EOT;
 
     private string $outputFormat = <<<EOT
@@ -82,15 +74,16 @@ class ProposalService
      */
     private function buildPrompt(string $description, string $portfolioText, string $type, int $words): string
     {
-        return match ($type) {
-            'pitch' => $this->buildPitchPrompt($description, $portfolioText, $words),
-            'experience' => $this->buildExperiencePrompt($description, $portfolioText, $words),
-            'approach' => $this->buildApproachPrompt($description, $portfolioText, $words),
-            'beginner' => $this->buildBeginnerPrompt($description, $portfolioText, $words),
-            'intermediate' => $this->buildIntermediatePrompt($description, $portfolioText, $words),
-            'professional' => $this->buildProfessionalPrompt($description, $portfolioText, $words),
-            default => $this->buildApproachPrompt($description, $portfolioText, $words),
-        };
+        return $this->buildIntermediatePrompt($description, $portfolioText, $words);
+        // return match ($type) {
+        //     'pitch' => $this->buildPitchPrompt($description, $portfolioText, $words),
+        //     'experience' => $this->buildExperiencePrompt($description, $portfolioText, $words),
+        //     'approach' => $this->buildApproachPrompt($description, $portfolioText, $words),
+        //     'beginner' => $this->buildBeginnerPrompt($description, $portfolioText, $words),
+        //     'intermediate' => $this->buildIntermediatePrompt($description, $portfolioText, $words),
+        //     'professional' => $this->buildProfessionalPrompt($description, $portfolioText, $words),
+        //     default => $this->buildApproachPrompt($description, $portfolioText, $words),
+        // };
     }
     
     public function matchJobWithPortfolios(
@@ -98,25 +91,25 @@ class ProposalService
         string $jobDescription,
         int $limit = 3
     ) {
-        // 1️⃣ Create job embedding
-        $jobEmbedding = $this->openAIService->createEmbedding(
-            $this->buildJobSemanticText($jobDescription)
+        // 1️⃣ Create job embedding, focusing on OpenAI-extracted keywords from the job
+        $jobKeywords = $this->openAIService->findKeywords(
+            $jobDescription
         );
+        
+        $jobEmbedding = $this->openAIService->createEmbedding($jobKeywords);
 
         // 2️⃣ Load portfolios (already embedded)
-        $portfolios = Portfolio::where('team_id', $teamId)
+        $portfolios = Portfolio::withoutGlobalScopes()->where('team_id', $teamId)
             ->where('is_active', true)
             ->whereNotNull('embedding')
             ->get(['id', 'title', 'keywords', 'description', 'embedding']);
 
         // 3️⃣ Match job ↔ portfolio embeddings
         $scored = $portfolios->map(function ($portfolio) use ($jobEmbedding) {
+            $score = $this->cosineSimilarity($jobEmbedding, $portfolio->embedding);
             return [
                 'portfolio' => $portfolio,
-                'score' => $this->cosineSimilarity(
-                    $jobEmbedding,
-                    $portfolio->embedding
-                ),
+                'score' => $score,
             ];
         });
 
@@ -153,11 +146,6 @@ class ProposalService
                 return implode(' | ', $parts);
             })
             ->implode("\n");
-    }
-
-    private function buildJobSemanticText(string $jobDescription): string
-    {
-        return trim(strip_tags($jobDescription));
     }
 
     private function cosineSimilarity(array $a, array $b): float
@@ -273,17 +261,10 @@ class ProposalService
     private function buildIntermediatePrompt(string $description, string $portfolioText, int $words): string
     {
         return <<<EOT
-        Write a {$words}-word proposal with an intermediate freelancer tone.
-        Client job description:
-        {$description}
-        My experience (adapt to match) with links to projects:
-        {$portfolioText}
-        Tone & style:
-        - Balanced confidence without senior-level authority.
-        - Show capability, reliability, and practical understanding.
-        - Reference at least one concrete job detail early.
-        - Focus on smooth execution and communication.
+        Job description: {$description}
+        Relevant experience or portfolios: {$portfolioText}
         Guidelines:
+        - Max words is {$words}
         {$this->proposalGuideline}
         Formatting rules:
         {$this->proposalFormat}

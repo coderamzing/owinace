@@ -12,6 +12,7 @@
         "filament/spatie-laravel-media-library-plugin": "^4.4",
         "laravel/framework": "^12.0",
         "laravel/tinker": "^2.10.1",
+        "malzariey/filament-daterangepicker-filter": "^4.0",
         "openai-php/laravel": "^0.18.0",
         "pragmarx/google2fa-laravel": "^2.3",
         "razorpay/razorpay": "^2.9",

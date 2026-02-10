@@ -68,15 +68,17 @@ class Portfolio extends Model implements HasMedia
             : array_filter(array_map('trim', explode(',', (string) $keywordsValue)));
 
         $semanticText = implode(' | ', [
-            "Title: {$this->title}",
-            'Keywords: ' . implode(', ', $keywordsArray),
-            'Summary: ' . Str::limit(strip_tags((string) $this->description), 300),
+            "{$this->title}",
+            implode(', ', $keywordsArray),
+            Str::limit(strip_tags((string) $this->description), 300),
         ]);
 
         try {
             /** @var OpenAIService $openAI */
             $openAI = app(OpenAIService::class);
-            $this->embedding = $openAI->createEmbedding($semanticText);
+            $keywords = $openAI->findKeywords($semanticText);
+            Log::info('Portfolio keywords', ['keywords' => $keywords]);
+            $this->embedding = $openAI->createEmbedding($keywords);
         } catch (\Throwable $exception) {
             Log::warning('Failed to create portfolio embedding', [
                 'portfolio_id' => $this->id,
