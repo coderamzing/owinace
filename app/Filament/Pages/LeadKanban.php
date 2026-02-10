@@ -18,6 +18,8 @@ class LeadKanban extends Page
     public $search = '';
     public $memberFilter = '';
     public $sourceFilter = '';
+    public $createdFrom = null;
+    public $createdUntil = null;
     
     // Track pagination for each kanban column
     public $kanbanPages = [];
@@ -68,6 +70,27 @@ class LeadKanban extends Page
 
     public function updatedSourceFilter()
     {
+        $this->resetPagination();
+    }
+
+    public function updatedCreatedFrom()
+    {
+        $this->resetPagination();
+    }
+
+    public function updatedCreatedUntil()
+    {
+        $this->resetPagination();
+    }
+
+    public function resetAllFilters()
+    {
+        $this->search = '';
+        $this->memberFilter = '';
+        $this->sourceFilter = '';
+        $this->createdFrom = null;
+        $this->createdUntil = null;
+
         $this->resetPagination();
     }
 
@@ -193,6 +216,14 @@ class LeadKanban extends Page
 
         if ($this->sourceFilter) {
             $baseQuery->where('source_id', $this->sourceFilter);
+        }
+
+        if ($this->createdFrom) {
+            $baseQuery->whereDate('created_at', '>=', $this->createdFrom);
+        }
+
+        if ($this->createdUntil) {
+            $baseQuery->whereDate('created_at', '<=', $this->createdUntil);
         }
 
         // Get total count for this kanban

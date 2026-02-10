@@ -18,6 +18,7 @@ use Filament\Tables\Filters\Filter;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use App\Traits\HasPermission;
+use Malzariey\FilamentDaterangepickerFilter\Filters\DateRangeFilter;
 
 class LeadsTable
 {
@@ -161,6 +162,8 @@ class LeadsTable
                     })
                     ->searchable()
                     ->preload(),
+                DateRangeFilter::make('created_at')
+                    ->label('Created Between'),
                 SelectFilter::make('kanban_id')
                     ->label('')
                     ->placeholder('Kanban')

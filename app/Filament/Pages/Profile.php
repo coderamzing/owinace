@@ -164,6 +164,7 @@ class Profile extends Page implements HasForms
     public ?array $profileData = [];
     public ?array $passwordData = [];
     public ?array $mfaData = [];
+    public ?array $avatarData = [];
 
     /* -----------------------------------------------------------------
      | Mount
@@ -186,10 +187,36 @@ class Profile extends Page implements HasForms
 
         $this->profileForm->fill($this->profileData);
         $this->passwordForm->fill($this->passwordData);
+        $this->avatarForm->fill($this->avatarData);
 
         if (Filament::hasMultiFactorAuthentication()) {
             $this->mfaForm->fill($this->mfaData);
         }
+    }
+
+    /* -----------------------------------------------------------------
+     | Avatar Form
+     |-----------------------------------------------------------------*/
+    public function avatarForm(Schema $schema): Schema
+    {
+        return $schema
+            ->components([
+                SpatieMediaLibraryFileUpload::make('avatar')
+                    ->label('')
+                    ->collection('avatar')
+                    ->image()
+                    ->avatar()
+                    ->circleCropper()
+                    ->maxSize(2048)
+                    ->columnSpanFull()
+                    ->afterStateUpdated(function ($state) {
+                        if ($state) {
+                            $this->updateAvatar();
+                        }
+                    }),
+            ])
+            ->statePath('avatarData')
+            ->model(Auth::user());
     }
 
     /* -----------------------------------------------------------------
@@ -199,15 +226,6 @@ class Profile extends Page implements HasForms
     {
         return $schema
             ->components([
-                SpatieMediaLibraryFileUpload::make('avatar')
-                    ->label('Avatar')
-                    ->collection('avatar')
-                    ->image()
-                    ->avatar()
-                    ->circleCropper()
-                    ->maxSize(2048)
-                    ->columnSpanFull(),
-
                 TextInput::make('name')
                     ->required()
                     ->maxLength(255),
@@ -278,6 +296,22 @@ class Profile extends Page implements HasForms
     /* -----------------------------------------------------------------
      | Actions
      |-----------------------------------------------------------------*/
+    public function updateAvatar(): void
+    {
+        // Get the state and save the form to persist the media upload
+        $data = $this->avatarForm->getState();
+        
+        // The SpatieMediaLibraryFileUpload component handles the upload automatically
+        // when the form is saved. We need to save the form to persist it.
+        $this->avatarForm->model(Auth::user())->save();
+        
+        Notification::make()
+            ->success()
+            ->title('Avatar Updated')
+            ->body('Your profile picture has been updated successfully.')
+            ->send();
+    }
+
     public function updateProfile(): void
     {
         $data = $this->profileForm->getState();

@@ -18,6 +18,37 @@ class OpenAIService
         return $this->getEmbedding($text);
     }
 
+    /**
+     * Create an embedding for a job description, after first asking OpenAI
+     * to extract the most relevant skills / tech / domain keywords.
+     *
+     * This still uses two API calls under the hood (chat + embeddings),
+     * but is wrapped in a single helper so callers don't worry about it.
+     */
+    public function findKeywords(string $jobDescription): string
+    {
+        $response = OpenAI::chat()->create([
+            'model' => 'gpt-3.5-turbo',
+            'messages' => [
+                [
+                    'role' => 'system',
+                    'content' => 'You extract concise skills / technology / domain keywords from job descriptions.'
+                ],
+                [
+                    'role' => 'user',
+                    'content' => <<<EOT
+                    Extract up to 10 short keywords or very short phrases (skills, technologies, tools, domains, industries) from this job description. 
+                    Return ONLY a comma-separated list of keywords, no explanations, no extra text:
+                    {$jobDescription}
+                    EOT,
+                ],
+            ],
+            'temperature' => 0.0,
+        ]);
+
+        return trim($response['choices'][0]['message']['content'] ?? '');
+    }
+
     public function generateProposal(
         string $prompt
     ): array {
@@ -26,7 +57,7 @@ class OpenAIService
             'messages' => [
                 [
                     'role' => 'system',
-                    'content' => 'You are an expert Upwork proposal writer. Always follow instructions strictly.'
+                    'content' => 'You are an expert business development specialist who writes cover letters / proposals for job descriptions from clients.'
                 ],
                 [
                     'role' => 'user',

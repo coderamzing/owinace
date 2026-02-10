@@ -8,6 +8,7 @@ use Filament\Widgets\StatsOverviewWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
 use Illuminate\Support\Facades\Session;
 use Carbon\Carbon;
+use App\Models\AnalyticsCost;
 
 class LeadAnalyticWidget extends StatsOverviewWidget
 {
@@ -49,32 +50,42 @@ class LeadAnalyticWidget extends StatsOverviewWidget
         // Current month leads
         $currentLeads = Lead::where('team_id', $teamId)
             ->whereYear('created_at', $currentYear)
-            ->whereMonth('created_at', $currentMonth);
+            ->whereMonth('created_at', $currentMonth)
+            ->where('kanban_id', '!=', $openKanban->id);
 
         // Previous month leads
         $previousLeads = Lead::where('team_id', $teamId)
             ->whereYear('created_at', $prevYear)
-            ->whereMonth('created_at', $prevMonth);
+            ->whereMonth('created_at', $prevMonth)
+            ->where('kanban_id', '!=', $openKanban->id);
 
         // 1. Lead Cost Per Lead / Average Cost
+        $analyticsCost = AnalyticsCost::where('team_id', $teamId)
+            ->where('month', $currentMonth)
+            ->where('year', $currentYear);
+
+        $prevAnalyticsCost = AnalyticsCost::where('team_id', $teamId)
+            ->where('month', $prevMonth)
+            ->where('year', $prevYear);
+
         $totalCost = $currentLeads->clone()->sum('cost');
         $totalLeadsCount = $currentLeads->clone()->count();
-        $avgCostPerLead = $totalLeadsCount > 0 ? $totalCost / $totalLeadsCount : 0;
+        $avgCostPerLead = ($analyticsCost->clone()->sum('total_cost') + $totalCost) / max($totalLeadsCount, 1);
 
         $prevTotalCost = $previousLeads->clone()->sum('cost');
         $prevTotalLeadsCount = $previousLeads->clone()->count();
-        $prevAvgCostPerLead = $prevTotalLeadsCount > 0 ? $prevTotalCost / $prevTotalLeadsCount : 0;
+        $prevAvgCostPerLead = ($prevAnalyticsCost->clone()->sum('total_cost') + $prevTotalCost) / max($prevTotalLeadsCount, 1);
 
         $avgCostChange = $prevAvgCostPerLead > 0 
             ? (($avgCostPerLead - $prevAvgCostPerLead) / $prevAvgCostPerLead) * 100 
             : 0;
 
         // 2. Conversion Rate (Open Leads / Won Leads)
-        $openLeadsCount = $openKanban ? $currentLeads->clone()->where('kanban_id', $openKanban->id)->count() : 0;
+        $openLeadsCount = $openKanban ? $currentLeads->count() : 0;
         $wonLeadsCount = $wonKanban ? $currentLeads->clone()->where('kanban_id', $wonKanban->id)->count() : 0;
         $conversionRate = $openLeadsCount > 0 ? ($wonLeadsCount / $openLeadsCount) * 100 : 0;
 
-        $prevOpenLeadsCount = $openKanban ? $previousLeads->clone()->where('kanban_id', $openKanban->id)->count() : 0;
+        $prevOpenLeadsCount = $openKanban ? $previousLeads->count() : 0;
         $prevWonLeadsCount = $wonKanban ? $previousLeads->clone()->where('kanban_id', $wonKanban->id)->count() : 0;
         $prevConversionRate = $prevOpenLeadsCount > 0 ? ($prevWonLeadsCount / $prevOpenLeadsCount) * 100 : 0;
 

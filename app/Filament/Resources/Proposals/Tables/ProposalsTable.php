@@ -15,6 +15,7 @@ use Filament\Tables\Filters\Filter;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use App\Traits\HasPermission;
+use Malzariey\FilamentDaterangepickerFilter\Filters\DateRangeFilter;
 
 class ProposalsTable
 {
@@ -94,6 +95,8 @@ class ProposalsTable
                     })
                     ->searchable()
                     ->preload(),
+                DateRangeFilter::make('created_at')
+                    ->label('Created Between'),
             ])
             ->filtersLayout(FiltersLayout::AboveContent)
             ->persistFiltersInSession()

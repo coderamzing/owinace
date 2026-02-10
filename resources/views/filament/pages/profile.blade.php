@@ -2,18 +2,15 @@
     <div class="w-full max-w-3xl mx-auto">
         <div class="bg-white dark:bg-gray-800 shadow-sm border border-gray-200 dark:border-gray-700 rounded-lg my-profile-tabs">
             <div class="flex flex-col items-center py-8">
-                <div class="relative">
-                    @if (auth()->user()->getFirstMediaUrl('avatar'))
-                        <img src="{{ auth()->user()->getFirstMediaUrl('avatar') }}"
-                            alt="User Avatar"
-                            class="w-24 h-24 rounded-full object-cover border-4 border-primary-500 shadow-lg">
-                    @else
-                        <div class="w-24 h-24 rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center text-3xl font-bold text-gray-400">
-                            {{ strtoupper(substr(auth()->user()->name ?? 'U', 0, 1)) }}
-                        </div>
-                    @endif
+                <div class="w-56 mb-4">
+                    {{ $this->avatarForm }}
                 </div>
-                <h2 class="mt-4 text-2xl font-bold text-gray-900 dark:text-white">
+                <style>
+                    div[id*="avatar-label"]{
+                        display: none !important;
+                    }
+                </style>
+                <h2 class="text-2xl font-bold text-gray-900 dark:text-white">
                     {{ auth()->user()->name }}
                 </h2>
                 <div class="text-md text-gray-500 dark:text-gray-400">
