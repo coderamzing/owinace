@@ -4,7 +4,7 @@
     $teams = $workspaceId ? \App\Models\Team::where('workspace_id', $workspaceId)->get() : collect([]);
 @endphp
 
-<a href="http://127.0.0.1:8000/admin" class="absolute left-0 block lg:hidden">
+<a href="/admin" class="absolute left-0 block lg:hidden">
     <img alt="Laravel logo" src="http://127.0.0.1:8000/images/leadcliq.svg" class="fi-logo sm:min-w-[150px] sm:h-[2rem] min-w-[100px] h-[1.5rem]">
 </a>
 
