@@ -36,7 +36,7 @@
     <form
         action="#"
         method="GET"
-        class="hidden md:flex flex-1 justify-center"
+        class="hidden"
         role="search">
         <div class="relative w-full max-w-xl">
             <span class="pointer-events-none absolute inset-y-0 left-3 flex items-center text-gray-400">

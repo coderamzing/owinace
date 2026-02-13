@@ -78,7 +78,37 @@ class TeamsTable
                         $data['workspace_id'] = $record->workspace_id;
                         
                         return $data;
-                    }),
+                    })
+                    ->extraModalActions([
+                        Action::make('deleteTeam')
+                            ->label('Delete Team')
+                            ->icon('heroicon-o-trash')
+                            ->color('danger')
+                            ->requiresConfirmation()
+                            ->visible(fn ($record) => ! $record->allMembers()->exists())
+                            ->action(function ($record) {
+                                // Double-check there are no members assigned before deleting
+                                if ($record->allMembers()->exists()) {
+                                    Notification::make()
+                                        ->title('Cannot delete team')
+                                        ->body('This team has members assigned. Remove all members before deleting the team.')
+                                        ->danger()
+                                        ->send();
+                                    
+                                    return;
+                                }
+
+                                $teamName = $record->name;
+
+                                $record->delete();
+
+                                Notification::make()
+                                    ->title('Team deleted')
+                                    ->body("Team \"{$teamName}\" has been deleted.")
+                                    ->success()
+                                    ->send();
+                            }),
+                    ]),
             ])
             ->bulkActions([]);
     }

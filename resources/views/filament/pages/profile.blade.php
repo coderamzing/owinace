@@ -18,9 +18,9 @@
                 </div>
             </div>
 
-            <div class="px-4">
+            <div class="px-4 profile-tabs">
                 {{-- Tabs Header --}}
-                <x-filament::tabs>
+                <x-filament::tabs contained="true">
                     <x-filament::tabs.item
                         wire:click="$set('activeTab', 'profile')"
                         :active="$activeTab === 'profile'"

@@ -555,3 +555,7 @@ Topbar
     }
   }
 }
+
+.create-proposal-form .fi-fo-field-label{
+    display: none !important;
+}

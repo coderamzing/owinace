@@ -52,20 +52,11 @@
         </div>
 
         <!-- Main Form -->
-        <form wire:submit="generate" class="space-y-6">
+        <form wire:submit="generate" class="create-proposal-form space-y-6">
             <div class="flex flex-col lg:flex-row gap-6">
                 <!-- Left Panel: 80% - Job Description -->
-                <div class="w-full lg:w-4/5 space-y-6 flex flex-col justify-between items-stretch">
-                    <div class="min-h-[80%]">
-                        <label class="block mb-3">
-                            <span class="text-lg font-bold text-gray-900 dark:text-white flex items-center gap-2">
-                                <x-filament::icon icon="heroicon-o-document-text" class="w-5 h-5 text-primary-600" />
-                                Job Description
-                            </span>
-                            <span class="text-sm text-gray-500 dark:text-gray-400 mt-1 block">
-                                Paste the complete job description for best results
-                            </span>
-                        </label>
+                <div class="w-full lg:w-5/7 space-y-6 flex flex-col justify-between items-stretch">
+                    <div class="min-h-[50%]">
                         <div class="lead-generation-form min-h-[90%]">
                             {{ $this->descriptionField }}
                         </div>
@@ -99,40 +90,16 @@
                                     <span wire:loading wire:target="generate" class="text-lg font-bold">Generating...</span>
                                 </span>
                             </x-filament::button>
-                            
-                            <p class="text-sm text-gray-500 dark:text-gray-400">
-                                <x-filament::icon icon="heroicon-o-clock" class="w-4 h-4 inline" />
-                                Takes 5-15 seconds
-                            </p>
                         </div>
                     </div>
                 </div>
 
                 <!-- Right Panel: 20% - Word Count & Proposal Type -->
-                <div class="w-full lg:w-1/5 space-y-6 min-w-[300px]">
+                <div class="w-full flex flex-col justify-between lg:w-2/7 space-y-6 min-w-[300px]">
                     <!-- Word Count -->
-                    <div class="bg-white dark:bg-gray-800 rounded-lg p-4 shadow-sm border border-gray-200 dark:border-gray-700">
-                        <label class="block mb-3">
-                            <span class="text-base font-bold text-gray-900 dark:text-white">
-                                Words
-                            </span>
-                        </label>
-                        <div class="space-y-2">
-                            {{ $this->wordsField }}
-                        </div>
-                    </div>
+                    {{ $this->wordsField }}
 
-                    <!-- Proposal Type -->
-                    <div class="bg-white dark:bg-gray-800 rounded-lg p-4 shadow-sm border border-gray-200 dark:border-gray-700">
-                        <label class="block mb-3">
-                            <span class="text-base font-bold text-gray-900 dark:text-white">
-                                Proposal Type*
-                            </span>
-                        </label>
-                        <div class="space-y-2">
-                            {{ $this->typeField }}
-                        </div>
-                    </div>
+                    {{ $this->typeField }}
                 </div>
             </div>
         </form>

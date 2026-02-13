@@ -14,6 +14,7 @@ use Filament\Notifications\Notification;
 use Filament\Schemas\Schema;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
+use Illuminate\Database\UniqueConstraintViolationException;
 
 class ListTeamMembers extends BaseListRecords
 {
@@ -175,15 +176,19 @@ class ListTeamMembers extends BaseListRecords
                     $skippedCount = count($existingMemberIds);
 
                     foreach ($usersToAdd as $user) {
-                        TeamMember::create([
-                            'team_id' => $teamId,
-                            'user_id' => $user->id,
-                            'email' => $user->email,
-                            'role' => $role,
-                            'status' => 'active',
-                            'joined_at' => now(),
-                        ]);
-                        $createdCount++;
+                        try {
+                            TeamMember::create([
+                                'team_id' => $teamId,
+                                'user_id' => $user->id,
+                                'email' => $user->email,
+                                'role' => $role,
+                                'status' => 'active',
+                                'joined_at' => now(),
+                            ]);
+                            $createdCount++;
+                        } catch (UniqueConstraintViolationException $e) {
+                            // If it's a duplicate key error, ignore it - member already exists
+                        }
                     }
 
                     // Show success notification
