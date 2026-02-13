@@ -57,5 +57,16 @@
         <x-frontend-footer />
 
         @stack('scripts')
+        <script>
+            if ("serviceWorker" in navigator) {
+            window.addEventListener("load", () => {
+                navigator.serviceWorker
+                .register("/service-worker.js")
+                .then(() => console.log("PWA service worker registered"))
+                .catch(err => console.error("PWA SW error", err));
+            });
+            }
+        </script>
+    </body>
     </body>
 </html>
