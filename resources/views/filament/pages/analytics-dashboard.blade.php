@@ -11,12 +11,12 @@
         <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 mb-2">
             <!-- Title Area -->
             <div>
-                <div class="flex items-center gap-3">
+                <div class="flex items-center gap-3 mb-4">
                     <div class="w-12 h-12 bg-gradient-to-br from-primary-600 to-indigo-600 rounded-xl flex items-center justify-center">
                         <x-filament::icon icon="heroicon-o-chart-bar-square" class="w-7 h-7 text-white" />
                     </div>
                     <div>
-                        <h1 class="text-3xl font-extrabold text-gray-900 dark:text-white">Analytics Dashboard</h1>
+                        <h1 class="text-[24px] font-extrabold text-gray-900 dark:text-white">Analytics Dashboard</h1>
                         <p class="text-sm text-gray-600 dark:text-gray-400 mt-0.5">
                             <span class="font-semibold text-primary-600 dark:text-primary-400">{{ $teamName }}</span>
                             <span class="mx-2">·</span>

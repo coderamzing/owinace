@@ -8,7 +8,7 @@
 
     <div class="space-y-2">
         @forelse($members as $member)
-            <div class="flex items-center justify-between p-4 border border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+            <div class="flex items-center justify-between flex-wrap gap-2 p-4 border border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
                 <div class="flex items-center space-x-3 flex-1">
                     <div class="flex-shrink-0">
                         <div class="w-10 h-10 rounded-full bg-primary-100 dark:bg-primary-900 flex items-center justify-center">
@@ -26,7 +26,7 @@
                         </p>
                     </div>
                 </div>
-                <div class="flex items-center space-x-3">
+                <div class="flex items-center space-x-3 flex-wrap gap-2">
                     <span class="px-2 py-1 text-xs font-medium rounded {{ $member->role === 'admin' ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300' : 'bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-300' }}">
                         {{ ucfirst($member->role ?? 'member') }}
                     </span>

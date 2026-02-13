@@ -36,8 +36,8 @@
                 </div>
             </div> -->
 
-            <div class="flex justify-between items-end gap-4">
-                <div class="grid grid-cols-1 md:grid-cols-4 gap-4 w-[86%]">
+            <div class="flex justify-between items-end gap-4 flex-wrap md:flex-nowrap">
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-4 w-full md:w-[86%]">
                     <!-- Full Text Search -->
                     <div>
                         <label for="search" class="block text-sm font-semibold text-[#000] dark:text-gray-300 mb-2">
@@ -88,7 +88,11 @@
 
                     <!-- Created Date Range -->
                     <div>
+                        <label for="dateRange" class="block text-sm font-semibold text-[#000] dark:text-gray-300 mb-2">
+                            Select Date Range
+                        </label>
                         <div class="flex gap-2">
+                            
                             <input
                                 type="date"
                                 wire:model.live="createdFrom"

@@ -574,7 +574,7 @@ echo json_encode([
 
             <div class="flex lg:mt-22.5 mt-15 text-center gap-1.25 flex-col" data-aos="fade-up" data-aos-duration="600" data-aos-easing="ease-in-out">
                 <div>
-                    <a href="{{ route('home') }}#why-choose" class="py-3.5 lg:px-7.5 px-6.5 inline-flex items-center text-center bg-dark font-medium rounded-2xl text-white transition-all duration-300 hover:text-primary">
+                    <a href="{{ route('home') }}/how-it-works" class="py-3.5 lg:px-7.5 px-6.5 inline-flex items-center text-center bg-dark font-medium rounded-2xl text-white transition-all duration-300 hover:text-primary">
                         See how
                     </a>
                 </div>

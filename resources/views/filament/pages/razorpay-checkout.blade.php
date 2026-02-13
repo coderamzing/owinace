@@ -23,7 +23,7 @@
 
                         <!-- Heading -->
                         <div>
-                            <h2 class="text-3xl font-extrabold text-gray-900 dark:text-white">
+                            <h2 class="text-[24px] font-extrabold text-gray-900 dark:text-white">
                                 Processing Payment...
                             </h2>
                             <p class="mt-3 text-base text-gray-600 dark:text-gray-400">
