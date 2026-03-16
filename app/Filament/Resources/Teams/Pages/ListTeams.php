@@ -52,7 +52,7 @@ class ListTeams extends BaseListRecords
                 }),
             
             // Action for creating a new member (creates new user)
-            CreateAction::make('createNewMember')
+            Action::make('createNewMember')
                 ->label('Create New Member')
                 ->modalHeading('Create New Team Member')
                 ->modalSubmitActionLabel('Create')
@@ -63,7 +63,7 @@ class ListTeams extends BaseListRecords
                 ->form(function (Schema $schema) {
                     return TeamMemberForm::createNewMemberForm($schema);
                 })
-                ->mutateFormDataUsing(function (array $data): array {
+                ->action(function (array $data) {
                     $this->sendWelcomeEmail = (bool) ($data['send_welcome_email'] ?? false);
                     $this->welcomeEmail = $data['email'] ?? null;
 
@@ -78,62 +78,67 @@ class ListTeams extends BaseListRecords
                                 ->body('A user with this email address already exists. Please use "Link Existing Member" instead.')
                                 ->danger()
                                 ->send();
-                        return [];
+                        return;
                     }
 
                     // Create new user
                     $userEmail = $data['email'];
-                    $user = User::create(
-                        [
-                            'email' => $userEmail,
-                            'name' => $data['name'],
-                            'password' => Hash::make($this->generatedPassword),
-                            'workspace_id' => session('workspace_id'),
-                            'email_verified_at' => now(),
-                        ]
-                    );
-
-                    $user->assignRole($data['role']);
-
-                    // Set user_id and email for team member
-                    $data['user_id'] = $user->id;
-                    $data['email'] = $userEmail; // Keep email for TeamMember record
-                    unset($data['name']);
-                    unset($data['send_welcome_email']);
-
-                    // Set defaults
-                    if (!isset($data['status'])) {
-                        $data['status'] = 'active';
-                    }
-
-                    if ($data['status'] === 'active') {
-                        $data['joined_at'] = now();
-                    }
-
-                    return $data;
-                })
-                ->after(function ($record) {
-                    // Send welcome email for new users
-                    if (!$this->sendWelcomeEmail || !$this->generatedPassword || !$this->welcomeEmail) {
+                    $workspaceId = session('workspace_id') ?? auth()->user()?->workspace_id;
+                    
+                    if (!$workspaceId) {
+                        Notification::make()
+                                ->title('Workspace not found')
+                                ->body('Unable to determine workspace. Please try again.')
+                                ->danger()
+                                ->send();
                         return;
                     }
 
-                    $teamName = $record->team->name ?? 'your team';
-                    $loginUrl = route('login');
+                    $user = User::create([
+                        'email' => $userEmail,
+                        'name' => $data['name'],
+                        'password' => Hash::make($this->generatedPassword),
+                        'workspace_id' => $workspaceId,
+                        'email_verified_at' => now(),
+                    ]);
 
-                    NotificationQueue::dispatch(
-                        type: 'member',
-                        identifier: $record->user_id,
-                        notificationType: 'team.welcome',
-                        data: [
-                            'subject' => 'Welcome to ' . $teamName,
-                            'content' => 'You have been added to ' . $teamName . '.',
-                            'url' => $loginUrl,
-                            'team_id' => $record->team_id,
-                            'user_id' => $record->user_id,
-                            'password' => $this->generatedPassword,
-                        ]
-                    );
+                    $user->assignRole($data['role']);
+
+                    // Create TeamMember record
+                    $teamMember = TeamMember::create([
+                        'team_id' => $data['team_id'],
+                        'user_id' => $user->id,
+                        'email' => $userEmail,
+                        'role' => $data['role'] ?? 'member',
+                        'status' => 'active',
+                        'joined_at' => now(),
+                    ]);
+
+                    // Send welcome email for new users
+                    if ($this->sendWelcomeEmail && $this->generatedPassword && $this->welcomeEmail) {
+                        $teamName = $teamMember->team->name ?? 'your team';
+                        $loginUrl = route('login');
+
+                        NotificationQueue::dispatch(
+                            type: 'member',
+                            identifier: $teamMember->user_id,
+                            notificationType: 'team.welcome',
+                            data: [
+                                'subject' => 'Welcome to ' . $teamName,
+                                'content' => 'You have been added to ' . $teamName . '.',
+                                'url' => $loginUrl,
+                                'team_id' => $teamMember->team_id,
+                                'user_id' => $teamMember->user_id,
+                                'password' => $this->generatedPassword,
+                            ]
+                        );
+                    }
+
+                    Notification::make()
+                        ->title('Member created successfully')
+                        ->body("{$user->name} has been added to the team.")
+                        ->success()
+                        ->send();
                 }),
             
             // Action for linking existing member (no user creation) - supports multiple users
