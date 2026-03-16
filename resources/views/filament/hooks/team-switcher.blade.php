@@ -4,8 +4,8 @@
     $teams = $workspaceId ? \App\Models\Team::where('workspace_id', $workspaceId)->get() : collect([]);
 @endphp
 
-<a href="http://127.0.0.1:8000/admin" class="absolute left-0 block lg:hidden">
-    <img alt="Laravel logo" src="http://127.0.0.1:8000/images/leadcliq.svg" class="fi-logo sm:min-w-[150px] sm:h-[2rem] min-w-[100px] h-[1.5rem]">
+<a href="/admin" class="absolute left-0 block lg:hidden">
+    <img alt="Laravel logo" src="/images/leadcliq.svg" class="fi-logo sm:min-w-[150px] sm:h-[2rem] min-w-[100px] h-[1.5rem]">
 </a>
 
 <div class="fi-topbar-items flex items-center gap-4 w-full">
@@ -19,7 +19,7 @@
             xmlns="http://www.w3.org/2000/svg"
             class="h-5 w-5"
             viewBox="0 0 24 24"
-            fill="none"
+            fill="none"   
             stroke="currentColor"
             stroke-width="1.5"
             stroke-linecap="round"
