@@ -5,8 +5,8 @@ namespace App\Filament\Resources\LeadKanbans\Schemas;
 use Filament\Forms\Components\ColorPicker;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
-use Filament\Forms\Get;
 use Filament\Schemas\Schema;
+use Illuminate\Validation\Rules\Unique;
 
 class LeadKanbanForm
 {
@@ -24,7 +24,16 @@ class LeadKanbanForm
                     ->label('Code')
                     ->maxLength(100)
                     ->disabled(fn ($record) => $record?->is_system ?? false)
-                    ->dehydrated(fn ($record) => !($record?->is_system ?? false)),
+                    ->dehydrated(fn ($record) => !($record?->is_system ?? false))
+                    ->unique(
+                        modifyRuleUsing: fn (Unique $rule): Unique => $rule->where(
+                            'team_id',
+                            session('team_id')
+                        ),
+                    )
+                    ->validationMessages([
+                        'unique' => 'A kanban stage with this code already exists for this team. Choose a different code.',
+                    ]),
                 ColorPicker::make('color')
                     ->label('Color')
                     ->required(),
@@ -38,14 +47,6 @@ class LeadKanbanForm
                     ->label('Active')
                     ->required()
                     ->default(true)
-                    ->columnSpanFull(),
-                Toggle::make('is_system')
-                    ->label('System')
-                    ->required()
-                    ->default(false)
-                    ->disabled(fn ($record) => $record?->is_system ?? false)
-                    ->dehydrated(fn ($record) => !($record?->is_system ?? false))
-                    ->helperText('System kanban stages cannot be deleted or have their name/code changed.')
                     ->columnSpanFull(),
             ]);
     }

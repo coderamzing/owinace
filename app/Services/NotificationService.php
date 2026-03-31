@@ -284,7 +284,5 @@ class NotificationService
             }
         }
     }
-    
-   
 }
 

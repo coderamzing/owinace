@@ -28,6 +28,12 @@ class AnalyticsCostService
             ->where('is_active', true)
             ->sum('monthly_cost');
 
+        //if current month year than we have to get the cost of day passed till now
+        $currentDate = Carbon::now();
+        if ($month == $currentDate->month && $year == $currentDate->year) {
+            $totalCost = $totalCost / $currentDate->endOfMonth()->day * $currentDate->day;
+        }
+
         // Calculate total leads for the month
         $totalLeads = Lead::withoutTeam()->where('team_id', $teamId)
             ->whereYear('created_at', $year)
@@ -74,6 +80,12 @@ class AnalyticsCostService
             ->where('is_active', true)
             ->sum('monthly_cost');
 
+        //if current month year than we have to get the cost of day passed till now
+        $currentDate = Carbon::now();
+        if ($month == $currentDate->month && $year == $currentDate->year) {
+            $totalCost = $totalCost / $currentDate->endOfMonth()->day * $currentDate->day;
+        }
+
         // Calculate total leads for the source in the month
         $totalLeads = Lead::withoutTeam()->where('team_id', $teamId)
             ->where('source_id', $sourceId)
@@ -115,6 +127,12 @@ class AnalyticsCostService
             ->where('member_id', $memberId)
             ->where('is_active', true)
             ->sum('monthly_cost');
+
+        //if current month year than we have to get the cost of day passed till now
+        $currentDate = Carbon::now();
+        if ($month == $currentDate->month && $year == $currentDate->year) {
+            $totalCost = $totalCost / $currentDate->endOfMonth()->day * $currentDate->day;
+        }
 
         // Calculate total leads assigned to the member in the month
         $totalLeads = Lead::withoutTeam()->where('team_id', $teamId)

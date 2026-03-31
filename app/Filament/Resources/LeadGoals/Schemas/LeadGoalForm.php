@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\LeadGoals\Schemas;
 
 use App\Models\User;
+use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
@@ -50,21 +51,13 @@ class LeadGoalForm
                 TextInput::make('target_value')
                     ->label('Target Value')
                     ->numeric()
-                    ->prefix('$')
                     ->step(0.01)
                     ->minValue(0)
                     ->maxValue(999999.99)
                     ->required(),
                 
-                TextInput::make('current_value')
-                    ->label('Current Value')
-                    ->numeric()
-                    ->prefix('$')
-                    ->step(0.01)
-                    ->minValue(0)
-                    ->maxValue(999999.99)
-                    ->default(0)
-                    ->required(),
+                Hidden::make('current_value')
+                    ->default(0),
                 
                 
                 

@@ -2,6 +2,8 @@
 
 namespace App\Filament\Resources\Leads\Tables;
 
+use App\Models\Contact;
+use App\Models\Lead;
 use App\Models\LeadKanban;
 use App\Models\LeadSource;
 use App\Models\TeamMember;
@@ -18,6 +20,7 @@ use Filament\Tables\Filters\Filter;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use App\Traits\HasPermission;
+use Illuminate\Database\Eloquent\Model;
 use Malzariey\FilamentDaterangepickerFilter\Filters\DateRangeFilter;
 
 class LeadsTable
@@ -196,14 +199,83 @@ class LeadsTable
                         ->modalSubmitActionLabel('Save')
                         ->slideOver()
                         ->visible(fn ($record) => self::hasPermissionTo('leads.edit'))
+                        ->fillForm(function (Lead $record): array {
+                            $record->loadMissing(['tags', 'contacts']);
+
+                            $formData = $record->toArray();
+                            $formData['tags'] = $record->tags->pluck('id')->toArray();
+                            $formData['existing_contact_ids'] = $record->contacts->pluck('id')->toArray();
+
+                            return $formData;
+                        })
                         ->mutateFormDataUsing(function (array $data): array {
-                            // Auto-set team_id from session
                             $teamId = session('team_id');
                             if ($teamId) {
                                 $data['team_id'] = $teamId;
                             }
-                            
+
+                            $data['_contact_data'] = [
+                                'existing_contact_ids' => $data['existing_contact_ids'] ?? [],
+                                'first_name' => $data['contact_first_name'] ?? null,
+                                'last_name' => $data['contact_last_name'] ?? null,
+                                'email' => $data['contact_email'] ?? null,
+                                'phone_number' => $data['contact_phone_number'] ?? null,
+                                'company' => $data['contact_company'] ?? null,
+                                'job_title' => $data['contact_job_title'] ?? null,
+                                'website' => $data['contact_website'] ?? null,
+                            ];
+
+                            unset(
+                                $data['existing_contact_ids'],
+                                $data['contact_first_name'],
+                                $data['contact_last_name'],
+                                $data['contact_email'],
+                                $data['contact_phone_number'],
+                                $data['contact_company'],
+                                $data['contact_job_title'],
+                                $data['contact_website']
+                            );
+
                             return $data;
+                        })
+                        ->after(function (Model $record, array $data) {
+                            $contactData = $data['_contact_data'] ?? null;
+
+                            if (! $contactData) {
+                                return;
+                            }
+
+                            $contactIdsToSync = [];
+
+                            if (! empty($contactData['existing_contact_ids']) && is_array($contactData['existing_contact_ids'])) {
+                                $contactIdsToSync = $contactData['existing_contact_ids'];
+                            }
+
+                            if (
+                                ! empty($contactData['first_name']) ||
+                                ! empty($contactData['last_name']) ||
+                                ! empty($contactData['email']) ||
+                                ! empty($contactData['phone_number']) ||
+                                ! empty($contactData['company'])
+                            ) {
+                                $contact = Contact::create([
+                                    // @phpstan-ignore argument.type
+                                    'first_name' => $contactData['first_name'],
+                                    'last_name' => $contactData['last_name'],
+                                    'email' => $contactData['email'],
+                                    'phone_number' => $contactData['phone_number'],
+                                    'company' => $contactData['company'],
+                                    'job_title' => $contactData['job_title'],
+                                    'website' => $contactData['website'],
+                                    'team_id' => session('team_id'),
+                                ]);
+
+                                $contactIdsToSync[] = $contact->id;
+                            }
+
+                            if (! empty($contactIdsToSync)) {
+                                $record->contacts()->sync($contactIdsToSync);
+                            }
                         }),
                     DeleteAction::make()
                         ->requiresConfirmation()

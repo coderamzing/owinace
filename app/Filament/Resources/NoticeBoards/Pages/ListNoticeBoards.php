@@ -4,12 +4,15 @@ namespace App\Filament\Resources\NoticeBoards\Pages;
 
 use App\Filament\Resources\NoticeBoards\NoticeBoardResource;
 use App\Filament\Resources\BaseListRecords;
+use App\Traits\HasPermission;
 use Filament\Actions;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\Builder;
 
 class ListNoticeBoards extends BaseListRecords
 {
+    use HasPermission;
+
     protected static string $resource = NoticeBoardResource::class;
 
     // Custom search placeholder for notice boards
@@ -24,6 +27,9 @@ class ListNoticeBoards extends BaseListRecords
                 ->color('primary')
                 ->size('lg')
                 ->slideOver()
+                ->visible(fn (): bool => self::hasPermissionTo('noticeboard.create'))
+                ->authorize(fn (): bool => self::hasPermissionTo('noticeboard.create'))
+                ->authorizationMessage(__('You do not have permission to create notices.'))
                 ->mutateFormDataUsing(function (array $data): array {
                     $data['workspace_id'] = session('workspace_id');
                     

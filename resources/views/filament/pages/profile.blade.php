@@ -37,16 +37,6 @@
                         Password
                     </x-filament::tabs.item>
 
-                    @if(Filament\Facades\Filament::hasMultiFactorAuthentication())
-                        <x-filament::tabs.item
-                            wire:click="$set('activeTab', 'mfa')"
-                            :active="$activeTab === 'mfa'"
-                            icon="heroicon-o-shield-check"
-                        >
-                            MFA
-                        </x-filament::tabs.item>
-                    @endif
-
                     <x-filament::tabs.item
                         wire:click="$set('activeTab', 'sessions')"
                         :active="$activeTab === 'sessions'"
@@ -109,20 +99,6 @@
                                 </x-filament::button>
                             </div>
                         </form>
-                    </div>
-                @endif
-
-                {{-- MFA Tab --}}
-                @if($activeTab === 'mfa' && Filament\Facades\Filament::hasMultiFactorAuthentication())
-                    <div class="space-y-4">
-                        <h2 class="text-xl font-semibold text-gray-900 dark:text-white">
-                            Multi-Factor Authentication
-                        </h2>
-                        <p class="text-sm text-gray-500 dark:text-gray-400">
-                            Add an extra layer of security to your account.
-                        </p>
-
-                        {{ $this->mfaForm }}
                     </div>
                 @endif
 

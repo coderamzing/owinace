@@ -9,7 +9,7 @@ use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Schema;
-use Illuminate\Support\Facades\Session;
+use Illuminate\Validation\Rule;
 
 class TeamMemberForm
 {
@@ -38,7 +38,13 @@ class TeamMemberForm
                     ->label('Email')
                     ->email()
                     ->required()
-                    ->maxLength(254),
+                    ->maxLength(254)
+                    ->rules([
+                        Rule::unique('users', 'email'),
+                    ])
+                    ->validationMessages([
+                        'unique' => 'A user with this email already exists. Use "Link Existing Member" to add them to this team.',
+                    ]),
                 Select::make('role')
                     ->label('Role')
                     ->options([

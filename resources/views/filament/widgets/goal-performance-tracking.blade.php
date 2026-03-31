@@ -13,10 +13,10 @@
 
 <x-filament-widgets::widget>
     <x-filament::section>
-        <div class="flex gap-4 overflow-x-auto px-4 sm:px-5 pb-2">
+        <div class="grid grid-cols-1 gap-4 px-4 pb-2 sm:px-5 lg:grid-cols-2">
             @forelse ($members as $member)
                 <div
-                    class="relative break-words card rounded-lg bg-white shadow-soft dark:bg-dark-700 dark:shadow-none w-72 shrink-0 space-y-6 p-4 sm:p-5">
+                    class="relative break-words card rounded-lg bg-white shadow-soft dark:bg-dark-700 dark:shadow-none space-y-6 p-4 sm:p-5">
                     <div class="flex justify-between gap-2">
                         <div class="flex items-center gap-3">
                             <div class="avatar relative inline-flex shrink-0"
@@ -76,7 +76,7 @@
                     @endif
                 </div>
             @empty
-                <div class="text-sm text-gray-500 dark:text-dark-300 px-4">
+                <div class="text-sm text-gray-500 dark:text-dark-300 lg:col-span-2">
                     No member goals available for this period.
                 </div>
             @endforelse

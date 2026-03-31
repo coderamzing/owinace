@@ -1,33 +1,34 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Welcome to {{ $team['name'] }}</title>
-</head>
-<body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;">
-    <div style="background: linear-gradient(135deg, #3b82f6 0%, #1e3a8a 100%); padding: 24px; text-align: center; border-radius: 10px 10px 0 0;">
-        <h1 style="color: white; margin: 0;">Welcome to {{ $team['name'] }}</h1>
+@extends('emails.layout')
+
+@section('title')
+    Welcome to {{ $team['name'] }}
+@endsection
+
+@section('preheader')
+    Sign-in details for {{ $team['name'] }} on {{ config('app.name') }}.
+@endsection
+
+@section('heading')
+    Welcome to {{ $team['name'] }}
+@endsection
+
+@section('content')
+    <p style="margin:0 0 16px;">Hi {{ $user['name'] ?? 'there' }},</p>
+
+    <p style="margin:0 0 16px;">
+        You have been added to the <strong>{{ $team['name'] }}</strong> team. Use the credentials below to sign in and get started.
+    </p>
+
+    <div style="background-color:#f3f3e5;border-left:4px solid #061d19;padding:18px 20px;margin:24px 0;border-radius:0 8px 8px 0;">
+        <p style="margin:0;font-size:15px;"><strong>Email:</strong> {{ $user['email'] }}</p>
+        <p style="margin:10px 0 0;font-size:15px;"><strong>Password:</strong> {{ $password }}</p>
     </div>
 
-    <div style="background: #f9f9f9; padding: 24px; border-radius: 0 0 10px 10px;">
-        <p>Hi {{ $user['name'] ?? 'there' }},</p>
+    @include('emails.partials.centered-button', ['url' => $url ?? '#', 'label' => 'Sign in'])
 
-        <p>You've been added to the <strong>{{ $team['name'] }}</strong> team. Use the credentials below to sign in and get started:</p>
+    <p style="margin:8px 0 0;font-size:13px;line-height:1.55;color:#475569;">
+        For security, sign in and change your password after your first login.
+    </p>
 
-        <div style="background: white; padding: 16px; border-left: 4px solid #3b82f6; margin: 20px 0;">
-            <p style="margin: 0;"><strong>Email:</strong> {{ $user['email'] }}</p>
-            <p style="margin: 6px 0 0 0;"><strong>Password:</strong> {{ $password }}</p>
-        </div>
-
-        <p style="text-align: center; margin: 30px 0;">
-            <a href="{{ $url ?? '#' }}" style="background: #111827; color: white; padding: 14px 30px; text-decoration: none; border-radius: 6px; font-weight: bold;">Sign in</a>
-        </p>
-
-        <p style="font-size: 13px; color: #555;">For security, please sign in and change your password after your first login.</p>
-
-        <p style="margin-top: 30px;">See you inside,<br>The {{ config('app.name') }} Team</p>
-    </div>
-</body>
-</html>
-
+    <p style="margin:28px 0 0;">See you inside,<br>The {{ config('app.name') }} team</p>
+@endsection

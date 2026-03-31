@@ -74,16 +74,16 @@ class ProposalService
      */
     private function buildPrompt(string $description, string $portfolioText, string $type, int $words): string
     {
-        return $this->buildIntermediatePrompt($description, $portfolioText, $words);
-        // return match ($type) {
-        //     'pitch' => $this->buildPitchPrompt($description, $portfolioText, $words),
-        //     'experience' => $this->buildExperiencePrompt($description, $portfolioText, $words),
-        //     'approach' => $this->buildApproachPrompt($description, $portfolioText, $words),
-        //     'beginner' => $this->buildBeginnerPrompt($description, $portfolioText, $words),
-        //     'intermediate' => $this->buildIntermediatePrompt($description, $portfolioText, $words),
-        //     'professional' => $this->buildProfessionalPrompt($description, $portfolioText, $words),
-        //     default => $this->buildApproachPrompt($description, $portfolioText, $words),
-        // };
+        //return $this->buildIntermediatePrompt($description, $portfolioText, $words);
+        return match ($type) {
+            'pitch' => $this->buildPitchPrompt($description, $portfolioText, $words),
+            'experience' => $this->buildExperiencePrompt($description, $portfolioText, $words),
+            'approach' => $this->buildApproachPrompt($description, $portfolioText, $words),
+            'beginner' => $this->buildBeginnerPrompt($description, $portfolioText, $words),
+            'intermediate' => $this->buildIntermediatePrompt($description, $portfolioText, $words),
+            'professional' => $this->buildProfessionalPrompt($description, $portfolioText, $words),
+            'default' => $this->buildApproachPrompt($description, $portfolioText, $words),
+        };
     }
     
     public function matchJobWithPortfolios(

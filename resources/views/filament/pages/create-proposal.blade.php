@@ -69,6 +69,7 @@
                                 type="submit"
                                 color="primary"
                                 size="xl"
+                                :loading-indicator="false"
                                 wire:target="generate"
                                 wire:loading.attr="disabled"
                                 wire:loading.class="opacity-70 cursor-not-allowed"

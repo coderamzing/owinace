@@ -196,6 +196,9 @@ class AnalyticsDashboard extends Page
             
             // F. Recent Won Leads - cols 6
             RecentWonLeadsWidget::class,
+
+            // G. Team member goal progress - full width
+            GoalPerformanceTrackingWidget::class,
             
             // Commented out old widgets
             // WeeklyAiInsightsWidget::class,
@@ -205,7 +208,6 @@ class AnalyticsDashboard extends Page
             // LeadsOverviewWidget::class,
             // MonthlyCostPerLeadWidget::class,
             // MemberPerformanceWidget::class,
-            // GoalPerformanceTrackingWidget::class,
             // GoalBarsWidget::class,
             // RecentLeadsWidget::class,
             // TeamActivityWidget::class,

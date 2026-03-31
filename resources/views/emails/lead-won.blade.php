@@ -1,60 +1,73 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Lead Won - {{ $lead_title }}</title>
-</head>
-<body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;">
-    <div style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); padding: 24px; text-align: center; border-radius: 10px 10px 0 0;">
-        <h1 style="color: white; margin: 0;">🎉 Lead Won!</h1>
-    </div>
+@extends('emails.layout')
 
-    <div style="background: #f9f9f9; padding: 24px; border-radius: 0 0 10px 10px;">
-        <p>Great news, Team!</p>
+@section('title')
+    Lead won — {{ $lead_title }}
+@endsection
 
-        <p>We've successfully won a lead! Here are the details:</p>
+@section('preheader')
+    Lead won: {{ $lead_title }} — ${{ $actual_value }} on {{ config('app.name') }}.
+@endsection
 
-        <div style="background: white; padding: 20px; border-radius: 8px; margin: 20px 0; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
-            <h2 style="margin: 0 0 16px 0; color: #10b981; border-bottom: 2px solid #10b981; padding-bottom: 10px;">{{ $lead_title }}</h2>
-            
-            @if(isset($lead_description) && $lead_description)
-            <p style="color: #666; margin: 12px 0;"><em>{{ $lead_description }}</em></p>
+@section('heading', 'Lead won')
+
+@section('content')
+    <p style="margin:0 0 16px;">Great news, team,</p>
+
+    <p style="margin:0 0 20px;">A lead was marked <strong>won</strong>. Here are the details.</p>
+
+    <div style="background-color:#f3f3e5;border:1px solid #e8e8dc;border-radius:10px;padding:22px 22px;margin:20px 0;">
+        <h2 style="margin:0 0 14px;font-size:20px;font-weight:700;color:#061d19;padding-bottom:12px;border-bottom:2px solid #b8ff90;">
+            {{ $lead_title }}
+        </h2>
+
+        @if(isset($lead_description) && $lead_description)
+        <p style="margin:0 0 14px;font-size:15px;line-height:1.55;color:#475569;font-style:italic;">{{ $lead_description }}</p>
+        @endif
+
+        <table role="presentation" cellpadding="0" cellspacing="0" style="width:100%;border-collapse:collapse;font-size:15px;line-height:1.55;">
+            <tr>
+                <td style="padding:6px 0;color:#475569;width:160px;">Value</td>
+                <td style="padding:6px 0;color:#061d19;font-weight:700;">${{ $actual_value }}</td>
+            </tr>
+            <tr>
+                <td style="padding:6px 0;color:#475569;">Assigned member</td>
+                <td style="padding:6px 0;color:#061d19;">{{ $assigned_member }}</td>
+            </tr>
+            <tr>
+                <td style="padding:6px 0;color:#475569;">Converted by</td>
+                <td style="padding:6px 0;color:#061d19;">{{ $converted_by }}</td>
+            </tr>
+            <tr>
+                <td style="padding:6px 0;color:#475569;">Conversion date</td>
+                <td style="padding:6px 0;color:#061d19;">{{ $conversion_date }}</td>
+            </tr>
+            @if(isset($team_name))
+            <tr>
+                <td style="padding:6px 0;color:#475569;">Team</td>
+                <td style="padding:6px 0;color:#061d19;">{{ $team_name }}</td>
+            </tr>
             @endif
-
-            <div style="margin-top: 16px;">
-                <p style="margin: 8px 0;"><strong>💰 Value:</strong> <span style="color: #10b981; font-size: 18px; font-weight: bold;">${{ $actual_value }}</span></p>
-                <p style="margin: 8px 0;"><strong>👤 Assigned Member:</strong> {{ $assigned_member }}</p>
-                <p style="margin: 8px 0;"><strong>🎯 Converted By:</strong> {{ $converted_by }}</p>
-                <p style="margin: 8px 0;"><strong>📅 Conversion Date:</strong> {{ $conversion_date }}</p>
-                @if(isset($team_name))
-                <p style="margin: 8px 0;"><strong>👥 Team:</strong> {{ $team_name }}</p>
-                @endif
-            </div>
-        </div>
-
-        <div style="background: #ecfdf5; border-left: 4px solid #10b981; padding: 16px; margin: 20px 0;">
-            <p style="margin: 0; color: #065f46;">
-                <strong>🌟 Congratulations!</strong><br>
-                This is a significant achievement for our team. Keep up the excellent work!
-            </p>
-        </div>
-
-        <p style="text-align: center; margin: 30px 0;">
-            <a href="{{ $lead_url }}" style="background: #10b981; color: white; padding: 14px 30px; text-decoration: none; border-radius: 6px; font-weight: bold; display: inline-block;">View Lead Details</a>
-        </p>
-
-        <p style="margin-top: 30px; color: #666; font-size: 14px;">
-            Keep up the momentum and let's continue delivering great results together!
-        </p>
-
-        <p style="margin-top: 30px;">Best regards,<br>The {{ config('app.name') }} Team</p>
+        </table>
     </div>
 
-    <div style="text-align: center; padding: 20px; color: #999; font-size: 12px;">
-        <p>You're receiving this because you're a member of {{ $team_name ?? 'the team' }}.</p>
-        <p>To manage your notification preferences, visit your <a href="{{ url('/admin/notification-preferences') }}" style="color: #3b82f6;">settings page</a>.</p>
+    <div style="background-color:#ecfdf3;border-left:4px solid #16a34a;padding:16px 18px;margin:24px 0;border-radius:0 8px 8px 0;">
+        <p style="margin:0;font-size:14px;line-height:1.55;color:#14532d;">
+            <strong>Congratulations</strong> &mdash; this is a strong result. Share the win with your team.
+        </p>
     </div>
-</body>
-</html>
 
+    @include('emails.partials.centered-button', ['url' => $lead_url, 'label' => 'View lead'])
+
+    <p style="margin:20px 0 0;font-size:14px;line-height:1.55;color:#475569;">
+        Keep the momentum going on the rest of your pipeline.
+    </p>
+
+    <p style="margin:28px 0 0;">Best regards,<br>The {{ config('app.name') }} team</p>
+@endsection
+
+@section('footer_extra')
+    <p style="margin:0 0 8px;">You are receiving this because you are a member of {{ $team_name ?? 'the team' }}.</p>
+    <p style="margin:0;">
+        <a href="{{ url('/admin/notification-preferences') }}" style="color:#061d19;font-weight:600;">Notification preferences</a>
+    </p>
+@endsection

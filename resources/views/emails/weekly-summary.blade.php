@@ -1,107 +1,91 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Weekly Summary - {{ $team_name }}</title>
-</head>
-<body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f5f5f5;">
-    <div style="background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); padding: 30px; text-align: center; border-radius: 10px 10px 0 0;">
-        <h1 style="color: white; margin: 0; font-size: 28px;">📊 Weekly Summary</h1>
-        <p style="color: #e0e7ff; margin: 10px 0 0 0;">{{ $start_date }} - {{ $end_date }}</p>
-    </div>
+@extends('emails.layout')
 
-    <div style="background: white; padding: 30px; border-radius: 0 0 10px 10px;">
-        <p style="font-size: 16px; margin-bottom: 25px;">Hello Team {{ $team_name }},</p>
+@section('title')
+    Weekly summary — {{ $team_name }}
+@endsection
 
-        <p style="font-size: 16px; margin-bottom: 25px;">Here's your weekly activity summary:</p>
+@section('preheader')
+    Weekly results for {{ $team_name }}: {{ $start_date }} &ndash; {{ $end_date }}.
+@endsection
 
-        <!-- Row 1: Proposals & Portfolio -->
-        <div style="margin-bottom: 20px;">
-            <table style="width: 100%; border-collapse: collapse;">
-                <tr>
-                    <td style="width: 50%; padding-right: 10px;">
-                        <div style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); padding: 20px; border-radius: 8px; border-left: 4px solid #0ea5e9;">
-                            <div style="color: #0c4a6e; font-size: 14px; font-weight: 600; margin-bottom: 8px;">📝 PROPOSALS CREATED</div>
-                            <div style="color: #0ea5e9; font-size: 32px; font-weight: bold;">{{ $proposals_created }}</div>
-                        </div>
-                    </td>
-                    <td style="width: 50%; padding-left: 10px;">
-                        <div style="background: linear-gradient(135deg, #f5f3ff 0%, #ede9fe 100%); padding: 20px; border-radius: 8px; border-left: 4px solid #a855f7;">
-                            <div style="color: #581c87; font-size: 14px; font-weight: 600; margin-bottom: 8px;">💼 PORTFOLIOS ADDED</div>
-                            <div style="color: #a855f7; font-size: 32px; font-weight: bold;">{{ $portfolios_added }}</div>
-                        </div>
-                    </td>
-                </tr>
-            </table>
-        </div>
+@section('heading', 'Weekly summary')
 
-        <!-- Row 2: Lead Open & New -->
-        <div style="margin-bottom: 20px;">
-            <table style="width: 100%; border-collapse: collapse;">
-                <tr>
-                    <td style="width: 50%; padding-right: 10px;">
-                        <div style="background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); padding: 20px; border-radius: 8px; border-left: 4px solid #f59e0b;">
-                            <div style="color: #78350f; font-size: 14px; font-weight: 600; margin-bottom: 8px;">🔓 LEADS OPEN</div>
-                            <div style="color: #f59e0b; font-size: 32px; font-weight: bold;">{{ $leads_open }}</div>
-                        </div>
-                    </td>
-                    <td style="width: 50%; padding-left: 10px;">
-                        <div style="background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%); padding: 20px; border-radius: 8px; border-left: 4px solid #3b82f6;">
-                            <div style="color: #1e3a8a; font-size: 14px; font-weight: 600; margin-bottom: 8px;">🆕 LEADS NEW</div>
-                            <div style="color: #3b82f6; font-size: 32px; font-weight: bold;">{{ $leads_new }}</div>
-                        </div>
-                    </td>
-                </tr>
-            </table>
-        </div>
+@section('subheading')
+    {{ $start_date }} &ndash; {{ $end_date }}
+@endsection
 
-        <!-- Row 3: Lead Won & Lost -->
-        <div style="margin-bottom: 25px;">
-            <table style="width: 100%; border-collapse: collapse;">
-                <tr>
-                    <td style="width: 50%; padding-right: 10px;">
-                        <div style="background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%); padding: 20px; border-radius: 8px; border-left: 4px solid #10b981;">
-                            <div style="color: #064e3b; font-size: 14px; font-weight: 600; margin-bottom: 8px;">🎉 LEADS WON</div>
-                            <div style="color: #10b981; font-size: 32px; font-weight: bold;">{{ $leads_won }}</div>
-                        </div>
-                    </td>
-                    <td style="width: 50%; padding-left: 10px;">
-                        <div style="background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%); padding: 20px; border-radius: 8px; border-left: 4px solid #ef4444;">
-                            <div style="color: #7f1d1d; font-size: 14px; font-weight: 600; margin-bottom: 8px;">📉 LEADS LOST</div>
-                            <div style="color: #ef4444; font-size: 32px; font-weight: bold;">{{ $leads_lost }}</div>
-                        </div>
-                    </td>
-                </tr>
-            </table>
-        </div>
+@section('content')
+    <p style="margin:0 0 16px;">Hello team {{ $team_name }},</p>
 
-        @if($leads_won > 0)
-        <div style="background: #ecfdf5; border-left: 4px solid #10b981; padding: 16px; margin: 25px 0;">
-            <p style="margin: 0; color: #065f46;">
-                <strong>🌟 Great work this week!</strong><br>
-                You've successfully won {{ $leads_won }} lead{{ $leads_won > 1 ? 's' : '' }}. Keep up the excellent momentum!
-            </p>
-        </div>
-        @endif
+    <p style="margin:0 0 20px;">Here is your weekly activity on {{ config('app.name') }}.</p>
 
-        <p style="text-align: center; margin: 30px 0;">
-            <a href="{{ $url }}" style="background: #3b82f6; color: white; padding: 14px 30px; text-decoration: none; border-radius: 6px; font-weight: bold; display: inline-block;">View Dashboard</a>
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border-collapse:collapse;margin-bottom:16px;">
+        <tr>
+            <td style="width:50%;padding:0 8px 16px 0;vertical-align:top;">
+                <div style="background-color:#f3f3e5;padding:18px;border-radius:10px;border-left:4px solid #b8ff90;">
+                    <div style="font-size:12px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:#475569;margin-bottom:8px;">Proposals created</div>
+                    <div style="font-size:30px;font-weight:700;color:#061d19;line-height:1;">{{ $proposals_created }}</div>
+                </div>
+            </td>
+            <td style="width:50%;padding:0 0 16px 8px;vertical-align:top;">
+                <div style="background-color:#f3f3e5;padding:18px;border-radius:10px;border-left:4px solid #061d19;">
+                    <div style="font-size:12px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:#475569;margin-bottom:8px;">Portfolios added</div>
+                    <div style="font-size:30px;font-weight:700;color:#061d19;line-height:1;">{{ $portfolios_added }}</div>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td style="width:50%;padding:0 8px 16px 0;vertical-align:top;">
+                <div style="background-color:#f3f3e5;padding:18px;border-radius:10px;border-left:4px solid #94a3b8;">
+                    <div style="font-size:12px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:#475569;margin-bottom:8px;">Leads open</div>
+                    <div style="font-size:30px;font-weight:700;color:#061d19;line-height:1;">{{ $leads_open }}</div>
+                </div>
+            </td>
+            <td style="width:50%;padding:0 0 16px 8px;vertical-align:top;">
+                <div style="background-color:#f3f3e5;padding:18px;border-radius:10px;border-left:4px solid #b8ff90;">
+                    <div style="font-size:12px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:#475569;margin-bottom:8px;">Leads new</div>
+                    <div style="font-size:30px;font-weight:700;color:#061d19;line-height:1;">{{ $leads_new }}</div>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td style="width:50%;padding:0 8px 0 0;vertical-align:top;">
+                <div style="background-color:#ecfdf3;padding:18px;border-radius:10px;border-left:4px solid #16a34a;">
+                    <div style="font-size:12px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:#475569;margin-bottom:8px;">Leads won</div>
+                    <div style="font-size:30px;font-weight:700;color:#061d19;line-height:1;">{{ $leads_won }}</div>
+                </div>
+            </td>
+            <td style="width:50%;padding:0 0 0 8px;vertical-align:top;">
+                <div style="background-color:#fef2f2;padding:18px;border-radius:10px;border-left:4px solid #ef4444;">
+                    <div style="font-size:12px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:#475569;margin-bottom:8px;">Leads lost</div>
+                    <div style="font-size:30px;font-weight:700;color:#061d19;line-height:1;">{{ $leads_lost }}</div>
+                </div>
+            </td>
+        </tr>
+    </table>
+
+    @if($leads_won > 0)
+    <div style="background-color:#ecfdf3;border-left:4px solid #16a34a;padding:16px 18px;margin:24px 0;border-radius:0 8px 8px 0;">
+        <p style="margin:0;font-size:14px;line-height:1.55;color:#14532d;">
+            <strong>Nice work</strong> &mdash; you won {{ $leads_won }} lead{{ $leads_won > 1 ? 's' : '' }} this week. Keep the momentum.
         </p>
+    </div>
+    @endif
 
-        <div style="border-top: 1px solid #e5e7eb; padding-top: 20px; margin-top: 30px;">
-            <p style="color: #6b7280; font-size: 14px; margin: 0;">
-                This is your weekly activity summary. Keep tracking your progress and achieving your goals!
-            </p>
-        </div>
+    @include('emails.partials.centered-button', ['url' => $url, 'label' => 'Open dashboard'])
 
-        <p style="margin-top: 30px;">Best regards,<br>The {{ config('app.name') }} Team</p>
+    <div style="border-top:1px solid #e8e8dc;padding-top:22px;margin-top:28px;">
+        <p style="margin:0;font-size:14px;line-height:1.55;color:#475569;">
+            Weekly snapshot for admins of {{ $team_name }}.
+        </p>
     </div>
 
-    <div style="text-align: center; padding: 20px; color: #999; font-size: 12px;">
-        <p>You're receiving this because you're an admin of {{ $team_name }}.</p>
-        <p>To manage your notification preferences, visit your <a href="{{ url('/admin/notification-preferences') }}" style="color: #3b82f6;">settings page</a>.</p>
-    </div>
-</body>
-</html>
+    <p style="margin:28px 0 0;">Best regards,<br>The {{ config('app.name') }} team</p>
+@endsection
 
+@section('footer_extra')
+    <p style="margin:0 0 8px;">You are receiving this because you are an admin of {{ $team_name }}.</p>
+    <p style="margin:0;">
+        <a href="{{ url('/admin/notification-preferences') }}" style="color:#061d19;font-weight:600;">Notification preferences</a>
+    </p>
+@endsection

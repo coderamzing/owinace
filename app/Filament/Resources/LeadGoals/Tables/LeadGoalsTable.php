@@ -34,7 +34,7 @@ class LeadGoalsTable
                     ->sortable()
                     ->badge(),
                 TextColumn::make('target_value')
-                    ->money('USD')
+                    ->numeric(decimalPlaces: 2)
                     ->sortable(),
                 TextColumn::make('current_value')
                     ->money('USD')

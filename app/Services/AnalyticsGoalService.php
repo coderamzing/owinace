@@ -200,6 +200,113 @@ class AnalyticsGoalService
     }
 
     /**
+     * Upsert analyticsgoal for one lead goal for a calendar month (used by member My Analytics).
+     *
+     * @param  Carbon|null  $monthContext  Any date within the target month; defaults to current month.
+     */
+    public function syncSingleLeadGoal(LeadGoal $goal, ?Carbon $monthContext = null): void
+    {
+        $monthContext = $monthContext
+            ? $monthContext->copy()->startOfMonth()
+            : Carbon::now()->startOfMonth();
+        $monthEnd = $monthContext->copy()->endOfMonth();
+
+        if (! $goal->is_active || ($goal->period ?? 'monthly') !== 'monthly') {
+            AnalyticsGoal::withoutTeam()
+                ->where('team_id', $goal->team_id)
+                ->where('user_id', $goal->member_id)
+                ->where('month', $monthContext->month)
+                ->where('year', $monthContext->year)
+                ->where('goal_type', $goal->goal_type)
+                ->delete();
+
+            return;
+        }
+
+        $member = User::query()->find($goal->member_id);
+        if (! $member) {
+            return;
+        }
+
+        $achieved = $this->computeAchievedForLeadGoal($goal, $member, $monthContext, $monthEnd);
+
+        $achievedPercentage = $goal->target_value > 0
+            ? ($achieved / $goal->target_value) * 100
+            : 0;
+
+        AnalyticsGoal::withoutTeam()->updateOrCreate(
+            [
+                'user_id' => $member->id,
+                'team_id' => $goal->team_id,
+                'month' => $monthContext->month,
+                'year' => $monthContext->year,
+                'goal_type' => $goal->goal_type,
+            ],
+            [
+                'fullname' => $member->name,
+                'acheived' => $achievedPercentage,
+                'target_value' => $goal->target_value,
+                'progress_value' => $achieved,
+            ]
+        );
+    }
+
+    /**
+     * Raw progress value for a lead goal in a month (same rules as daily sync).
+     */
+    protected function computeAchievedForLeadGoal(
+        LeadGoal $goal,
+        User $member,
+        Carbon $monthStart,
+        Carbon $monthEnd
+    ): float {
+        $teamId = $goal->team_id;
+        $achieved = 0.0;
+
+        if ($goal->goal_type === 'lead_generation') {
+            $openKanban = LeadKanban::withoutTeam()->where('team_id', $teamId)
+                ->where('code', 'OPEN')
+                ->first();
+
+            $openKanbanId = $openKanban?->id;
+
+            $query = Lead::withoutTeam()->where('team_id', $teamId)
+                ->where('assigned_member_id', $member->id)
+                ->where('created_at', '>=', $monthStart)
+                ->where('created_at', '<=', $monthEnd);
+
+            if ($openKanbanId) {
+                $query->where('kanban_id', '!=', $openKanbanId);
+            }
+
+            $achieved = (float) $query->count();
+        } elseif ($goal->goal_type === 'conversion') {
+            $wonKanban = LeadKanban::withoutTeam()->where('team_id', $teamId)
+                ->where('code', 'WON')
+                ->first();
+
+            $wonKanbanId = $wonKanban?->id;
+
+            $totalWon = Lead::withoutTeam()->where('team_id', $teamId)
+                ->where('assigned_member_id', $member->id)
+                ->where('created_at', '>=', $monthStart)
+                ->where('created_at', '<=', $monthEnd)
+                ->where('kanban_id', $wonKanbanId)
+                ->sum('actual_value') ?? 0;
+
+            $achieved = (float) $totalWon;
+        } elseif ($goal->goal_type === 'open_leads') {
+            $achieved = (float) Lead::withoutTeam()->where('team_id', $teamId)
+                ->where('assigned_member_id', $member->id)
+                ->where('created_at', '>=', $monthStart)
+                ->where('created_at', '<=', $monthEnd)
+                ->count();
+        }
+
+        return $achieved;
+    }
+
+    /**
      * Sync analytic goal for a specific team (matches Django sync_analytic_goal logic)
      *
      * @param int $teamId
@@ -207,23 +314,19 @@ class AnalyticsGoalService
      */
     public function syncAnalyticGoal(int $teamId): bool
     {
-        $team = Team::findOrFail($teamId);
-        
-        // Calculate current month start and end
-        $monthStart = Carbon::now()->startOfMonth();
-        $monthEnd = Carbon::now()->endOfMonth();
+        Team::findOrFail($teamId);
 
-        // Get team members
+        $monthStart = Carbon::now()->startOfMonth();
+
         $teamMembers = TeamMember::withoutTeam()->where('team_id', $teamId)->get();
-        
+
         foreach ($teamMembers as $teamMember) {
             $member = $teamMember->user;
-            
-            if (!$member) {
+
+            if (! $member) {
                 continue;
             }
 
-            // Get goals for this member
             $goals = LeadGoal::withoutTeam()->where('team_id', $teamId)
                 ->where('member_id', $member->id)
                 ->where('period', 'monthly')
@@ -231,73 +334,7 @@ class AnalyticsGoalService
                 ->get();
 
             foreach ($goals as $goal) {
-                $achieved = 0;
-
-                if ($goal->goal_type == 'lead_generation') {
-                    // Get OPEN kanban
-                    $openKanban = LeadKanban::withoutTeam()->where('team_id', $teamId)
-                        ->where('code', 'OPEN')
-                        ->first();
-
-                    $openKanbanId = $openKanban?->id;
-
-                    $query = Lead::withoutTeam()->where('team_id', $teamId)
-                        ->where('assigned_member_id', $member->id)
-                        ->where('created_at', '>=', $monthStart)
-                        ->where('created_at', '<=', $monthEnd);
-
-                    if ($openKanbanId) {
-                        $query->where('kanban_id', '!=', $openKanbanId);
-                    }
-
-                    $totalLeads = $query->count();
-                    $achieved = $totalLeads;
-                } elseif ($goal->goal_type == 'conversion') {
-                    // Get WON kanban
-                    $wonKanban = LeadKanban::withoutTeam()->where('team_id', $teamId)
-                        ->where('code', 'WON')
-                        ->first();
-
-                    $wonKanbanId = $wonKanban?->id;
-
-                    $totalWon = Lead::withoutTeam()->where('team_id', $teamId)
-                        ->where('assigned_member_id', $member->id)
-                        ->where('created_at', '>=', $monthStart)
-                        ->where('created_at', '<=', $monthEnd)
-                        ->where('kanban_id', $wonKanbanId)
-                        ->sum('actual_value') ?? 0;
-
-                    $achieved = $totalWon;
-                } elseif ($goal->goal_type == 'open_leads') {
-                    $totalOpen = Lead::withoutTeam()->where('team_id', $teamId)
-                        ->where('assigned_member_id', $member->id)
-                        ->where('created_at', '>=', $monthStart)
-                        ->where('created_at', '<=', $monthEnd)
-                        ->count();
-
-                    $achieved = $totalOpen;
-                }
-
-                // Calculate percentage achieved
-                $achievedPercentage = $goal->target_value > 0 
-                    ? ($achieved / $goal->target_value) * 100 
-                    : 0;
-
-                AnalyticsGoal::withoutTeam()->updateOrCreate(
-                    [
-                        'user_id' => $member->id,
-                        'team_id' => $teamId,
-                        'month' => $monthStart->month,
-                        'year' => $monthStart->year,
-                        'goal_type' => $goal->goal_type,
-                    ],
-                    [
-                        'fullname' => $member->name,
-                        'acheived' => $achievedPercentage,
-                        'target_value' => $goal->target_value,
-                        'progress_value' => $achieved,
-                    ]
-                );
+                $this->syncSingleLeadGoal($goal, $monthStart);
             }
         }
 

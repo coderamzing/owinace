@@ -2,20 +2,15 @@
 
 namespace App\Filament\Pages;
 
-use App\Notifications\EmailChangeVerificationNotification;
 use BackedEnum;
 use UnitEnum;
-use Filament\Facades\Filament;
 use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Notifications\Notification;
 use Filament\Pages\Page;
-use Filament\Schemas\Components\Component;
-use Filament\Schemas\Components\Group;
 use Filament\Schemas\Schema;
-use Filament\Support\Icons\Heroicon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -163,7 +158,6 @@ class Profile extends Page implements HasForms
      |-----------------------------------------------------------------*/
     public ?array $profileData = [];
     public ?array $passwordData = [];
-    public ?array $mfaData = [];
     public ?array $avatarData = [];
 
     /* -----------------------------------------------------------------
@@ -188,9 +182,12 @@ class Profile extends Page implements HasForms
         $this->profileForm->fill($this->profileData);
         $this->passwordForm->fill($this->passwordData);
         $this->avatarForm->fill($this->avatarData);
+    }
 
-        if (Filament::hasMultiFactorAuthentication()) {
-            $this->mfaForm->fill($this->mfaData);
+    public function hydrate(): void
+    {
+        if ($this->activeTab === 'mfa') {
+            $this->activeTab = 'profile';
         }
     }
 
@@ -268,29 +265,6 @@ class Profile extends Page implements HasForms
                     ->same('password'),
             ])
             ->statePath('passwordData');
-    }
-
-    /* -----------------------------------------------------------------
-     | MFA Form
-     |-----------------------------------------------------------------*/
-    public function mfaForm(Schema $schema): Schema
-    {
-        if (! Filament::hasMultiFactorAuthentication()) {
-            return $schema->components([]);
-        }
-
-        $user = Filament::auth()->user();
-
-        $components = collect(Filament::getMultiFactorAuthenticationProviders())
-            ->sort(fn ($provider) => $provider->isEnabled($user) ? 0 : 1)
-            ->map(fn ($provider): Component => Group::make(
-                $provider->getManagementSchemaComponents()
-            )->statePath($provider->getId()))
-            ->all();
-
-        return $schema
-            ->components($components)
-            ->statePath('mfaData');
     }
 
     /* -----------------------------------------------------------------

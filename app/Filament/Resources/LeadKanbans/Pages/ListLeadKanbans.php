@@ -4,7 +4,13 @@ namespace App\Filament\Resources\LeadKanbans\Pages;
 
 use App\Filament\Resources\LeadKanbans\LeadKanbanResource;
 use App\Filament\Resources\BaseListRecords;
+use App\Models\LeadKanban;
+use Filament\Actions\Contracts\HasActions;
 use Filament\Actions\CreateAction;
+use Filament\Schemas\Contracts\HasSchemas;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\UniqueConstraintViolationException;
+use Illuminate\Validation\ValidationException;
 
 class ListLeadKanbans extends BaseListRecords
 {
@@ -21,16 +27,46 @@ class ListLeadKanbans extends BaseListRecords
                 ->color('primary')
                 ->size('lg')
                 ->slideOver()
+                ->using(function (array $data, HasActions & HasSchemas $livewire): Model {
+                    $modelClass = LeadKanbanResource::getModel();
+
+                    try {
+                        $record = new $modelClass;
+                        $record->fill($data);
+                        $record->save();
+
+                        return $record;
+                    } catch (UniqueConstraintViolationException) {
+                        throw ValidationException::withMessages([
+                            'code' => 'A kanban stage with this code already exists for this team. Change the name or enter a different code.',
+                        ]);
+                    }
+                })
                 ->mutateFormDataUsing(function (array $data): array {
                     // Set team_id from session if available
                     $teamId = session('team_id');
                     if ($teamId && !isset($data['team_id'])) {
                         $data['team_id'] = $teamId;
                     }
+
+                    $data['is_system'] = false;
                     
                     // Auto-generate code from name if code is empty
                     if (empty($data['code']) && !empty($data['name'])) {
                         $data['code'] = $this->generateCodeFromName($data['name']);
+                    }
+
+                    $teamId = $data['team_id'] ?? session('team_id');
+                    if ($teamId && filled($data['code'] ?? null)) {
+                        $duplicate = LeadKanban::query()
+                            ->where('team_id', $teamId)
+                            ->where('code', $data['code'])
+                            ->exists();
+                        if ($duplicate) {
+                            throw ValidationException::withMessages([
+                                'code' => 'A kanban stage with this code already exists for this team. Change the name or enter a different code.',
+                            ]);
+                        }
                     }
                     
                     return $data;

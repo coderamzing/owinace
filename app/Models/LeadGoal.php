@@ -2,14 +2,24 @@
 
 namespace App\Models;
 
+use App\Services\AnalyticsGoalService;
+use App\Traits\TeamTraits;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use App\Traits\TeamTraits;
 
 class LeadGoal extends Model
 {
     use HasFactory, TeamTraits;
+
+    protected static function boot(): void
+    {
+        parent::boot();
+
+        static::saved(function (LeadGoal $goal) {
+            app(AnalyticsGoalService::class)->syncSingleLeadGoal($goal);
+        });
+    }
 
     /**
      * The attributes that are mass assignable.

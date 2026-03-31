@@ -1,46 +1,38 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Team Invitation</title>
-</head>
-<body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;">
-    <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 30px; text-align: center; border-radius: 10px 10px 0 0;">
-        <h1 style="color: white; margin: 0;">You're Invited!</h1>
-    </div>
-    
-    <div style="background: #f9f9f9; padding: 30px; border-radius: 0 0 10px 10px;">
-        <p>Hello,</p>
-        
-        <p>You have been invited to join <strong>{{ $invitation->team->name }}</strong> team in the <strong>{{ $invitation->workspace->name }}</strong> workspace.</p>
-        
-        @if($invitation->team->description)
-        <p style="background: white; padding: 15px; border-left: 4px solid #667eea; margin: 20px 0;">
-            {{ $invitation->team->description }}
-        </p>
-        @endif
-        
-        <div style="text-align: center; margin: 30px 0;">
-            <a href="{{ $acceptUrl }}" 
-               style="background: #667eea; color: white; padding: 15px 40px; text-decoration: none; border-radius: 5px; display: inline-block; font-weight: bold;">
-                Accept Invitation
-            </a>
-        </div>
-        
-        <p style="font-size: 12px; color: #666; margin-top: 30px;">
-            Or copy and paste this link into your browser:<br>
-            <a href="{{ $acceptUrl }}" style="color: #667eea; word-break: break-all;">{{ $acceptUrl }}</a>
-        </p>
-        
-        <p style="font-size: 12px; color: #999; margin-top: 20px;">
-            This invitation will expire on {{ $invitation->expires_at->format('F j, Y g:i A') }}.
-        </p>
-        
-        <p style="margin-top: 30px;">
-            If you did not expect this invitation, you can safely ignore this email.
-        </p>
-    </div>
-</body>
-</html>
+@extends('emails.layout')
 
+@section('title', 'Team Invitation')
+
+@section('preheader')
+    Invitation to join {{ $invitation->team->name }} on {{ config('app.name') }}.
+@endsection
+
+@section('heading', "You're invited")
+
+@section('content')
+    <p style="margin:0 0 16px;">Hello,</p>
+
+    <p style="margin:0 0 16px;">
+        You have been invited to join <strong>{{ $invitation->team->name }}</strong> in the <strong>{{ $invitation->workspace->name }}</strong> workspace.
+    </p>
+
+    @if($invitation->team->description)
+    <div style="background-color:#f3f3e5;border-left:4px solid #b8ff90;padding:16px 18px;margin:24px 0;border-radius:0 8px 8px 0;">
+        <p style="margin:0;color:#061d19;font-size:15px;line-height:1.55;">{{ $invitation->team->description }}</p>
+    </div>
+    @endif
+
+    @include('emails.partials.centered-button', ['url' => $acceptUrl, 'label' => 'Accept invitation'])
+
+    <p style="margin:24px 0 0;font-size:13px;line-height:1.55;color:#475569;">
+        Or copy and paste this link into your browser:<br>
+        <a href="{{ $acceptUrl }}" style="color:#061d19;font-weight:500;word-break:break-all;">{{ $acceptUrl }}</a>
+    </p>
+
+    <p style="margin:20px 0 0;font-size:13px;line-height:1.55;color:#64748b;">
+        This invitation expires on {{ $invitation->expires_at->format('F j, Y g:i A') }}.
+    </p>
+
+    <p style="margin:28px 0 0;font-size:14px;color:#475569;">
+        If you did not expect this invitation, you can safely ignore this email.
+    </p>
+@endsection

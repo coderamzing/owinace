@@ -6,7 +6,7 @@ use App\Models\Contact;
 use App\Models\LeadKanban;
 use App\Models\LeadSource;
 use App\Models\User;
-use Filament\Forms\Components\DateTimePicker;
+use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
@@ -75,7 +75,6 @@ class LeadForm
                     )
                     ->multiple()
                     ->preload()
-                    ->searchable()
                     ->columnSpanFull(),
                 
                 Select::make('assigned_member_id')
@@ -88,8 +87,7 @@ class LeadForm
                         return User::where('workspace_id', $workspaceId)
                             ->pluck('name', 'id');
                     })
-                    ->default(fn () => auth()->id())
-                    ->searchable(),
+                    ->default(fn () => auth()->id()),
                 
                 TextInput::make('expected_value')
                     ->label('Expected Value')
@@ -115,12 +113,14 @@ class LeadForm
                     ->minValue(0)
                     ->maxValue(999999.99),
                 
-                DateTimePicker::make('next_follow_up')
+                DatePicker::make('next_follow_up')
                     ->label('Next Follow Up')
+                    ->native(false)
                     ->timezone('UTC'),
                 
-                DateTimePicker::make('conversion_date')
+                DatePicker::make('conversion_date')
                     ->label('Conversion Date')
+                    ->native(false)
                     ->timezone('UTC'),
                 
                 TextInput::make('url')
@@ -163,7 +163,6 @@ class LeadForm
                                     });
                             })
                             ->multiple()
-                            ->searchable()
                             ->preload()
                             ->columnSpanFull()
                             ->helperText('Select one or more existing contacts to link to this lead, or create a new one below.')

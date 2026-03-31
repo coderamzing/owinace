@@ -32,15 +32,7 @@ class CreateTeamMember extends CreateRecord
         // Generate a password only if we need to send it; otherwise use random hash
         $this->generatedPassword = $this->sendWelcomeEmail ? Str::random(12) : Str::random(32);
 
-        // Check if the user with this email already exists
-        $isUserExists = User::where('email', $data['email'])->exists();
-        if ($isUserExists) {
-            throw new \Illuminate\Validation\ValidationException([
-                'email' => 'A user with this email address already exists. Please use "Link Existing Member" action instead.',
-            ]);
-        }
-
-        // Create new user
+        // Create new user (duplicate email blocked by form Rule::unique on users.email)
         $userEmail = $data['email'];
         $user = User::create(
             [

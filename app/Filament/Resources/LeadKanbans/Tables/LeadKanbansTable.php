@@ -4,18 +4,23 @@ namespace App\Filament\Resources\LeadKanbans\Tables;
 
 use App\Models\LeadKanban;
 use Filament\Actions\ActionGroup;
+use Filament\Actions\Contracts\HasActions;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\EditAction;
 use Filament\Notifications\Notification;
+use Filament\Schemas\Contracts\HasSchemas;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Table;
+use Filament\Tables\Table as FilamentTable;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\UniqueConstraintViolationException;
+use Illuminate\Validation\ValidationException;
 use Malzariey\FilamentDaterangepickerFilter\Filters\DateRangeFilter;
 
 class LeadKanbansTable
 {
-    public static function configure(Table $table): Table
+    public static function configure(FilamentTable $table): FilamentTable
     {
         return $table
             ->modifyQueryUsing(fn (Builder $query) => $query->withCount('leads'))
@@ -37,10 +42,6 @@ class LeadKanbansTable
                     ->sortable(),
                 IconColumn::make('is_active')
                     ->boolean(),
-                IconColumn::make('is_system')
-                    ->label('System')
-                    ->boolean()
-                    ->sortable(),
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -59,7 +60,21 @@ class LeadKanbansTable
                     EditAction::make()
                         ->modalHeading('Edit Lead Kanban')
                         ->modalSubmitActionLabel('Save')
-                        ->slideOver(),
+                        ->slideOver()
+                        ->mutateFormDataUsing(function (array $data, LeadKanban $record): array {
+                            $data['is_system'] = $record->is_system;
+
+                            return $data;
+                        })
+                        ->using(function (array $data, HasActions & HasSchemas $livewire, Model $record, ?FilamentTable $table): void {
+                            try {
+                                $record->update($data);
+                            } catch (UniqueConstraintViolationException) {
+                                throw ValidationException::withMessages([
+                                    'code' => 'A kanban stage with this code already exists for this team. Choose a different code.',
+                                ]);
+                            }
+                        }),
                     DeleteAction::make()
                         ->requiresConfirmation()
                         ->visible(fn (LeadKanban $record) => !$record->is_system)

@@ -48,17 +48,6 @@ class ListTeamMembers extends BaseListRecords
                     // Generate password
                     $this->generatedPassword = $this->sendWelcomeEmail ? Str::random(12) : Str::random(32);
 
-                    // Check if the user with this email already exists
-                    $isUserExists = User::where('email', $data['email'])->exists();
-                    if ($isUserExists) {
-                        Notification::make()
-                                ->title('Email already exists')
-                                ->body('A user with this email address already exists. Please use "Link Existing Member" instead.')
-                                ->danger()
-                                ->send();
-                        return [];
-                    }
-
                     // Create new user
                     $userEmail = $data['email'];
                     $user = User::create(
