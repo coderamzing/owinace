@@ -10,11 +10,10 @@ use App\Filament\Resources\LeadTags\LeadTagResource;
 use App\Filament\Resources\TeamMembers\TeamMemberResource;
 use App\Filament\Resources\Teams\TeamResource;
 use App\Filament\Resources\WorkspaceCredits\WorkspaceCreditResource;
+use App\Traits\HasPermission;
 use BackedEnum;
 use Filament\Pages\Page;
 use Filament\Support\Icons\Heroicon;
-use UnitEnum;
-use App\Traits\HasPermission;
 
 class Settings extends Page
 {
@@ -23,9 +22,9 @@ class Settings extends Page
     protected static ?string $permission = 'settings.manage';
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedCog6Tooth;
-    
+
     protected static ?string $navigationLabel = 'Settings';
-    
+
     protected static ?int $navigationSort = 100;
 
     protected string $view = 'filament.pages.settings';
@@ -102,13 +101,21 @@ class Settings extends Page
                 'color' => 'info',
                 'resource' => WorkspaceCreditResource::class,
             ],
+            [
+                'title' => 'Integration',
+                'description' => 'View and reset your workspace API token for bots and extensions',
+                'icon' => 'heroicon-o-puzzle-piece',
+                'url' => Integration::getUrl(),
+                'color' => 'gray',
+                'resource' => null,
+            ],
         ];
 
         // Remove internal resource keys and return cards
         return array_map(function ($card) {
             unset($card['resource']);
+
             return $card;
         }, $allCards);
     }
 }
-

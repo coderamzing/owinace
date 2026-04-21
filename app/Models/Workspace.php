@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Str;
 
 class Workspace extends Model
 {
@@ -19,6 +20,7 @@ class Workspace extends Model
     protected $fillable = [
         'name',
         'slug',
+        'token',
         'description',
         'owner_id',
         'tier_id',
@@ -42,6 +44,33 @@ class Workspace extends Model
             'start_at' => 'datetime',
             'onboard' => 'boolean',
         ];
+    }
+
+    protected static function booted(): void
+    {
+        static::creating(function (Workspace $workspace) {
+            if ($workspace->token !== null && $workspace->token !== '') {
+                return;
+            }
+
+            $workspace->token = static::generateUniqueToken();
+        });
+    }
+
+    /**
+     * Generate a unique workspace API token (20 chars: letters, numbers, symbols).
+     */
+    public static function generateUniqueToken(?int $exceptWorkspaceId = null): string
+    {
+        do {
+            $token = Str::password(20);
+            $query = static::query()->where('token', $token);
+            if ($exceptWorkspaceId !== null) {
+                $query->where('id', '!=', $exceptWorkspaceId);
+            }
+        } while ($query->exists());
+
+        return $token;
     }
 
     /**

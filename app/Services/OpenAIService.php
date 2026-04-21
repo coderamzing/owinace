@@ -108,5 +108,26 @@ class OpenAIService
         return $response->embeddings[0]->embedding;
     }
 
+    public function request(
+        array $messages
+    ): array {
+        $response = OpenAI::chat()->create([
+            'model' => 'gpt-4o-mini',
+            'messages' => $messages,
+            'temperature' => 0.7,
+            'response_format' => [
+                'type' => 'json_object'
+            ],
+        ]);
+        $content = $response['choices'][0]['message']['content'] ?? null;
+        if (!$content) {
+            throw new RuntimeException('Empty response from OpenAI');
+        }
+        $decoded = json_decode($content, true);
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            throw new RuntimeException('Invalid JSON returned by OpenAI');
+        }
+        return $decoded;
+    }
 
 }

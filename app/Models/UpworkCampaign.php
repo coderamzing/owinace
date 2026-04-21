@@ -1,0 +1,84 @@
+<?php
+
+namespace App\Models;
+
+use App\Traits\TeamTraits;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+
+class UpworkCampaign extends Model
+{
+    use HasFactory, TeamTraits;
+
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array<int, string>
+     */
+    protected $fillable = [
+        'title',
+        'is_active',
+        'max_connect_per_bid',
+        'search_url',
+        'timezone',
+        'max_daily_bid',
+        'auto_bidding',
+        'portfolios',
+        'ai_prompt',
+        'questions_context',
+        'rule_client_avg_spent',
+        'rule_max_interviews',
+        'rule_job_posted_ago',
+        'rule_max_proposal',
+        'rule_clock_in',
+        'rule_clock_out',
+        'member_id',
+        'team_id',
+        'source_id',
+        'kanban_id',
+    ];
+
+    /**
+     * Get the attributes that should be cast.
+     *
+     * @return array<string, string>
+     */
+    protected function casts(): array
+    {
+        return [
+            'is_active' => 'boolean',
+            'auto_bidding' => 'boolean',
+            'rule_client_avg_spent' => 'decimal:2',
+            'rule_max_interviews' => 'decimal:2',
+            'rule_job_posted_ago' => 'decimal:2',
+            'rule_max_proposal' => 'decimal:2',
+        ];
+    }
+
+    public function member(): BelongsTo
+    {
+        return $this->belongsTo(TeamMember::class, 'member_id');
+    }
+
+    public function team(): BelongsTo
+    {
+        return $this->belongsTo(Team::class, 'team_id');
+    }
+
+    public function source(): BelongsTo
+    {
+        return $this->belongsTo(LeadSource::class, 'source_id');
+    }
+
+    public function kanban(): BelongsTo
+    {
+        return $this->belongsTo(LeadKanban::class, 'kanban_id');
+    }
+
+    public function campaignJobStats(): HasMany
+    {
+        return $this->hasMany(CampaignJobStat::class, 'campaign_id');
+    }
+}
