@@ -44,27 +44,17 @@ class BotController extends Controller
      */
     public function job(Request $request): JsonResponse
     {
-        // $validated = $request->validate([
-        //     'title' => ['required', 'string'],
-        //     'description' => ['required', 'string'],
-        //     'uid' => ['required', 'string'],
-        //     'skills' => ['required'],
-        //     'url' => ['required', 'string'],
-        //     'location' => ['required', 'string'],
-        //     'proposals' => ['required', 'integer'],
-        //     'client_totalspent' => ['required', 'numeric'],
-        //     'client_jobposted' => ['required', 'string'],
-        //     'client_hirerate' => ['numeric'],
-        //     'client_hires' => ['integer'],
-        //     'interviews' => ['required', 'integer'],
-        //     'connects' => ['required', 'integer'],
-        //     'client_name' => ['string'],
-        //     'client_rating' => ['required', 'numeric'],
-        //     'client_avghourlyrate' => ['numeric'],
-        //     'client_openjob' => ['integer'],
-        // ]);
+        $validated = $request->validate([
+            'id' => ['required'],
+        ]);
 
         $data = $request->all();
+
+        $isExist = UpworkJob::where('uid', $data['id'])->first();
+        if ($isExist) {
+            return response()->json($isExist->toArray());
+        }
+
         $jobData = $this->botAIService->parseJob($request->all());
 
         // $skills = $validated['skills'];
@@ -80,8 +70,6 @@ class BotController extends Controller
                 'skills' => $data['skills'],
                 'url' => $data['url'],
                 'questions' => $data['questions'],
-                'skills' => $data['skills'],
-
                 'connects' => $jobData['connects'],
                 'location' => $jobData['location'],
                 'proposals' => $jobData['proposals'],
@@ -124,7 +112,7 @@ class BotController extends Controller
             'questions' => $job->questions,
         ];
         $campaignData = [
-            'coverletter_skeleton' => $campaign->ai_prompt,
+            'ai_prompt' => $campaign->ai_prompt,
             'portfolios' => $campaign->portfolios,
             'questions_context' => $campaign->questions_context,
         ];
@@ -148,7 +136,7 @@ class BotController extends Controller
     public function jobExpired(Request $request): JsonResponse
     {
         $request->validate([
-            'jobID' => ['required', 'string'],
+            'jobID' => ['required'],
         ]);
         $jobId = $request->input('jobID');
         UpworkJob::where('uid', $jobId)->update(['is_expired' => 1]);
@@ -158,62 +146,73 @@ class BotController extends Controller
     public function analysis(Request $request): JsonResponse
     {
         $request->validate([
-            'jobID' => ['required', 'string'],
-            'campaignID' => ['required', 'string'],
+            'jobID' => ['required'],
+            'campaignID' => ['required'],
         ]);
         $jobId = (int) $request->input('jobID');
         $campaignId = (int) $request->input('campaignID');
 
-        // $campaignJobStat = UpworkCampaignJobStat::where('job_id', $jobId)
-        //     ->where('campaign_id', $campaignId)
-        //     ->first();
-
-        // if ($campaignJobStat) { //return if job is already analyzed
-        //     return response()->json(['is_matched' => $campaignJobStat->is_matched]);
-        // }
-
         $campaign = UpworkCampaign::withoutTeam()->where('id', $campaignId)->first();
         $job = UpworkJob::where('uid', $jobId)->first();
 
-        if (!$job || $job->is_expired == 1) {
+        //validate if campaign has max daily bid
+        if($campaign->max_daily_bid > 0) {
+            $appliedToday = UpworkCampaignJobStat::where('campaign_id', $campaignId)
+                ->where('is_applied', 1)
+                ->where('created_at', '>=', now()->startOfDay())
+                ->count();
+            if($appliedToday >= $campaign->max_daily_bid) {
+                return response()->json(false);
+            }
+        }
+
+        //check if job is already analyzed
+        $campaignJobStat = UpworkCampaignJobStat::where('job_id', $jobId)
+            ->where('campaign_id', $campaignId)
+            ->first();
+
+        if ($campaignJobStat) { //return if job is already analyzed
+            return response()->json(['is_matched' => $campaignJobStat->is_matched]);
+        }
+        
+
+        if (!$campaign || !$job || $job->is_expired == 1) {
             return response()->json(false);
         }
 
-        $jobData = [
-            'title' => $job->title,
-            'description' => $job->description,
-        ];
+        $jobData = $job->toArray();
+        $campaignData = $campaign->toArray();
 
-        $campaignData = [
-            'portofolio' => $campaign->portfolios,
-        ];
-        
-
+        //analyze the job
         $result = $this->botAIService->analyzeJob($jobData, $campaignData);
+        $reason = $result['reason'];
+        $isMatched = $result['is_matched'];
+
         UpworkCampaignJobStat::updateOrCreate(
             [
                 'job_id' => $job->id,
                 'campaign_id' => $campaign->id,
             ],
             [
-                'is_matched' => $result['is_matched'],
-                'note' => $result['reason'],
+                'is_matched' => $isMatched,
+                'note' => $reason,
             ]
         );
+
         return response()->json($result['is_matched']);
     }
 
     public function apply(Request $request): JsonResponse
     {
         $request->validate([
-            'jobID' => ['required', 'string'],
-            'campaignID' => ['required', 'string'],
+            'jobID' => ['required'],
+            'campaignID' => ['required'],
         ]);
 
         $jobId = (int) $request->input('jobID');
         $campaignId = (int) $request->input('campaignID');
 
-        $job = UpworkJob::where('id', $jobId)->first();
+        $job = UpworkJob::where('uid', $jobId)->first();
         $campaign = UpworkCampaign::withoutTeam()->where('id', $campaignId)->first();
 
 
@@ -228,22 +227,20 @@ class BotController extends Controller
             'actual_value' => 0,
             'cost' => 0,
             'assigned_member_id' => $campaign->member_id,
-            'team_id' => $campaign->team_id,
+            'team_id' => $teamId,
             'kanban_id' => $campaign->kanban_id,
             'source_id' => $campaign->source_id,
-            'team_id' => $teamId,
             'url' => $job->url,
             'created_by_id' => $campaign->member_id,
         ]);
 
         UpworkCampaignJobStat::updateOrCreate(
             [
-                'job_id' => $jobId,
+                'job_id' => $job->id,
                 'campaign_id' => $campaignId,
             ],
             [
                 'is_applied' => 1,
-                'note' => null
             ]
         );
 

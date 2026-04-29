@@ -28,6 +28,7 @@ class UpworkCampaign extends Model
         'portfolios',
         'ai_prompt',
         'questions_context',
+        'matching_critieria',
         'rule_client_avg_spent',
         'rule_max_interviews',
         'rule_job_posted_ago',
@@ -54,6 +55,7 @@ class UpworkCampaign extends Model
             'rule_max_interviews' => 'decimal:2',
             'rule_job_posted_ago' => 'decimal:2',
             'rule_max_proposal' => 'decimal:2',
+            'max_daily_bid' => 'integer',
         ];
     }
 

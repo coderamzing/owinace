@@ -23,8 +23,7 @@ class UpworkCampaignInfolist
                                 IconEntry::make('is_active')
                                     ->label('Active')
                                     ->boolean(),
-                                TextEntry::make('max_connect_per_bid')
-                                    ->label('Max connect per bid'),
+                                
                                 TextEntry::make('search_url')
                                     ->label('Search URL')
                                     ->url(fn ($state) => filled($state) ? $state : null)
@@ -61,6 +60,8 @@ class UpworkCampaignInfolist
                         Tab::make('Rules')
                             ->icon('heroicon-o-funnel')
                             ->schema([
+                                TextEntry::make('max_connect_per_bid')
+                                    ->label('Max connect per bid'),
                                 TextEntry::make('rule_client_avg_spent')
                                     ->label('Client avg. spent'),
                                 TextEntry::make('rule_max_interviews')
@@ -68,12 +69,12 @@ class UpworkCampaignInfolist
                                 TextEntry::make('rule_job_posted_ago')
                                     ->label('Job posted ago (In Minutes)'),
                                 TextEntry::make('rule_max_proposal')
-                                    ->label('Max proposal Per Day'),
+                                    ->label('Max proposal'),
                                 TextEntry::make('rule_clock_in')
-                                    ->label('Clock in')
+                                    ->label('Clock in(UTC)')
                                     ->placeholder('—'),
                                 TextEntry::make('rule_clock_out')
-                                    ->label('Clock out')
+                                    ->label('Clock out(UTC)')
                                     ->placeholder('—'),
                             ])
                             ->columns(2),
@@ -87,6 +88,10 @@ class UpworkCampaignInfolist
                                     ->columnSpanFull(),
                                 TextEntry::make('questions_context')
                                     ->label('Questions context')
+                                    ->columnSpanFull(),
+                                TextEntry::make('matching_critieria')
+                                    ->label('Matching criteria')
+                                    ->placeholder('—')
                                     ->columnSpanFull(),
                             ]),
                     ])

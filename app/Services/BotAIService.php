@@ -3,14 +3,17 @@
 namespace App\Services;
 
 use RuntimeException;
+use Carbon\Carbon;
 
 class BotAIService
 {
     protected OpenAIService $openAIService;
+    protected DeepseekService $deepseekService;
 
-    public function __construct(OpenAIService $openAIService)
+    public function __construct(OpenAIService $openAIService, DeepseekService $deepseekService)
     {
         $this->openAIService = $openAIService;
+        $this->deepseekService = $deepseekService;
     }
 
     public function parseJob(array $jobData): array
@@ -90,42 +93,78 @@ class BotAIService
      */
     public function analyzeJob(array $jobData, array $campaignData): array
     {
+        $now = Carbon::now();
+        $nowInUtc = Carbon::parse($now)->setTimezone('UTC')->format('Y-m-d H:i:s');
+
         $jobJson = json_encode($jobData, JSON_THROW_ON_ERROR | JSON_UNESCAPED_UNICODE);
         $campaignJson = json_encode($campaignData, JSON_THROW_ON_ERROR | JSON_UNESCAPED_UNICODE);
 
         $decoded = $this->openAIService->request([
-        [
-        'role' => 'system',
-        'content' => 'You evaluate if an Upwork job matches campaign portfolios. Reply JSON only: {"is_matched":true|false,"reason":"max 100 chars"} True when portfolios show strong technical relevance. Prioritize platform, migration type, rebuild type, customization scope, integrations, similar deliverables over industry niche. Do not require same business category.',
-        ],
-        [
-        'role' => 'user',
-        'content' => <<<EOT
-        Job JSON:
-        {$jobJson}
-        
-        Campaign JSON:
-        {$campaignJson}
-        
-        Use campaignData.portfolios only.
-        
-        High-value match signals:
-        - Same CMS/framework/platform
-        - Version migration / upgrade experience
-        - Clone/redesign/rebuild of existing site
-        - Theme recreation from design files
-        - Custom feature parity
-        - Similar backend/frontend complexity
-        
-        Low-value signals:
-        - Generic developer claims only
-        - Unrelated stack with no transferable relevance
-        
-        If multiple portfolios support the job, mark true.
-        
-        Return only JSON.
-        EOT
-        ],
+            [
+                'role' => 'system',
+                'content' => <<<EOT
+                You are a helpful assistant that evaluates if an Upwork job matches a campaign.
+                Return JSON only: {"is_matched":true|false,"reason":"max 100 chars"}
+                True when portfolios show strong technical relevance.
+                Prioritize platform, migration type, rebuild type, customization scope, integrations, similar deliverables over industry niche.
+                Do not require same business category.
+                EOT
+            ],
+            [
+            'role' => 'user',
+            'content' => <<<EOT
+                Time now IN UTC: {$nowInUtc}
+                Job Data:
+                {$jobJson}
+
+                *INFO:*
+                    title: title of the job
+                    description: about of the job
+                    questions: the questions asked in the job
+                    skills: skills stack for jon as comma separated string
+                    url: URL of the job
+                    location: location of the job
+                    proposals: the number of proposals already sent for the job
+                    client_totalspent: cleint total spent on Upwork
+                    client_jobposted: client total jobs posted on Upwork
+                    client_openjob: client total open jobs on Upwork
+                    client_hirerate: client hire rate %
+                    client_avgspent: client average spent per job
+                    client_avghourlyrate: client average hourly rate
+                    posted_at: date and time the job was posted in UTC timezone
+                    client_since: date and time the client was a member of Upwork
+                    invites_sent: client total invites sent for the job
+                    type: type of the job "fixed" or "hourly"
+                    interviews: client total interviews for the job
+                    connects: connects required for the job
+                
+                Campaign Data:
+                {$campaignJson}
+
+                *INFO:*
+                    portfolios: portfolios of the campaign
+                    max_connect_per_bid: max connects per job
+                    matching_critieria: matching criteria
+                    rule_client_avg_spent: client average spent per job
+                    rule_max_interviews: max interviews for the job
+                    rule_job_posted_ago: max job posted ago in minutes
+                    rule_max_proposal: max proposals for the job
+                    rule_clock_in: clock in time
+                    rule_clock_out: clock out time
+                
+                *Rules:*
+                - ignore campaign data if any field is null or empty.
+                - match matching_critieria against job description.
+                - match portfolios against job skills or job description to find if they are right fit to convince the client.
+
+                Output:
+                {
+                "is_matched":true|false,
+                "reason":"max 100 chars"
+                }
+
+                EOT
+            ],
         ]);
 
         if (! is_array($decoded)) {
@@ -156,65 +195,109 @@ class BotAIService
 
         $questionsJson = json_encode($questions, JSON_UNESCAPED_UNICODE);
 
-        $coverSkeleton   = (string) ($campaignData['coverletter_skeleton'] ?? '');
+        $coverSkeleton   = (string) ($campaignData['ai_prompt'] ?? '');
         $portfolios      = (string) ($campaignData['portfolios'] ?? '');
         $questionsCtx    = (string) ($campaignData['questions_context'] ?? '');
 
-        $response = $this->openAIService->request([
+        $response = $this->deepseekService->request([
             [
-                'role' => 'system',
-                'content' => '
-    You write high-converting Upwork proposals for any industry.
+                        'role' => 'system',
+                        'content' => <<<EOT
+                You are a deterministic proposal generator.
+                
+                Your job is to STRICTLY COMPILE a cover letter using the provided COVERLETTERSKELETON.
+                
+                Return JSON only:
+                {
+                "cover_letter": "string",
+                "questions": [
+                    {"question": "string", "answer": "string"}
+                ]
+                }
+                
+                EXECUTION RULES (MUST FOLLOW IN ORDER):
+                
+                1. TREAT COVERLETTERSKELETON AS FINAL TEMPLATE
+                - Do NOT change structure
+                - Do NOT add new sections
+                - Do NOT remove any lines
+                - Only replace placeholders
+               
+                
+                2. PLACEHOLDER REPLACEMENT (MANDATORY)
+                - Replace ALL placeholders like [something] or {{something}}
+                - NO placeholder should remain
+                - If unclear, infer best possible content
+                - Never Write [Your Name] placeholder in the cover letter
+                - For greeting only use spintax if provided in the skeleton else dont add greeting.
+                
+                3. SPINTAX PROCESSING
+                - If skeleton contains {option1|option2|option3}
+                - Select ONLY ONE best option
+                - Remove spintax syntax completely
+                
+                4. PORTFOLIO INSERTION
+                - Use CAMPAIGN PORTFOLIOS
+                - Select ONLY 1–2 most relevant items
+                - Include URL if available
+                - Insert ONLY where skeleton requires
+                
+                5. JOB ALIGNMENT
+                - Tailor using JOB TITLE and JOB DESCRIPTION
+                - Keep content concise and relevant
+                
+                6. QUESTIONS ANSWERING
+                - Use CAMPAIGN QUESTIONS CONTEXT
+                - Answer ONLY from that context
+                - Do NOT hallucinate
+                
+                7. STRICT OUTPUT RULES
+                - No explanations
+                - No extra text
+                - No placeholders
+                - Output must be ready to send
 
-    Return JSON only:
-    {
-    "cover_letter":"string",
-    "questions":[
-        {"question":"string","answer":"string"}
-    ]
-    }
+                8. Formatting Rules:
+                - Add a Nice formatting to the cover letter as needed.
 
-    Rules:
-    - dont put any placeholder like [] in the cover_letter, it should be ready to use.
-    - Works for any niche: development, design, SEO, video, VA, data entry, marketing, etc.
-    - Use job title + description deeply.
-    - Use campaign cover letter skeleton as preferred structure/tone.
-    - Final cover_letter must be fully completed text, no placeholders.
-    - Select ONLY the most relevant portfolio examples from provided list.
-    - Mention portfolio naturally if useful.
-    - Be concise, human, confident, not robotic.
-    - Avoid generic fluff.
-    - Focus on client outcome, trust, capability, next step.
-    - Do not invent fake claims.
-    - If job has questions, answer each clearly.
-    - Use questions_context when helpful to craft stronger answers.
-    - If no questions, return empty array.
-    - No markdown fences.
-    '
-            ],
-            [
-                'role' => 'user',
-                'content' => <<<EOT
-    JOB TITLE:
-    {$title}
-
-    JOB DESCRIPTION:
-    {$description}
-
-    JOB QUESTIONS:
-    {$questionsJson}
-
-    CAMPAIGN COVER LETTER SKELETON:
-    {$coverSkeleton}
-
-    CAMPAIGN PORTFOLIOS:
-    {$portfolios}
-
-    CAMPAIGN QUESTIONS CONTEXT:
-    {$questionsCtx}
-
-    Generate best proposal now.
-    EOT
+                9. Word Count Rules:
+                - the cover letter should not be more than 350 words.
+                
+                FAIL CONDITIONS (STRICTLY AVOID):
+                - Leaving placeholders like [] or {{}}
+                - Ignoring skeleton structure
+                - Adding extra paragraphs not in skeleton
+                - Writing generic content
+                
+                EOT
+                    ],
+                    [
+                        'role' => 'user',
+                        'content' => <<<EOT
+                IMPORTANT:
+                The COVERLETTERSKELETON is a STRICT TEMPLATE.
+                Do NOT modify its structure. Only replace placeholders and resolve spintax.
+                
+                JOB TITLE:
+                {$title}
+                
+                JOB DESCRIPTION:
+                {$description}
+                
+                JOB QUESTIONS:
+                {$questionsJson}
+                
+                COVERLETTERSKELETON:
+                {$coverSkeleton}
+                
+                CAMPAIGN PORTFOLIOS:
+                {$portfolios}
+                
+                CAMPAIGN QUESTIONS CONTEXT:
+                {$questionsCtx}
+                
+                Now STRICTLY COMPILE the final proposal.
+                EOT
             ]
         ]);
 

@@ -112,9 +112,9 @@ class OpenAIService
         array $messages
     ): array {
         $response = OpenAI::chat()->create([
-            'model' => 'gpt-4o-mini',
+            'model' => 'gpt-5-mini',
             'messages' => $messages,
-            'temperature' => 0.7,
+            'temperature' => 1,
             'response_format' => [
                 'type' => 'json_object'
             ],

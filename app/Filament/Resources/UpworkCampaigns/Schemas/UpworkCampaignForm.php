@@ -38,12 +38,7 @@ class UpworkCampaignForm
                                 Toggle::make('is_active')
                                     ->label('Active')
                                     ->default(true),
-                                TextInput::make('max_connect_per_bid')
-                                    ->label('Max connect per bid')
-                                    ->numeric()
-                                    ->minValue(0)
-                                    ->maxValue(32767)
-                                    ->default(0),
+                                
                                 TextInput::make('search_url')
                                     ->label('Search URL')
                                     ->url()
@@ -117,6 +112,12 @@ class UpworkCampaignForm
                         Tab::make('Rules')
                             ->icon('heroicon-o-funnel')
                             ->schema([
+                                TextInput::make('max_connect_per_bid')
+                                    ->label('Max connect per bid')
+                                    ->numeric()
+                                    ->minValue(0)
+                                    ->maxValue(32767)
+                                    ->default(0),
                                 TextInput::make('rule_client_avg_spent')
                                     ->label('Client avg. spent')
                                     ->numeric()
@@ -130,14 +131,14 @@ class UpworkCampaignForm
                                     ->numeric()
                                     ->step(0.01),
                                 TextInput::make('rule_max_proposal')
-                                    ->label('Max proposal Per Day')
+                                    ->label('Max proposal')
                                     ->numeric()
                                     ->step(0.01),
                                 TimePicker::make('rule_clock_in')
-                                    ->label('Clock in')
+                                    ->label('Clock in(UTC)')
                                     ->seconds(false),
                                 TimePicker::make('rule_clock_out')
-                                    ->label('Clock out')
+                                    ->label('Clock out(UTC)')
                                     ->seconds(false),
                             ])
                             ->columns(2),
@@ -153,6 +154,10 @@ class UpworkCampaignForm
                                     ->columnSpanFull(),
                                 Textarea::make('questions_context')
                                     ->label('Questions context')
+                                    ->rows(6)
+                                    ->columnSpanFull(),
+                                Textarea::make('matching_critieria')
+                                    ->label('Matching criteria')
                                     ->rows(6)
                                     ->columnSpanFull(),
                             ]),
