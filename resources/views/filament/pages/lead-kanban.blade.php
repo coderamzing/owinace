@@ -151,33 +151,33 @@
                             @if($leads->count() > 0)
                                 @foreach($leads as $lead)
                                     <div 
-                                        class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-4 cursor-grab hover:border-[#6abe32] dark:hover:border-primary-600 transition-all duration-200 hover:shadow-md group"
+                                        class="kanban-lead-card bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl p-3 cursor-grab hover:border-[#6abe32] dark:hover:border-primary-600 transition-all duration-200 hover:shadow-md group"
                                         data-lead-id="{{ $lead->id }}"
                                         wire:key="lead-{{ $lead->id }}-{{ $kanban->id }}"
                                         style="border-left: 2px solid {{ $lead->source->color ?? '#6abe32' }}"
                                         onclick="if (!window.isDragging) { event.stopPropagation(); @this.openLeadSidebar({{ $lead->id }}); }"
                                     >
-                                        <div class="text-[#6abe32] dark:text-gray-100 mb-2 text-sm group-hover:text-[#6abe32] dark:group-hover:text-primary-400 transition-colors">
+                                        <div class="text-[#6abe32] dark:text-gray-100 mb-2 text-sm font-semibold leading-snug group-hover:text-[#6abe32] dark:group-hover:text-primary-400 transition-colors line-clamp-2">
                                             {{ $lead->title }}
                                         </div>
                                         
                                         @if($lead->description)
-                                            <div class="text-xs text-gray-600 dark:text-gray-400 mb-3 leading-relaxed line-clamp-2">
+                                            <div class="text-xs text-gray-600 dark:text-gray-400 mb-2 leading-relaxed line-clamp-2">
                                                 {{ Str::limit($lead->description, 100) }}
                                             </div>
                                         @endif
 
-                                        <div class="flex items-center justify-between mt-3 flex-wrap gap-2">
-                                            <div class="flex items-center gap-2 flex-wrap">
+                                        <div class="flex items-center justify-between mt-2 gap-2">
+                                            <div class="flex items-center gap-2 min-w-0">
                                                 @if($lead->source)
-                                                    <span class="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium" style="background-color: {{ $lead->source->color }}20; color: {{ $lead->source->color }}">
+                                                    <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-semibold bg-green-50 text-green-700 border border-green-100 dark:bg-green-900/20 dark:text-green-300 dark:border-green-900/30">
                                                         {{ $lead->source->name }}
                                                     </span>
                                                 @endif
                                                 
                                                 @if($lead->assignedMember)
                                                     <div 
-                                                        class="w-6 h-6 rounded-full bg-gradient-to-br from-[#6abe32] to-[#6abe32] flex items-center justify-center text-white text-xs font-bold shadow-sm"
+                                                        class="w-6 h-6 rounded-full bg-[#6abe32] flex items-center justify-center text-white text-xs font-bold shadow-sm shrink-0"
                                                         title="{{ $lead->assignedMember->name }}"
                                                     >
                                                         {{ strtoupper(substr($lead->assignedMember->name, 0, 1)) }}
@@ -186,7 +186,7 @@
                                             </div>
                                             
                                             @if($lead->expected_value)
-                                                <span class="text-xs font-bold text-green-600 dark:text-green-400">
+                                                <span class="text-sm font-bold text-green-600 dark:text-green-400 shrink-0">
                                                     ${{ number_format($lead->expected_value, 0) }}
                                                 </span>
                                             @endif

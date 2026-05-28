@@ -2,65 +2,53 @@
 
 namespace App\Filament\Widgets;
 
-use App\Filament\Resources\Leads\LeadResource;
 use App\Models\Lead;
-use Filament\Tables\Table;
-use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Columns\BadgeColumn;
-use Filament\Widgets\TableWidget as BaseWidget;
+use Filament\Widgets\Widget;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Str;
 
-class RecentWonLeadsWidget extends BaseWidget
+class RecentWonLeadsWidget extends Widget
 {
-    protected static ?string $heading = 'Recent Won Leads';
-
     protected static ?int $sort = 8;
 
     protected int | string | array $columnSpan = 6;
 
-    public function table(Table $table): Table
+    protected string $view = 'filament.widgets.recent-won-leads';
+
+    /**
+     * @return array<int, array<string, mixed>>
+     */
+    public function getLeads(): array
     {
         $teamId = Session::get('team_id');
 
         if (! $teamId) {
-            return $table->query(Lead::query()->whereRaw('1 = 0'));
+            return [];
         }
 
-        return $table
-            ->query(
-                Lead::query()
-                    ->where('team_id', $teamId)
-                    ->whereHas('kanban', function ($query) {
-                        $query->where('code', 'WON');
-                    })
-                    ->with(['source', 'kanban', 'assignedMember'])
-                    ->orderBy('created_at', 'desc')
-                    ->limit(8)
-            )
-            ->columns([
-                TextColumn::make('title')
-                    ->label('Title')
-                    ->sortable()
-                    ->limit(20)
-                    ->url(fn (Lead $record) => LeadResource::getUrl('view', ['record' => $record]))
-                    ->openUrlInNewTab(),
+        $leads = Lead::query()
+            ->where('team_id', $teamId)
+            ->whereHas('kanban', function ($query) {
+                $query->where('code', 'WON');
+            })
+            ->with(['assignedMember'])
+            ->orderBy('created_at', 'desc')
+            ->limit(6)
+            ->get();
 
-                TextColumn::make('source.name')
-                    ->label('Source')
-                    ->badge()
-                    ->color('primary'),
+        return $leads->map(function (Lead $lead) {
+            $name = $lead->assignedMember?->name ?? '—';
+            $initials = Str::of($lead->title)->trim()->substr(0, 1)->upper()->toString();
 
-                TextColumn::make('assignedMember.name')
-                    ->label('Assigned To')
-                    ->placeholder('Unassigned'),
-
-                TextColumn::make('actual_value')
-                    ->label('Actual Value')
-                    ->money('USD')
-                    ->sortable(),
-            ])
-            ->defaultSort('created_at', 'desc')
-            ->paginated(false);
+            return [
+                'id' => $lead->id,
+                'title' => $lead->title,
+                'subtitle' => $name,
+                'amount' => (float) ($lead->actual_value ?? 0),
+                'date' => optional($lead->created_at)->format('M d, Y'),
+                'initials' => $initials,
+            ];
+        })->toArray();
     }
 }
 

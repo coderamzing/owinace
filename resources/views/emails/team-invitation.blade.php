@@ -16,7 +16,7 @@
     </p>
 
     @if($invitation->team->description)
-    <div style="background-color:#f3f3e5;border-left:4px solid #b8ff90;padding:16px 18px;margin:24px 0;border-radius:0 8px 8px 0;">
+    <div style="background-color:#f6f7fb;border-left:4px solid #b8ff90;padding:16px 18px;margin:24px 0;border-radius:0 8px 8px 0;">
         <p style="margin:0;color:#061d19;font-size:15px;line-height:1.55;">{{ $invitation->team->description }}</p>
     </div>
     @endif

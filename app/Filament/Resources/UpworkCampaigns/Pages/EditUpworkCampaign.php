@@ -129,22 +129,24 @@ class EditUpworkCampaign extends EditRecord
             'questions' => $questions,
         ];
 
-        $record = $this->getRecord()->fresh();
+        $record = $this->getRecord()->fresh(['linkedPortfolios']);
 
-        $campaignData = $record->only([
+        $campaignData = array_merge($record->only([
             'title',
-            'portfolios',
             'ai_prompt',
             'questions_context',
             'rule_client_avg_spent',
             'rule_max_interviews',
             'rule_job_posted_ago',
             'rule_max_proposal',
+            'rule_min_client_rating',
             'rule_clock_in',
             'rule_clock_out',
             'search_url',
             'max_connect_per_bid',
             'max_daily_bid',
+        ]), [
+            'portfolios' => $record->portfoliosPromptText(),
         ]);
 
         try {
@@ -190,22 +192,24 @@ class EditUpworkCampaign extends EditRecord
             'description' => $description,
         ];
 
-        $record = $this->getRecord()->fresh();
+        $record = $this->getRecord()->fresh(['linkedPortfolios']);
 
-        $campaignData = $record->only([
+        $campaignData = array_merge($record->only([
             'title',
-            'portfolios',
             'ai_prompt',
             'questions_context',
             'rule_client_avg_spent',
             'rule_max_interviews',
             'rule_job_posted_ago',
             'rule_max_proposal',
+            'rule_min_client_rating',
             'rule_clock_in',
             'rule_clock_out',
             'search_url',
             'max_connect_per_bid',
             'max_daily_bid',
+        ]), [
+            'portfolios' => $record->portfoliosPromptText(),
         ]);
 
         try {

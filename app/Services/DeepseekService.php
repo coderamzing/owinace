@@ -20,7 +20,7 @@ class DeepseekService
         ]);
         $rawresponse = $client->post('/v1/chat/completions', [
             'json' => [
-                'model' => 'deepseek-reasoner',
+                'model' => 'deepseek-chat',
                 'messages' => $messages,
                 'response_format' => [
                     'type' => 'json_object'
@@ -29,7 +29,7 @@ class DeepseekService
         ]);
 
         $response = json_decode($rawresponse->getBody()->getContents(), true);
-        Log::info('Deepseek response: ' . json_encode($response));
+        //Log::info('Deepseek response: ' . json_encode($response));
 
         $content = $response['choices'][0]['message']['content'] ?? null;
         if (!$content) {

@@ -23,7 +23,7 @@
         Your workspace <strong>{{ $workspace }}</strong> has been created. You can start managing leads, teams, and your pipeline from your dashboard.
     </p>
 
-    <div style="background-color:#f3f3e5;border-left:4px solid #b8ff90;padding:20px 20px;margin:24px 0;border-radius:0 8px 8px 0;">
+    <div style="background-color:#f6f7fb;border-left:4px solid #b8ff90;padding:20px 20px;margin:24px 0;border-radius:0 8px 8px 0;">
         <h2 style="margin:0 0 12px;font-size:17px;font-weight:700;color:#061d19;">What&rsquo;s next</h2>
         <ul style="margin:0;padding:0 0 0 18px;color:#061d19;font-size:15px;line-height:1.55;list-style-type:disc;">
             <li style="margin:0 0 8px;">Manage leads and contacts</li>
@@ -34,7 +34,7 @@
     </div>
 
     @if(isset($team))
-    <div style="background-color:#f8faf8;padding:16px 18px;border-radius:8px;margin:20px 0;border:1px solid #e8e8dc;">
+    <div style="background-color:#f8fafc;padding:16px 18px;border-radius:8px;margin:20px 0;border:1px solid #e6e8ef;">
         <p style="margin:0;font-size:14px;color:#061d19;">
             <strong>Default team:</strong> {{ $team }}<br>
             <span style="color:#475569;font-size:13px;">A default team was created so you can get started right away.</span>
@@ -42,7 +42,7 @@
     </div>
     @endif
 
-    <div style="background-color:#f3f3e5;padding:16px 18px;border-radius:8px;margin:24px 0;border:1px dashed #c5d4c0;">
+    <div style="background-color:#f6f7fb;padding:16px 18px;border-radius:8px;margin:24px 0;border:1px dashed #cbd5e1;">
         <p style="margin:0;font-size:14px;line-height:1.55;color:#061d19;">
             <strong>Tip:</strong> Sign in anytime with <strong>{{ $email }}</strong>.
         </p>
@@ -50,7 +50,7 @@
 
     @include('emails.partials.centered-button', ['url' => $url ?? url('/dashboard'), 'label' => 'Open dashboard'])
 
-    <div style="border-top:1px solid #e8e8dc;padding-top:22px;margin-top:28px;">
+    <div style="border-top:1px solid #e6e8ef;padding-top:22px;margin-top:28px;">
         <p style="margin:0;font-size:14px;line-height:1.55;color:#475569;">
             Questions? Reply to this email or contact support &mdash; we&rsquo;re here to help.
         </p>

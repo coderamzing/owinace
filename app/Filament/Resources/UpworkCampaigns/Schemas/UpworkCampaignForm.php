@@ -2,17 +2,22 @@
 
 namespace App\Filament\Resources\UpworkCampaigns\Schemas;
 
+use App\Filament\Resources\UpworkCampaigns\Pages\EditUpworkCampaign;
+use App\Filament\Resources\UpworkCampaigns\RelationManagers\LinkedPortfoliosRelationManager;
 use App\Models\LeadKanban;
 use App\Models\LeadSource;
 use App\Models\TeamMember;
 use Filament\Actions\Action;
+use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\TimePicker;
 use Filament\Forms\Components\Toggle;
+use Filament\Resources\Pages\CreateRecord;
 use Filament\Resources\Pages\EditRecord;
+use Filament\Schemas\Components\Livewire;
 use Filament\Schemas\Components\Actions;
 use Filament\Schemas\Components\Callout;
 use Filament\Schemas\Components\Tabs;
@@ -134,6 +139,17 @@ class UpworkCampaignForm
                                     ->label('Max proposal')
                                     ->numeric()
                                     ->step(0.01),
+                                Select::make('rule_min_client_rating')
+                                    ->label('Min client rating')
+                                    ->options([
+                                        1 => '1',
+                                        2 => '2',
+                                        3 => '3',
+                                        4 => '4',
+                                        5 => '5',
+                                    ])
+                                    ->nullable()
+                                    ->placeholder('No minimum'),
                                 TimePicker::make('rule_clock_in')
                                     ->label('Clock in(UTC)')
                                     ->seconds(false),
@@ -145,8 +161,18 @@ class UpworkCampaignForm
                         Tab::make('Prompts')
                             ->icon('heroicon-o-chat-bubble-left-right')
                             ->schema([
-                                Textarea::make('portfolios')
-                                    ->rows(6)
+                                Placeholder::make('portfolios_create_hint')
+                                    ->label('Portfolios')
+                                    ->content('Save this campaign first, then attach portfolios from your library below.')
+                                    ->visibleOn([CreateRecord::class])
+                                    ->columnSpanFull(),
+                                Livewire::make(LinkedPortfoliosRelationManager::class)
+                                    ->key('campaign-linked-portfolios')
+                                    ->data(fn (EditUpworkCampaign $livewire): array => [
+                                        'ownerRecord' => $livewire->getRecord(),
+                                        'pageClass' => EditUpworkCampaign::class,
+                                    ])
+                                    ->visibleOn([EditRecord::class])
                                     ->columnSpanFull(),
                                 Textarea::make('ai_prompt')
                                     ->label('AI prompt')

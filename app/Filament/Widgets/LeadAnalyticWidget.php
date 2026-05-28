@@ -9,6 +9,7 @@ use Filament\Widgets\StatsOverviewWidget\Stat;
 use Illuminate\Support\Facades\Session;
 use Carbon\Carbon;
 use App\Models\AnalyticsCost;
+use Illuminate\Support\Facades\DB;
 
 class LeadAnalyticWidget extends StatsOverviewWidget
 {
@@ -46,6 +47,16 @@ class LeadAnalyticWidget extends StatsOverviewWidget
         $lostKanban = LeadKanban::where('team_id', $teamId)->where('code', 'LOST')->first();
         $openKanban = LeadKanban::where('team_id', $teamId)->where('code', 'OPEN')->first();
         $discussionKanban = LeadKanban::where('team_id', $teamId)->where('code', 'DISCUSSION')->first();
+
+        $spark = $this->buildSparklines(
+            teamId: (int) $teamId,
+            month: (int) $currentMonth,
+            year: (int) $currentYear,
+            openKanbanId: (int) ($openKanban?->id ?? 0),
+            wonKanbanId: (int) ($wonKanban?->id ?? 0),
+            lostKanbanId: (int) ($lostKanban?->id ?? 0),
+            discussionKanbanId: (int) ($discussionKanban?->id ?? 0),
+        );
 
         // Current month leads
         $currentLeads = Lead::where('team_id', $teamId)
@@ -151,24 +162,28 @@ class LeadAnalyticWidget extends StatsOverviewWidget
             Stat::make('Avg Cost Per Lead', '$' . number_format($avgCostPerLead, 2))
                 ->description($this->formatChange($avgCostChange))
                 ->descriptionIcon($avgCostChange >= 0 ? 'heroicon-o-arrow-trending-up' : 'heroicon-o-arrow-trending-down')
+                ->chart($spark['avg_cost_per_lead'] ?? null)
                 ->icon('heroicon-o-currency-dollar')
                 ->color($avgCostChange <= 0 ? 'success' : 'danger'),
 
             Stat::make('Conversion Rate', number_format($conversionRate, 1) . '%')
                 ->description($this->formatChange($conversionRateChange, '%', false))
                 ->descriptionIcon($conversionRateChange >= 0 ? 'heroicon-o-arrow-trending-up' : 'heroicon-o-arrow-trending-down')
+                ->chart($spark['conversion_rate'] ?? null)
                 ->icon('heroicon-o-chart-pie')
                 ->color($conversionRateChange >= 0 ? 'success' : 'danger'),
 
             Stat::make('Actual Value (Won)', '$' . number_format($actualValue, 0))
                 ->description($this->formatChange($actualValueChange))
                 ->descriptionIcon($actualValueChange >= 0 ? 'heroicon-o-arrow-trending-up' : 'heroicon-o-arrow-trending-down')
+                ->chart($spark['won_value'] ?? null)
                 ->icon('heroicon-o-banknotes')
                 ->color($actualValueChange >= 0 ? 'success' : 'danger'),
 
             Stat::make('ROI', number_format($roi, 1) . '%')
                 ->description($this->formatChange($roiChange, '%', false))
                 ->descriptionIcon($roiChange >= 0 ? 'heroicon-o-arrow-trending-up' : 'heroicon-o-arrow-trending-down')
+                ->chart($spark['roi'] ?? null)
                 ->icon('heroicon-o-chart-bar')
                 ->color($roiChange >= 0 ? 'success' : 'danger'),
 
@@ -176,24 +191,28 @@ class LeadAnalyticWidget extends StatsOverviewWidget
             Stat::make('Pipeline Value', '$' . number_format($pipelineValue, 0))
                 ->description($this->formatChange($pipelineValueChange))
                 ->descriptionIcon($pipelineValueChange >= 0 ? 'heroicon-o-arrow-trending-up' : 'heroicon-o-arrow-trending-down')
+                ->chart($spark['pipeline_value'] ?? null)
                 ->icon('heroicon-o-funnel')
                 ->color($pipelineValueChange >= 0 ? 'success' : 'warning'),
 
             Stat::make('Total Won', $totalWon)
                 ->description($this->formatChange($wonChange))
                 ->descriptionIcon($wonChange >= 0 ? 'heroicon-o-arrow-trending-up' : 'heroicon-o-arrow-trending-down')
+                ->chart($spark['total_won'] ?? null)
                 ->icon('heroicon-o-trophy')
                 ->color($wonChange >= 0 ? 'success' : 'danger'),
 
             Stat::make('Total Lost', $totalLost)
                 ->description($this->formatChange($lostChange))
                 ->descriptionIcon($lostChange >= 0 ? 'heroicon-o-arrow-trending-up' : 'heroicon-o-arrow-trending-down')
+                ->chart($spark['total_lost'] ?? null)
                 ->icon('heroicon-o-x-circle')
                 ->color($lostChange <= 0 ? 'success' : 'danger'),
 
             Stat::make('All Leads', $allLeads)
                 ->description($this->formatChange($allLeadsChange))
                 ->descriptionIcon($allLeadsChange >= 0 ? 'heroicon-o-arrow-trending-up' : 'heroicon-o-arrow-trending-down')
+                ->chart($spark['all_leads'] ?? null)
                 ->icon('heroicon-o-user-group')
                 ->color($allLeadsChange >= 0 ? 'success' : 'info'),
         ];
@@ -211,5 +230,115 @@ class LeadAnalyticWidget extends StatsOverviewWidget
         }
         
         return $formatted . ' from last month';
+    }
+
+    /**
+     * @return array<string, array<int, float>>
+     */
+    protected function buildSparklines(
+        int $teamId,
+        int $month,
+        int $year,
+        int $openKanbanId,
+        int $wonKanbanId,
+        int $lostKanbanId,
+        int $discussionKanbanId,
+    ): array {
+        $daysInMonth = Carbon::createFromDate($year, $month, 1)->daysInMonth;
+
+        $base = Lead::query()
+            ->where('team_id', $teamId)
+            ->whereYear('created_at', $year)
+            ->whereMonth('created_at', $month);
+
+        $byDay = $base
+            ->selectRaw('DAY(created_at) as day')
+            ->selectRaw('COUNT(*) as total')
+            ->selectRaw('SUM(cost) as cost_sum')
+            ->selectRaw('SUM(actual_value) as actual_sum')
+            ->groupBy('day')
+            ->pluck('total', 'day')
+            ->all();
+
+        $costByDay = $base
+            ->selectRaw('DAY(created_at) as day')
+            ->selectRaw('SUM(cost) as cost_sum')
+            ->groupBy('day')
+            ->pluck('cost_sum', 'day')
+            ->all();
+
+        $wonValueByDay = ($wonKanbanId > 0
+            ? (clone $base)->where('kanban_id', $wonKanbanId)
+            : (clone $base)->whereRaw('1 = 0'))
+            ->selectRaw('DAY(created_at) as day')
+            ->selectRaw('SUM(actual_value) as actual_sum')
+            ->groupBy('day')
+            ->pluck('actual_sum', 'day')
+            ->all();
+
+        $wonCountByDay = ($wonKanbanId > 0
+            ? (clone $base)->where('kanban_id', $wonKanbanId)
+            : (clone $base)->whereRaw('1 = 0'))
+            ->selectRaw('DAY(created_at) as day')
+            ->selectRaw('COUNT(*) as total')
+            ->groupBy('day')
+            ->pluck('total', 'day')
+            ->all();
+
+        $lostCountByDay = ($lostKanbanId > 0
+            ? (clone $base)->where('kanban_id', $lostKanbanId)
+            : (clone $base)->whereRaw('1 = 0'))
+            ->selectRaw('DAY(created_at) as day')
+            ->selectRaw('COUNT(*) as total')
+            ->groupBy('day')
+            ->pluck('total', 'day')
+            ->all();
+
+        $pipelineByDay = ($discussionKanbanId > 0
+            ? (clone $base)->where('kanban_id', $discussionKanbanId)
+            : (clone $base)->whereRaw('1 = 0'))
+            ->selectRaw('DAY(created_at) as day')
+            ->selectRaw('SUM(expected_value) as expected_sum')
+            ->groupBy('day')
+            ->pluck('expected_sum', 'day')
+            ->all();
+
+        $avgCost = [];
+        $conv = [];
+        $roi = [];
+        $wonValue = [];
+        $pipeline = [];
+        $totalWon = [];
+        $totalLost = [];
+        $allLeads = [];
+
+        for ($day = 1; $day <= $daysInMonth; $day++) {
+            $leads = (float) ($byDay[$day] ?? 0);
+            $cost = (float) ($costByDay[$day] ?? 0);
+            $wonCount = (float) ($wonCountByDay[$day] ?? 0);
+            $lostCount = (float) ($lostCountByDay[$day] ?? 0);
+            $wonVal = (float) ($wonValueByDay[$day] ?? 0);
+            $pipe = (float) ($pipelineByDay[$day] ?? 0);
+
+            $avgCost[] = $leads > 0 ? ($cost / $leads) : 0.0;
+            $conv[] = $leads > 0 ? (($wonCount / $leads) * 100) : 0.0;
+            $roi[] = $cost > 0 ? ((($wonVal - $cost) / $cost) * 100) : 0.0;
+            $wonValue[] = $wonVal;
+            $pipeline[] = $pipe;
+            $totalWon[] = $wonCount;
+            $totalLost[] = $lostCount;
+            $allLeads[] = $leads;
+        }
+
+        return [
+            'avg_cost_per_lead' => $avgCost,
+            'conversion_rate' => $conv,
+            'won_value' => $wonValue,
+            'roi' => $roi,
+            'pipeline_value' => $pipeline,
+            'total_won' => $totalWon,
+            'total_lost' => $totalLost,
+            'all_leads' => $allLeads,
+        ];
     }
 }

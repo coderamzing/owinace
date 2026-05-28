@@ -177,6 +177,20 @@ Widgets
     font-size: 0.75rem !important;
 }
 
+/* Member Goal Progress: remove section padding */
+.member-goal-progress-section .fi-section-content {
+    padding: 0 !important;
+}
+
+/* Kanban lead card: tighter, cleaner */
+.kanban-lead-card {
+    box-shadow: 0 1px 0 rgba(15, 23, 42, 0.04);
+}
+
+.kanban-lead-card:hover {
+    box-shadow: 0 8px 20px rgba(15, 23, 42, 0.08);
+}
+
 /* .fi-topbar{
     border-bottom: 1px solid var(--color-gray-200);
     box-shadow: none;
@@ -227,9 +241,8 @@ button.fi-text-color-950
 
 @layer components {
   .fi-logo {
-    &:where(.dark, .dark *) {
-      filter: invert(1);
-    }
+    width: auto;
+    object-fit: contain;
   }
 }
 

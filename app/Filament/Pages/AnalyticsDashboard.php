@@ -15,7 +15,7 @@ use App\Filament\Widgets\LeadConversionFunnelWidget;
 use App\Filament\Widgets\TeamActivityWidget;
 use App\Filament\Widgets\LeadQualityWidget;
 use App\Filament\Widgets\MonthlyCostPerLeadWidget;
-use App\Filament\Widgets\WeeklyAiInsightsWidget;
+use App\Filament\Widgets\MonthlyAiInsightsWidget;
 use App\Filament\Widgets\LeadAnalyticWidget;
 use App\Filament\Widgets\PPAnalyticWidget;
 use App\Filament\Widgets\DailyLeadStatusWidget;
@@ -176,38 +176,37 @@ class AnalyticsDashboard extends Page
     protected function getWidgets(): array
     {
         return [
-            // A. Lead Analytics Widget - 8 cards in full span
+            // A. Lead Analytics Widget - 8 cards
             LeadAnalyticWidget::class,
-            
-            // B. PP Analytics Widget - 4 cards in full span
-            PPAnalyticWidget::class,
 
-            // B1. Daily New / Won / Lost
+            // A2. Daily leads by status (from leads_history)
             DailyLeadStatusWidget::class,
             
-            // C. Leads by Source - cols 6
+            // B. Leads by Source
             LeadsBySourceWidget::class,
             
-            // D. Leads by Stage - cols 6
+            // C. Leads by Stage
             LeadsByStageWidget::class,
             
-            // E. Lead Conversion Funnel - cols 6
+            // D. Lead Conversion Funnel
             LeadConversionFunnelWidget::class,
             
-            // F. Recent Won Leads - cols 6
+            // E. Recent Won Leads
             RecentWonLeadsWidget::class,
 
-            // G. Team member goal progress - full width
+            // F. Member Goal Progress
             GoalPerformanceTrackingWidget::class,
+
+            // G. Member Performance
+            MemberPerformanceWidget::class,
             
             // Commented out old widgets
-            // WeeklyAiInsightsWidget::class,
+            // MonthlyAiInsightsWidget::class,
             // RevenueOverviewWidget::class,
             // LeadQualityWidget::class,
             // GoalsOverviewWidget::class,
             // LeadsOverviewWidget::class,
             // MonthlyCostPerLeadWidget::class,
-            // MemberPerformanceWidget::class,
             // GoalBarsWidget::class,
             // RecentLeadsWidget::class,
             // TeamActivityWidget::class,

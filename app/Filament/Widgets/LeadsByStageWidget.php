@@ -15,6 +15,8 @@ class LeadsByStageWidget extends ChartWidget
     
     protected int | string | array $columnSpan = 6;
 
+    protected string $view = 'filament.widgets.leads-by-stage';
+
     public function getHeading(): string
     {
         return 'Leads by Stage';
@@ -75,7 +77,7 @@ class LeadsByStageWidget extends ChartWidget
 
     protected function getType(): string
     {
-        return 'pie';
+        return 'doughnut';
     }
 
     protected function getOptions(): array
@@ -84,9 +86,59 @@ class LeadsByStageWidget extends ChartWidget
             'responsive' => true,
             'plugins' => [
                 'legend' => [
-                    'position' => 'right',
+                    'display' => false,
                 ],
             ],
+            'cutout' => '68%',
         ];
+    }
+
+    /**
+     * @return array<int, array{label: string, count: int, percent: float, color: string}>
+     */
+    public function getLegendItems(): array
+    {
+        $teamId = Session::get('team_id');
+        if (! $teamId) {
+            return [];
+        }
+
+        $selectedPeriod = Session::get('analytics_period') ?? Carbon::now()->format('Y-m');
+        $month = (int) Carbon::parse($selectedPeriod . '-01')->month;
+        $year = (int) Carbon::parse($selectedPeriod . '-01')->year;
+
+        $kanbans = LeadKanban::where('team_id', $teamId)
+            ->where('is_active', true)
+            ->orderBy('sort_order')
+            ->get();
+
+        $items = [];
+        $total = 0;
+
+        foreach ($kanbans as $kanban) {
+            $count = Lead::where('team_id', $teamId)
+                ->where('kanban_id', $kanban->id)
+                ->whereYear('created_at', $year)
+                ->whereMonth('created_at', $month)
+                ->count();
+
+            if ($count <= 0) {
+                continue;
+            }
+
+            $total += $count;
+            $items[] = [
+                'label' => (string) $kanban->name,
+                'count' => (int) $count,
+                'percent' => 0.0,
+                'color' => (string) ($kanban->color ?? '#10b981'),
+            ];
+        }
+
+        foreach ($items as $idx => $item) {
+            $items[$idx]['percent'] = $total > 0 ? round(($item['count'] / $total) * 100, 0) : 0.0;
+        }
+
+        return $items;
     }
 }

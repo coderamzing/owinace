@@ -10,6 +10,11 @@ use App\Observers\LeadObserver;
 use App\Observers\PortfolioObserver;
 use App\Observers\TeamObserver;
 use App\Observers\UserObserver;
+use App\Services\AnalyticsCostService;
+use App\Services\AnalyticsGoalService;
+use App\Services\AnalyticsLeadService;
+use App\Services\AnalyticsRefreshManager;
+use App\Services\Contracts\AnalyticsRefreshServiceInterface;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Blade;
 use App\Services\ImageService;
@@ -21,7 +26,20 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        $this->app->tag(
+            [
+                AnalyticsLeadService::class,
+                AnalyticsCostService::class,
+                AnalyticsGoalService::class,
+            ],
+            'analytics.refreshers'
+        );
+
+        $this->app->bind(AnalyticsRefreshManager::class, function ($app) {
+            /** @var iterable<AnalyticsRefreshServiceInterface> $refreshers */
+            $refreshers = $app->tagged('analytics.refreshers');
+            return new AnalyticsRefreshManager($refreshers);
+        });
     }
 
     /**

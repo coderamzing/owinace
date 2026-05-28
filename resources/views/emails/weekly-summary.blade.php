@@ -22,13 +22,13 @@
     <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border-collapse:collapse;margin-bottom:16px;">
         <tr>
             <td style="width:50%;padding:0 8px 16px 0;vertical-align:top;">
-                <div style="background-color:#f3f3e5;padding:18px;border-radius:10px;border-left:4px solid #b8ff90;">
+                <div style="background-color:#f6f7fb;padding:18px;border-radius:10px;border-left:4px solid #b8ff90;">
                     <div style="font-size:12px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:#475569;margin-bottom:8px;">Proposals created</div>
                     <div style="font-size:30px;font-weight:700;color:#061d19;line-height:1;">{{ $proposals_created }}</div>
                 </div>
             </td>
             <td style="width:50%;padding:0 0 16px 8px;vertical-align:top;">
-                <div style="background-color:#f3f3e5;padding:18px;border-radius:10px;border-left:4px solid #061d19;">
+                <div style="background-color:#f6f7fb;padding:18px;border-radius:10px;border-left:4px solid #061d19;">
                     <div style="font-size:12px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:#475569;margin-bottom:8px;">Portfolios added</div>
                     <div style="font-size:30px;font-weight:700;color:#061d19;line-height:1;">{{ $portfolios_added }}</div>
                 </div>
@@ -36,13 +36,13 @@
         </tr>
         <tr>
             <td style="width:50%;padding:0 8px 16px 0;vertical-align:top;">
-                <div style="background-color:#f3f3e5;padding:18px;border-radius:10px;border-left:4px solid #94a3b8;">
+                <div style="background-color:#f6f7fb;padding:18px;border-radius:10px;border-left:4px solid #94a3b8;">
                     <div style="font-size:12px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:#475569;margin-bottom:8px;">Leads open</div>
                     <div style="font-size:30px;font-weight:700;color:#061d19;line-height:1;">{{ $leads_open }}</div>
                 </div>
             </td>
             <td style="width:50%;padding:0 0 16px 8px;vertical-align:top;">
-                <div style="background-color:#f3f3e5;padding:18px;border-radius:10px;border-left:4px solid #b8ff90;">
+                <div style="background-color:#f6f7fb;padding:18px;border-radius:10px;border-left:4px solid #b8ff90;">
                     <div style="font-size:12px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:#475569;margin-bottom:8px;">Leads new</div>
                     <div style="font-size:30px;font-weight:700;color:#061d19;line-height:1;">{{ $leads_new }}</div>
                 </div>
@@ -74,7 +74,7 @@
 
     @include('emails.partials.centered-button', ['url' => $url, 'label' => 'Open dashboard'])
 
-    <div style="border-top:1px solid #e8e8dc;padding-top:22px;margin-top:28px;">
+    <div style="border-top:1px solid #e6e8ef;padding-top:22px;margin-top:28px;">
         <p style="margin:0;font-size:14px;line-height:1.55;color:#475569;">
             Weekly snapshot for admins of {{ $team_name }}.
         </p>

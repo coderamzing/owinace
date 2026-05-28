@@ -70,6 +70,9 @@ class UpworkCampaignInfolist
                                     ->label('Job posted ago (In Minutes)'),
                                 TextEntry::make('rule_max_proposal')
                                     ->label('Max proposal'),
+                                TextEntry::make('rule_min_client_rating')
+                                    ->label('Min client rating')
+                                    ->placeholder('—'),
                                 TextEntry::make('rule_clock_in')
                                     ->label('Clock in(UTC)')
                                     ->placeholder('—'),
@@ -81,7 +84,11 @@ class UpworkCampaignInfolist
                         Tab::make('Prompts')
                             ->icon('heroicon-o-chat-bubble-left-right')
                             ->schema([
-                                TextEntry::make('portfolios')
+                                TextEntry::make('linkedPortfolios.title')
+                                    ->label('Portfolios')
+                                    ->listWithLineBreaks()
+                                    ->bulleted()
+                                    ->placeholder('No portfolios attached')
                                     ->columnSpanFull(),
                                 TextEntry::make('ai_prompt')
                                     ->label('AI prompt')

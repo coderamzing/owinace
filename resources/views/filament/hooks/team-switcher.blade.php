@@ -5,7 +5,8 @@
 @endphp
 
 <a href="/admin" class="absolute left-0 block lg:hidden">
-    <img alt="Laravel logo" src="/images/leadcliq.svg" class="fi-logo sm:min-w-[150px] sm:h-[2rem] min-w-[100px] h-[1.5rem]">
+    <img alt="LeadCliq" src="{{ asset('images/leadcliq-logo.png') }}" class="fi-logo sm:min-w-[150px] sm:h-[2rem] min-w-[100px] h-[1.5rem] w-auto object-contain dark:hidden">
+    <img alt="LeadCliq" src="{{ asset('images/leadcliq-dark-logo.png') }}" class="fi-logo sm:min-w-[150px] sm:h-[2rem] min-w-[100px] h-[1.5rem] w-auto object-contain hidden dark:block">
 </a>
 
 <div class="fi-topbar-items flex items-center gap-4 w-full">

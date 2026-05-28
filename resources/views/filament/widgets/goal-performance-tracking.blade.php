@@ -1,82 +1,64 @@
 @php
     /** @var array<int, array<string, mixed>> $members */
     $members = $this->getMemberGoals();
-
-    $colorBarClasses = [
-        'primary' => 'this:primary bg-this dark:bg-this-light',
-        'success' => 'this:success bg-this dark:bg-this-light',
-        'info' => 'this:info bg-this dark:bg-this-light',
-        'warning' => 'this:warning bg-this dark:bg-this-light',
-        'danger' => 'this:danger bg-this dark:bg-this-light',
-    ];
 @endphp
 
 <x-filament-widgets::widget>
-    <x-filament::section>
-        <div class="grid grid-cols-1 gap-4 px-4 pb-2 sm:px-5 lg:grid-cols-2">
+    <x-filament::section heading="Member Goal Progress" class="member-goal-progress-section">
+        <div class="grid grid-cols-1 gap-4 px-0 pb-0 sm:px-0 lg:grid-cols-4">
             @forelse ($members as $member)
                 <div
-                    class="relative break-words card rounded-lg bg-white shadow-soft dark:bg-dark-700 dark:shadow-none space-y-6 p-4 sm:p-5">
-                    <div class="flex justify-between gap-2">
-                        <div class="flex items-center gap-3">
-                            <div class="avatar relative inline-flex shrink-0"
-                                style="height: 2.5rem; width: 2.5rem;">
-                                <img class="avatar-image avatar-display relative h-full w-full rounded-full object-cover"
-                                    alt="{{ $member['name'] }}"
-                                    loading="lazy"
-                                    src="{{ $member['avatar_url'] }}">
-                            </div>
-                            <div>
-                                <p class="font-medium text-gray-800 dark:text-dark-100">
-                                    {{ $member['name'] }}
-                                </p>
-                                <p class="text-xs text-gray-400 dark:text-dark-300">
-                                    {{ $member['role'] ?? 'Member' }}
-                                </p>
-                            </div>
+                    class="rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-4 space-y-3">
+                    <div class="flex items-center gap-3">
+                        <img
+                            src="{{ $member['avatar_url'] }}"
+                            alt="{{ $member['name'] }}"
+                            class="w-9 h-9 rounded-full object-cover"
+                            loading="lazy"
+                        />
+                        <div class="min-w-0">
+                            <div class="text-sm font-semibold text-gray-900 dark:text-white truncate">{{ $member['name'] }}</div>
+                            <div class="text-xs text-gray-500 dark:text-gray-400 truncate">{{ $member['role'] ?? 'Sales Rep' }}</div>
                         </div>
                     </div>
 
-                    @if (! empty($member['goals']))
-                        <div class="space-y-4">
-                            @foreach ($member['goals'] as $goal)
-                                @php
-                                    $barClasses = $colorBarClasses[$goal['color']] ?? $colorBarClasses['primary'];
-                                    if (! empty($goal['is_active'])) {
-                                        $barClasses .= ' is-active';
-                                    }
-                                @endphp
+                    <div>
+                        <div class="text-3xl font-bold text-gray-900 dark:text-white leading-tight">{{ (int) ($member['percentage'] ?? 0) }}%</div>
+                        <div class="text-xs text-gray-500 dark:text-gray-400">of monthly goal</div>
+                    </div>
 
-                                <div class="rounded-lg border border-gray-150 p-4 dark:border-dark-600">
-                                    <div class="flex justify-between">
-                                        <div>
-                                            <span
-                                                class="text-2xl font-medium text-gray-800 dark:text-dark-100">{{ $goal['value'] }}</span>
-                                            <span class="text-xs">{{ $goal['unit'] }}</span>
-                                        </div>
-                                        <p class="text-xs-plus text-gray-600 dark:text-dark-200">
-                                            {{ $goal['label'] }}
-                                        </p>
-                                    </div>
-                                    <div class="progress-rail bg-gray-150 dark:bg-dark-500 mt-3 h-1.5">
-                                        <div class="progress relative rounded-full transition-[width] ease-out {{ $barClasses }} flex items-center justify-end leading-none"
-                                            style="width: {{ $goal['percentage'] }}%;"></div>
-                                    </div>
-                                    <div class="mt-2 flex justify-between text-xs text-gray-400 dark:text-dark-300">
-                                        <p>Monthly target</p>
-                                        <p>{{ $goal['percentage'] }}%</p>
-                                    </div>
-                                </div>
-                            @endforeach
+                    <div class="h-1.5 rounded-full bg-gray-100 dark:bg-gray-800 overflow-hidden">
+                        <div class="h-1.5 rounded-full" style="width: <?php echo (int) ($member['percentage'] ?? 0); ?>%; background-color: #6ABE32;"></div>
+                    </div>
+
+                    <div class="flex items-center justify-between gap-2 pt-1">
+                        <div class="text-xs text-gray-600 dark:text-gray-300">
+                            {{ number_format((float) ($member['progress_value'] ?? 0), 0) }} / {{ number_format((float) ($member['target_value'] ?? 0), 0) }}
                         </div>
-                    @else
-                        <p class="text-sm text-gray-500 dark:text-dark-300">
-                            No goals configured for this member in the selected period.
-                        </p>
-                    @endif
+
+                        @php
+                            $status = $member['status'] ?? 'behind';
+                            $statusLabel = match ($status) {
+                                'achieved' => 'Achieved',
+                                'on_track' => 'On Track',
+                                'at_risk' => 'At Risk',
+                                default => 'Behind',
+                            };
+                            $statusClasses = match ($status) {
+                                'achieved' => 'bg-green-50 text-green-700 dark:bg-green-900/20 dark:text-green-300',
+                                'on_track' => 'bg-green-50 text-green-700 dark:bg-green-900/20 dark:text-green-300',
+                                'at_risk' => 'bg-amber-50 text-amber-700 dark:bg-amber-900/20 dark:text-amber-300',
+                                default => 'bg-red-50 text-red-700 dark:bg-red-900/20 dark:text-red-300',
+                            };
+                        @endphp
+
+                        <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold {{ $statusClasses }}">
+                            {{ $statusLabel }}
+                        </span>
+                    </div>
                 </div>
             @empty
-                <div class="text-sm text-gray-500 dark:text-dark-300 lg:col-span-2">
+                <div class="text-sm text-gray-500 dark:text-gray-300 lg:col-span-4">
                     No member goals available for this period.
                 </div>
             @endforelse

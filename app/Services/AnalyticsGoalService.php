@@ -9,10 +9,11 @@ use App\Models\LeadKanban;
 use App\Models\Team;
 use App\Models\TeamMember;
 use App\Models\User;
+use App\Services\Contracts\AnalyticsRefreshServiceInterface;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 
-class AnalyticsGoalService
+class AnalyticsGoalService implements AnalyticsRefreshServiceInterface
 {
     /**
      * Generate analytics goal data for a specific month and year
@@ -339,6 +340,11 @@ class AnalyticsGoalService
         }
 
         return true;
+    }
+
+    public function refreshForTeam(int $teamId): void
+    {
+        $this->syncAnalyticGoal($teamId);
     }
 }
 

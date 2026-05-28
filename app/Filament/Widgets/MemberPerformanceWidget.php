@@ -3,9 +3,9 @@
 namespace App\Filament\Widgets;
 
 use App\Models\AnalyticsLead;
-use App\Models\TeamMember;
 use App\Models\User;
 use Filament\Tables\Table;
+use Filament\Tables\Columns\BadgeColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Widgets\TableWidget as BaseWidget;
 use Illuminate\Support\Facades\Session;
@@ -39,23 +39,29 @@ class MemberPerformanceWidget extends BaseWidget
                     ->where('month', $month)
                     ->where('year', $year)
                     ->with('user')
+                    ->whereNotNull('user_id')
             )
             ->columns([
                 TextColumn::make('user.name')
                     ->label('Member')
                     ->sortable(),
 
+                TextColumn::make('user.role')
+                    ->label('Role')
+                    ->state(fn (AnalyticsLead $record) => $record->user?->role ?? 'Member')
+                    ->sortable(false),
+
                 TextColumn::make('total_lead')
-                    ->label('Total Leads')
+                    ->label('Leads')
                     ->sortable(),
 
-                TextColumn::make('total_won')
-                    ->label('Won')
-                    ->sortable(),
-
-                TextColumn::make('total_lost')
-                    ->label('Lost')
-                    ->sortable(),
+                TextColumn::make('won_value')
+                    ->label('Won Value')
+                    ->money('USD')
+                    ->state(fn (AnalyticsLead $record) => (float) ($record->total_value ?? 0))
+                    ->sortable(query: function ($query, string $direction) {
+                        return $query->orderBy('total_value', $direction);
+                    }),
 
                 TextColumn::make('conversion_rate')
                     ->label('Conversion Rate')
@@ -68,10 +74,22 @@ class MemberPerformanceWidget extends BaseWidget
                     })
                     ->sortable(false), // Can't sort computed field
 
-                TextColumn::make('total_expected_value')
-                    ->label('Total Value')
-                    ->money('USD')
-                    ->sortable(),
+                BadgeColumn::make('status')
+                    ->label('Status')
+                    ->state(function (AnalyticsLead $record) {
+                        $totalLeads = (int) ($record->total_lead ?? 0);
+                        $won = (int) ($record->total_won ?? 0);
+                        $rate = $totalLeads > 0 ? ($won / $totalLeads) * 100 : 0;
+
+                        if ($rate >= 25) return 'On Track';
+                        if ($rate >= 10) return 'At Risk';
+                        return 'Behind';
+                    })
+                    ->colors([
+                        'success' => 'On Track',
+                        'warning' => 'At Risk',
+                        'danger' => 'Behind',
+                    ]),
             ])
             ->defaultSort('total_lead', 'desc')
             ->paginated(false);

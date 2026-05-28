@@ -7,45 +7,41 @@
     @endphp
 
     <div class="space-y-6">
-        {{-- Header Section --}}
-        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 mb-2">
-            <!-- Title Area -->
-            <div>
-                <div class="flex items-center gap-3 mb-4">
-                    <div class="w-12 h-12 bg-gradient-to-br from-primary-600 to-indigo-600 rounded-xl flex items-center justify-center">
-                        <x-filament::icon icon="heroicon-o-chart-bar-square" class="w-7 h-7 text-white" />
-                    </div>
-                    <div>
-                        <h1 class="text-[24px] font-extrabold text-gray-900 dark:text-white">Analytics Dashboard</h1>
-                        <p class="text-sm text-gray-600 dark:text-gray-400 mt-0.5">
-                            <span class="font-semibold text-primary-600 dark:text-primary-400">{{ $teamName }}</span>
-                            <span class="mx-2">·</span>
-                            <span>{{ $currentPeriodLabel }}</span>
-                        </p>
-                    </div>
-                </div>
+        {{-- Header (match dashboard look; ignore sidebar/topbar) --}}
+        <div class="flex items-center justify-between gap-4">
+            <div class="min-w-0">
+                <h1 class="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white truncate">Dashboard</h1>
+                <p class="text-sm text-gray-500 dark:text-gray-400 truncate">
+                    {{ $teamName }} · {{ $currentPeriodLabel }}
+                </p>
             </div>
-            
-            <!-- Navigation Controls -->
-            <div class="flex items-center gap-3">
+
+            <div class="flex items-center gap-2">
                 <button
                     type="button"
                     wire:click="goToPreviousMonth"
                     @if(!$this->canGoToPreviousMonth()) disabled @endif
-                    class="inline-flex items-center justify-center px-4 py-2.5 text-sm font-semibold text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-800 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-primary-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                    class="inline-flex items-center justify-center w-9 h-9 rounded-lg bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-primary-500 disabled:opacity-50 disabled:cursor-not-allowed transition"
+                    aria-label="Previous month"
                 >
-                    <x-filament::icon icon="heroicon-o-chevron-left" class="w-5 h-5 mr-1.5" />
-                    Previous
+                    <x-filament::icon icon="heroicon-o-chevron-left" class="w-5 h-5 text-gray-600 dark:text-gray-300" />
                 </button>
-                
+
+                <div class="inline-flex items-center gap-2 px-3 h-9 rounded-lg bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800">
+                    <x-filament::icon icon="heroicon-o-calendar-days" class="w-5 h-5 text-gray-600 dark:text-gray-300" />
+                    <span class="text-sm font-semibold text-gray-900 dark:text-white whitespace-nowrap">
+                        {{ $currentPeriodLabel }}
+                    </span>
+                </div>
+
                 <button
                     type="button"
                     wire:click="goToNextMonth"
                     @if(!$this->canGoToNextMonth()) disabled @endif
-                    class="inline-flex items-center justify-center px-4 py-2.5 text-sm font-semibold text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-800 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-primary-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                    class="inline-flex items-center justify-center w-9 h-9 rounded-lg bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-primary-500 disabled:opacity-50 disabled:cursor-not-allowed transition"
+                    aria-label="Next month"
                 >
-                    Next
-                    <x-filament::icon icon="heroicon-o-chevron-right" class="w-5 h-5 ml-1.5" />
+                    <x-filament::icon icon="heroicon-o-chevron-right" class="w-5 h-5 text-gray-600 dark:text-gray-300" />
                 </button>
             </div>
         </div>

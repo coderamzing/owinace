@@ -3,7 +3,7 @@
         <div class="flex items-center justify-between py-2.5 lg:py-4.5">
             <div class="text-lg font-bold">
                 <a href="{{ route('home') }}">
-                    <img src="/images/leadcliq.svg" alt="LeadCliq" class="h-8.5 lg:h-9">
+                    <img src="{{ asset('images/leadcliq-logo.png') }}" alt="LeadCliq" class="h-8.5 w-auto lg:h-9">
                 </a>
             </div>
 
@@ -80,7 +80,7 @@
             <!-- Mobile Menu Header -->
             <div class="h-16 flex items-center justify-between px-4 border-b border-neutral-200 bg-white sticky top-0 z-10">
                 <a href="{{ route('home') }}">
-                    <img src="/images/leadcliq.svg" alt="LeadCliq" class="h-8.5">
+                    <img src="{{ asset('images/leadcliq-logo.png') }}" alt="LeadCliq" class="h-8.5 w-auto">
                 </a>
 
                 <button type="button" @click="mobileMenuOpen = false" class="bg-neutral-600/15 text-neutral-600 size-8 flex justify-center items-center rounded-full hover:bg-neutral-600/25 transition-colors" aria-label="Close">

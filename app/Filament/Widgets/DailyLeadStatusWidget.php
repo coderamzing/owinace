@@ -2,7 +2,6 @@
 
 namespace App\Filament\Widgets;
 
-use App\Models\Lead;
 use App\Models\LeadKanban;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
@@ -14,6 +13,10 @@ class DailyLeadStatusWidget extends ChartWidget
     protected static ?int $sort = 99;
 
     protected int | string | array $columnSpan = 12;
+
+    public ?string $filter = null;
+
+    protected ?string $maxHeight = '500px';
 
     public function getHeading(): string
     {
@@ -31,7 +34,7 @@ class DailyLeadStatusWidget extends ChartWidget
             ];
         }
 
-        $selectedPeriod = Session::get('analytics_period') ?? Carbon::now()->format('Y-m');
+        $selectedPeriod = $this->filter ?? Session::get('analytics_period') ?? Carbon::now()->format('Y-m');
         $start = Carbon::parse($selectedPeriod . '-01')->startOfMonth();
         $end = (clone $start)->endOfMonth();
 
@@ -43,42 +46,64 @@ class DailyLeadStatusWidget extends ChartWidget
             $current->addDay();
         }
 
-        // New leads per day (based on created_at)
-        $newLeads = Lead::where('team_id', $teamId)
-            ->whereBetween('created_at', [$start, $end])
-            ->selectRaw('DATE(created_at) as date, COUNT(*) as count')
-            ->groupBy('date')
-            ->pluck('count', 'date')
-            ->toArray();
+        // Get NEW / WON / LOST kanban IDs (case-insensitive)
+        $newKanbanId = LeadKanban::query()
+            ->where('team_id', $teamId)
+            ->whereRaw('LOWER(code) = ?', ['new'])
+            ->value('id');
 
-        // Get WON and LOST kanban IDs
-        $wonKanban = LeadKanban::where('team_id', $teamId)->where('code', 'WON')->first();
-        $lostKanban = LeadKanban::where('team_id', $teamId)->where('code', 'LOST')->first();
+        $wonKanbanId = LeadKanban::query()
+            ->where('team_id', $teamId)
+            ->whereRaw('LOWER(code) = ?', ['won'])
+            ->value('id');
 
+        $lostKanbanId = LeadKanban::query()
+            ->where('team_id', $teamId)
+            ->whereRaw('LOWER(code) = ?', ['lost'])
+            ->value('id');
+
+        // NEW: only count the day a lead FIRST became NEW.
+        // We do this by taking MIN(date) per lead_id for NEW within the month, then counting per date.
+        $newPerDay = [];
+        if ($newKanbanId) {
+            $firstNewPerLead = DB::table('leads_history')
+                ->join('leads', 'leads.id', '=', 'leads_history.lead_id')
+                ->where('leads.team_id', $teamId)
+                ->where('leads_history.kanban_id', $newKanbanId)
+                ->whereBetween('leads_history.created_at', [$start, $end])
+                ->selectRaw('leads_history.lead_id as lead_id, MIN(DATE(leads_history.created_at)) as first_date')
+                ->groupBy('leads_history.lead_id');
+
+            $newPerDay = DB::query()
+                ->fromSub($firstNewPerLead, 't')
+                ->selectRaw('t.first_date as date, COUNT(*) as count')
+                ->groupBy('t.first_date')
+                ->pluck('count', 'date')
+                ->toArray();
+        }
+
+        // WON / LOST: count distinct leads that entered WON/LOST on that day.
         $wonPerDay = [];
-        $lostPerDay = [];
-
-        if ($wonKanban) {
+        if ($wonKanbanId) {
             $wonPerDay = DB::table('leads_history')
                 ->join('leads', 'leads.id', '=', 'leads_history.lead_id')
-                ->join('lead_kanban', 'lead_kanban.id', '=', 'leads_history.kanban_id')
                 ->where('leads.team_id', $teamId)
+                ->where('leads_history.kanban_id', $wonKanbanId)
                 ->whereBetween('leads_history.created_at', [$start, $end])
-                ->where('lead_kanban.id', $wonKanban->id)
-                ->selectRaw('DATE(leads_history.created_at) as date, COUNT(*) as count')
+                ->selectRaw('DATE(leads_history.created_at) as date, COUNT(DISTINCT leads_history.lead_id) as count')
                 ->groupBy('date')
                 ->pluck('count', 'date')
                 ->toArray();
         }
 
-        if ($lostKanban) {
+        $lostPerDay = [];
+        if ($lostKanbanId) {
             $lostPerDay = DB::table('leads_history')
                 ->join('leads', 'leads.id', '=', 'leads_history.lead_id')
-                ->join('lead_kanban', 'lead_kanban.id', '=', 'leads_history.kanban_id')
                 ->where('leads.team_id', $teamId)
+                ->where('leads_history.kanban_id', $lostKanbanId)
                 ->whereBetween('leads_history.created_at', [$start, $end])
-                ->where('lead_kanban.id', $lostKanban->id)
-                ->selectRaw('DATE(leads_history.created_at) as date, COUNT(*) as count')
+                ->selectRaw('DATE(leads_history.created_at) as date, COUNT(DISTINCT leads_history.lead_id) as count')
                 ->groupBy('date')
                 ->pluck('count', 'date')
                 ->toArray();
@@ -89,7 +114,7 @@ class DailyLeadStatusWidget extends ChartWidget
         $lostData = [];
 
         foreach ($labels as $date) {
-            $newData[] = $newLeads[$date] ?? 0;
+            $newData[] = $newPerDay[$date] ?? 0;
             $wonData[] = $wonPerDay[$date] ?? 0;
             $lostData[] = $lostPerDay[$date] ?? 0;
         }
@@ -119,6 +144,33 @@ class DailyLeadStatusWidget extends ChartWidget
     protected function getType(): string
     {
         return 'bar';
+    }
+
+    protected function getOptions(): array
+    {
+        return [
+            'responsive' => true,
+            'plugins' => [
+                'legend' => [
+                    'position' => 'bottom',
+                ],
+            ],
+            'maintainAspectRatio' => false,
+            'scales' => [
+                'x' => [
+                    'ticks' => [
+                        'maxRotation' => 45,
+                        'minRotation' => 45,
+                    ],
+                ],
+                'y' => [
+                    'beginAtZero' => true,
+                    'ticks' => [
+                        'precision' => 0,
+                    ],
+                ],
+            ],
+        ];
     }
 }
 

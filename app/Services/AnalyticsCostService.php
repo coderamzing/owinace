@@ -7,10 +7,11 @@ use App\Models\Lead;
 use App\Models\LeadCost;
 use App\Models\LeadKanban;
 use App\Models\Team;
+use App\Services\Contracts\AnalyticsRefreshServiceInterface;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 
-class AnalyticsCostService
+class AnalyticsCostService implements AnalyticsRefreshServiceInterface
 {
     /**
      * Generate analytics cost data for a specific month and year
@@ -304,6 +305,11 @@ class AnalyticsCostService
         );
 
         return true;
+    }
+
+    public function refreshForTeam(int $teamId): void
+    {
+        $this->syncAnalyticCost($teamId);
     }
 }
 

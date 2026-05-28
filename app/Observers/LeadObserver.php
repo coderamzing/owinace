@@ -3,6 +3,7 @@
 namespace App\Observers;
 
 use App\Events\LeadWon;
+use App\Jobs\RefreshTeamAnalytics;
 use App\Models\LeadHistory;
 use App\Models\Lead;
 use App\Models\LeadKanban;
@@ -17,6 +18,29 @@ use Illuminate\Support\Facades\Auth;
  */
 class LeadObserver
 {
+    protected function shouldRefreshAnalytics(Lead $lead): bool
+    {
+        if ($lead->wasRecentlyCreated) {
+            return true;
+        }
+
+        return $lead->wasChanged([
+            'kanban_id',
+            'assigned_member_id',
+            'source_id',
+            'expected_value',
+            'actual_value',
+            'cost',
+            'conversion_date',
+            'is_archived',
+        ]);
+    }
+
+    protected function dispatchAnalyticsRefreshForTeam(int $teamId): void
+    {
+        RefreshTeamAnalytics::dispatch($teamId)->delay(now()->addSeconds(3));
+    }
+
     /**
      * Handle the Lead "updating" event.
      * 
@@ -114,6 +138,16 @@ class LeadObserver
                 'note' => $note,
             ]);
         }
+
+        if ($this->shouldRefreshAnalytics($lead)) {
+            $originalTeamId = (int) ($lead->getOriginal('team_id') ?? $lead->team_id);
+            $currentTeamId = (int) $lead->team_id;
+
+            $this->dispatchAnalyticsRefreshForTeam($currentTeamId);
+            if ($originalTeamId && $originalTeamId !== $currentTeamId) {
+                $this->dispatchAnalyticsRefreshForTeam($originalTeamId);
+            }
+        }
     }
 
     /**
@@ -138,6 +172,10 @@ class LeadObserver
                 )
                 : 'Lead created',
         ]);
+
+        if ($this->shouldRefreshAnalytics($lead)) {
+            $this->dispatchAnalyticsRefreshForTeam((int) $lead->team_id);
+        }
     }
 }
 

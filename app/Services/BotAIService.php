@@ -19,56 +19,75 @@ class BotAIService
     public function parseJob(array $jobData): array
     {
         //remove not needed fields
-        unset($jobData['title'], $jobData['description']);
-
-        $jobJson = json_encode($jobData, JSON_THROW_ON_ERROR | JSON_UNESCAPED_UNICODE);
+        $rawText = $jobData['rawText'];
 
         $prompt = <<<EOT
-            Return only JSON.
-            DATA: {$jobJson}
-            Rules:
-            * Parse aboutclient, activity, features.
-            * posted_at = Convert JobJson[timeZone] & JobJson[nowISO] to UTC timzone in MYSQL FORMAT.
-            * Numbers only. Missing=null.
-            * K=1000, M=1000000.
-            * %=number.
-            * Proposals:
-            "5-10"=10
-            "10-15"=15
-            "10-20"=20
-            "20-50"=50
-            "50+"=50
-            "Less than 5"=4
-            * client_avgspent = totalspent / hires
-            * client_since = date after "Member since"
-            * type = "fixed" or "hourly" from features
-            * connects in number only privide in jobjson data
-            * invitesent = Invites sent in Activity section
-            * client_rating = in clientsection interpret text like 4.93 of 68 reviews and return the overall rating
+        Return only valid JSON.
 
-            Output:
-            {
-            "location":null,
-            "proposals":null,
-            "client_name":null,
-            "client_rating":null,
-            "client_totalspent":null,
-            "client_jobposted":null,
-            "client_openjob":null,
-            "client_hirerate":null,
-            "client_avgspent":null,
-            "client_avghourlyrate":null,
-            "client_hires":null,
-            "interviews":null,
-            "invitesent":null,
-            "client_since":null,
-            "type":null,
-            "posted_at":null,
-            "connects":null
-            }
+        DATA:
+        {$rawText}
+
+        Rules:
+        - Extract values from selected text only.
+        - Missing values = null.
+        - Numbers only.
+        - K=1000, M=1000000.
+        - %=number only.
+        - proposals:
+        "5-10"=6
+        "10-15"=12
+        "10-20"=15
+        "20-50"=40
+        "50+"=55
+        "Less than 5"=4
+        - posted_at = return into mysql datetime format.
+        - client_since = date after "Member since" in YYYY-MM-DD.
+        - type = fixed|hourly.
+        - client_rating = overall rating only return 0 if rating is not found.
+        - client_totalspent = detect "total spent" from section "About the client" or return 0 if not found.
+        - client_jobposted = detect "jobs posted" from section "About the client" or return 0 if not found.
+        - client_openjob = detect "open jobs" from section "About the client" or return 0 if not found.
+        - client_hirerate = calculate hirerate from jobposted / detect "hires" from section "About the client" or return 0 if not found.
+        - client_avgspent = detect "hire rate" from section "About the client" or return 0 if not found.
+        - client_avghourlyrate = detect "avg hourly rate paid" from section "About the client" or return 0 if not found.
+        - client_hires = detect "hires" from section "About the client" or return 0 if not found.
+        - client_org = detect company/business/org name from JD.
+        - client_website = detect website/domain/url from JD.
+        - client_project = detect product/project/platform/app/SaaS name from JD.
+        - client_name = detect client/person name from reviews or JD.
+        - is_warm = 1 if client_name OR client_org OR client_website OR client_project found, else 0.
+        - location = client location from section About the client.
+        - interviews = detect interviews from activity on this job or 0 if not found.
+        - invitesent = detect invitesent from activity on this job or 0 if not found.
+        - connects = detect connects from required connects for this job or 0 if not found.
+
+        Output format:
+        {
+        "location": null,
+        "proposals": null,
+        "client_name": null,
+        "client_rating": null,
+        "client_totalspent": null,
+        "client_jobposted": null,
+        "client_openjob": null,
+        "client_hirerate": null,
+        "client_avgspent": null,
+        "client_avghourlyrate": null,
+        "client_hires": null,
+        "interviews": null,
+        "invitesent": null,
+        "client_since": null,
+        "type": null,
+        "posted_at": null,
+        "connects": null,
+        "client_org": null,
+        "client_website": null,
+        "client_project": null,
+        "is_warm": 0
+        }
         EOT;
 
-        $response = $this->openAIService->request([
+        $response = $this->deepseekService->request([
             [
                 'role' => 'system',
                 'content' => $prompt,
@@ -93,78 +112,87 @@ class BotAIService
      */
     public function analyzeJob(array $jobData, array $campaignData): array
     {
-        $now = Carbon::now();
-        $nowInUtc = Carbon::parse($now)->setTimezone('UTC')->format('Y-m-d H:i:s');
+        $jobDescription = trim((string) ($jobData['description'] ?? ''));
+        $camPortfolios = trim((string) ($campaignData['portfolios'] ?? ''));
+        $camMatchingCriteria = trim((string) ($campaignData['matching_criteria'] ?? ''));
 
-        $jobJson = json_encode($jobData, JSON_THROW_ON_ERROR | JSON_UNESCAPED_UNICODE);
-        $campaignJson = json_encode($campaignData, JSON_THROW_ON_ERROR | JSON_UNESCAPED_UNICODE);
-
-        $decoded = $this->openAIService->request([
+        $decoded = $this->deepseekService->request([
             [
                 'role' => 'system',
                 'content' => <<<EOT
-                You are a helpful assistant that evaluates if an Upwork job matches a campaign.
-                Return JSON only: {"is_matched":true|false,"reason":"max 100 chars"}
-                True when portfolios show strong technical relevance.
-                Prioritize platform, migration type, rebuild type, customization scope, integrations, similar deliverables over industry niche.
-                Do not require same business category.
-                EOT
+        You are a strict job alignment validator.
+
+        Return ONLY valid JSON:
+
+        {
+        "is_matched": true|false,
+        "reason": "max 80 chars"
+        }
+
+        GOAL:
+        Determine whether:
+        1. The job aligns with the campaign matching criteria
+        2. At least one portfolio is strongly relevant to the actual work required
+
+        STRICT RULES:
+
+        STEP 1 — MATCHING CRITERIA
+        - Compare the matching criteria against the job description
+        - Reject if the job clearly does not satisfy the criteria
+        - Focus on:
+        - required skills
+        - technologies
+        - project scope
+        - business domain
+        - deliverables
+        - experience expectations
+
+        STEP 2 — PORTFOLIO RELEVANCE
+        - Compare the portfolios against the actual requirements of the job
+        - At least ONE portfolio must strongly align with:
+        - technologies used
+        - type of solution
+        - integrations
+        - business use case
+        - complexity level
+        - services requested
+
+        IMPORTANT:
+        - Reject weak keyword overlap
+        - Reject vague or generic similarity
+        - Reject unrelated experience
+        - Accept only if alignment is clear and meaningful
+        - Strong practical relevance is required
+
+        FINAL RULE:
+        - matching criteria must pass
+        - portfolio relevance must pass
+        - otherwise reject
+
+        IMPORTANT:
+        - Be conservative
+        - Avoid false positives
+        - Do not assume missing information
+        - Keep reason very short and specific
+
+        EOT
             ],
             [
-            'role' => 'user',
-            'content' => <<<EOT
-                Time now IN UTC: {$nowInUtc}
-                Job Data:
-                {$jobJson}
+                'role' => 'user',
+                'content' => <<<EOT
+        JOB DESCRIPTION:
+        {$jobDescription}
 
-                *INFO:*
-                    title: title of the job
-                    description: about of the job
-                    questions: the questions asked in the job
-                    skills: skills stack for jon as comma separated string
-                    url: URL of the job
-                    location: location of the job
-                    proposals: the number of proposals already sent for the job
-                    client_totalspent: cleint total spent on Upwork
-                    client_jobposted: client total jobs posted on Upwork
-                    client_openjob: client total open jobs on Upwork
-                    client_hirerate: client hire rate %
-                    client_avgspent: client average spent per job
-                    client_avghourlyrate: client average hourly rate
-                    posted_at: date and time the job was posted in UTC timezone
-                    client_since: date and time the client was a member of Upwork
-                    invites_sent: client total invites sent for the job
-                    type: type of the job "fixed" or "hourly"
-                    interviews: client total interviews for the job
-                    connects: connects required for the job
-                
-                Campaign Data:
-                {$campaignJson}
+        MATCHING CRITERIA:
+        {$camMatchingCriteria}
 
-                *INFO:*
-                    portfolios: portfolios of the campaign
-                    max_connect_per_bid: max connects per job
-                    matching_critieria: matching criteria
-                    rule_client_avg_spent: client average spent per job
-                    rule_max_interviews: max interviews for the job
-                    rule_job_posted_ago: max job posted ago in minutes
-                    rule_max_proposal: max proposals for the job
-                    rule_clock_in: clock in time
-                    rule_clock_out: clock out time
-                
-                *Rules:*
-                - ignore campaign data if any field is null or empty.
-                - match matching_critieria against job description.
-                - match portfolios against job skills or job description to find if they are right fit to convince the client.
+        PORTFOLIOS:
+        {$camPortfolios}
 
-                Output:
-                {
-                "is_matched":true|false,
-                "reason":"max 100 chars"
-                }
+        Now validate strictly.
 
-                EOT
-            ],
+        EOT
+            ]
         ]);
 
         if (! is_array($decoded)) {
@@ -203,100 +231,92 @@ class BotAIService
             [
                         'role' => 'system',
                         'content' => <<<EOT
-                You are a deterministic proposal generator.
-                
-                Your job is to STRICTLY COMPILE a cover letter using the provided COVERLETTERSKELETON.
-                
-                Return JSON only:
-                {
-                "cover_letter": "string",
-                "questions": [
-                    {"question": "string", "answer": "string"}
-                ]
-                }
-                
-                EXECUTION RULES (MUST FOLLOW IN ORDER):
-                
-                1. TREAT COVERLETTERSKELETON AS FINAL TEMPLATE
-                - Do NOT change structure
-                - Do NOT add new sections
-                - Do NOT remove any lines
-                - Only replace placeholders
-               
-                
-                2. PLACEHOLDER REPLACEMENT (MANDATORY)
-                - Replace ALL placeholders like [something] or {{something}}
-                - NO placeholder should remain
-                - If unclear, infer best possible content
-                - Never Write [Your Name] placeholder in the cover letter
-                - For greeting only use spintax if provided in the skeleton else dont add greeting.
-                
-                3. SPINTAX PROCESSING
-                - If skeleton contains {option1|option2|option3}
-                - Select ONLY ONE best option
-                - Remove spintax syntax completely
-                
-                4. PORTFOLIO INSERTION
-                - Use CAMPAIGN PORTFOLIOS
-                - Select ONLY 1–2 most relevant items
-                - Include URL if available
-                - Insert ONLY where skeleton requires
-                
-                5. JOB ALIGNMENT
-                - Tailor using JOB TITLE and JOB DESCRIPTION
-                - Keep content concise and relevant
-                
-                6. QUESTIONS ANSWERING
-                - Use CAMPAIGN QUESTIONS CONTEXT
-                - Answer ONLY from that context
-                - Do NOT hallucinate
-                
-                7. STRICT OUTPUT RULES
-                - No explanations
-                - No extra text
-                - No placeholders
-                - Output must be ready to send
+                            You are a proposal compiler and proposal writer.
 
-                8. Formatting Rules:
-                - Add a Nice formatting to the cover letter as needed.
+                            Your task is to generate:
+                            1. A finalized cover letter
+                            2. Answers for screening questions
 
-                9. Word Count Rules:
-                - the cover letter should not be more than 350 words.
-                
-                FAIL CONDITIONS (STRICTLY AVOID):
-                - Leaving placeholders like [] or {{}}
-                - Ignoring skeleton structure
-                - Adding extra paragraphs not in skeleton
-                - Writing generic content
+                            Return ONLY valid JSON:
+                            {
+                            "cover_letter": "string",
+                            "questions": [
+                                {
+                                "question": "string",
+                                "answer": "string"
+                                }
+                            ]
+                            }
+
+                            RULES:
+
+                            1. COVER LETTER SKELETON
+                            - Treat COVERLETTERSKELETON as the base structure.
+                            - Resolve all placeholders and instructions.
+                            - Expand spintax by selecting only ONE option.
+                            - Never leave placeholders unresolved.
+
+                            2. PLACEHOLDERS
+                            Examples:
+                            [AI: ...]
+                            [PORTFOLIO_MATCH]
+                            [CTA]
+
+                            - AI blocks should be naturally written.
+                            - Portfolio blocks must use the most relevant portfolio items.
+                            - CTA blocks should sound natural and professional.
+
+                            3. PORTFOLIO MATCHING
+                            - Use only the most relevant 1-2 portfolio items.
+                            - Match based on job requirements.
+                            - Mention project name, tech relevance, and URL naturally.
+
+                            4. WRITING STYLE
+                            - Human sounding
+                            - Professional
+                            - Concise
+                            - Avoid AI sounding phrases
+                            - Avoid buzzwords
+                            - Avoid generic filler
+                            - Keep flow natural
+
+                            5. QUESTIONS
+                            - Answer using CAMPAIGN QUESTIONS CONTEXT.
+                            - Keep answers concise and relevant.
+
+                            6. STRICT RULES
+                            - No markdown
+                            - No explanations
+                            - No extra keys
+                            - No placeholders remaining
+                            - Cover letter max 350 words
+                            - Not Add [Your Name] Or [Client Name] in the cover letter.
+                            - the Cover letter should be ready to submit
                 
                 EOT
                     ],
                     [
                         'role' => 'user',
                         'content' => <<<EOT
-                IMPORTANT:
-                The COVERLETTERSKELETON is a STRICT TEMPLATE.
-                Do NOT modify its structure. Only replace placeholders and resolve spintax.
-                
-                JOB TITLE:
-                {$title}
-                
-                JOB DESCRIPTION:
-                {$description}
-                
-                JOB QUESTIONS:
-                {$questionsJson}
-                
-                COVERLETTERSKELETON:
-                {$coverSkeleton}
-                
-                CAMPAIGN PORTFOLIOS:
-                {$portfolios}
-                
-                CAMPAIGN QUESTIONS CONTEXT:
-                {$questionsCtx}
-                
-                Now STRICTLY COMPILE the final proposal.
+                            JOB TITLE:
+                            {$title}
+
+                            JOB DESCRIPTION:
+                            {$description}
+
+                            JOB QUESTIONS:
+                            {$questionsJson}
+
+                            COVERLETTERSKELETON:
+                            {$coverSkeleton}
+
+                            CAMPAIGN PORTFOLIOS:
+                            {$portfolios}
+
+                            CAMPAIGN QUESTIONS CONTEXT:
+                            {$questionsCtx}
+
+                            Generate the final proposal JSON.
                 EOT
             ]
         ]);

@@ -25,6 +25,16 @@ class BotController extends Controller
         return response()->json(['message' => 'hello']);
     }
 
+    public function recent(): JsonResponse
+    {
+        $uids = UpworkJob::query()
+            ->orderByDesc('id')
+            ->limit(500)
+            ->pluck('uid');
+
+        return response()->json($uids);
+    }
+
     public function campaign(Request $request): JsonResponse
     {
         $workspaceId = (int) $request->input('workspace_id');
@@ -36,6 +46,49 @@ class BotController extends Controller
             ->whereHas('team', fn ($q) => $q->where('workspace_id', $workspaceId))
             ->get();
 
+        // Filter out campaigns that have already reached max_daily_bid for today
+
+        // Get current date in the campaign's timezone, but fallback to UTC if missing
+        $campaign = $campaign->filter(function ($item) {
+            // Check if max_daily_bid is set for campaign
+            if (empty($item->max_daily_bid)) {
+                return true; // No quota set, so always include
+            }
+
+            // Try to get the campaign's timezone, else use UTC
+            $tz = $item->timezone ?? 'UTC';
+            try {
+                $todayStart = now($tz)->startOfDay()->timezone('UTC');
+                $todayEnd = now($tz)->endOfDay()->timezone('UTC');
+            } catch (\Exception $e) {
+                // Fallback if bad timezone
+                $todayStart = now('UTC')->startOfDay();
+                $todayEnd = now('UTC')->endOfDay();
+            }
+
+            // Count bids applied by this campaign since the start of "today"
+            $appliedCount = \App\Models\UpworkCampaignJobStat::where('campaign_id', $item->id)
+                ->whereBetween('applied_at', [$todayStart->toDateTimeString(), $todayEnd->toDateTimeString()])
+                ->count();
+
+            // If quota reached, filter campaign out
+            return $appliedCount < $item->max_daily_bid;
+        })->values();
+
+        $campaign = $campaign->filter(function($item) {
+            if (empty($item->rule_clock_in) || empty($item->rule_clock_out)) {
+                return true;
+            }
+            $nowUtc = now('UTC')->format('H:i');
+            $clockIn = $item->rule_clock_in;
+            $clockOut = $item->rule_clock_out;
+            if ($clockIn <= $clockOut) {
+                return ($nowUtc >= $clockIn) && ($nowUtc <= $clockOut);
+            } else {
+                return ($nowUtc >= $clockIn) || ($nowUtc <= $clockOut);
+            }
+        })->values();
+
         return response()->json($campaign);
     }
 
@@ -46,6 +99,11 @@ class BotController extends Controller
     {
         $validated = $request->validate([
             'id' => ['required'],
+            'title' => ['required'],
+            'description' => ['required'],
+            'skills' => ['required'],
+            'url' => ['required'],
+            'questions' => ['nullable'],
         ]);
 
         $data = $request->all();
@@ -56,11 +114,6 @@ class BotController extends Controller
         }
 
         $jobData = $this->botAIService->parseJob($request->all());
-
-        // $skills = $validated['skills'];
-        // if (is_array($skills)) {
-        //     $skills = json_encode($skills);
-        // }
 
         UpworkJob::query()->updateOrCreate(
             ['uid' => $data['id']],
@@ -87,6 +140,10 @@ class BotController extends Controller
                 'posted_at' => $jobData['posted_at'],
                 'client_avghourlyrate' => $jobData['client_avghourlyrate'],
                 'client_openjob' => $jobData['client_openjob'],
+                'client_org' => $jobData['client_org'],
+                'client_website' => $jobData['client_website'],
+                'client_project' => $jobData['client_project'],
+                'is_warm' => $jobData['is_warm'] || 0,
             ]
         );
 
@@ -99,12 +156,16 @@ class BotController extends Controller
     public function writer(Request $request): JsonResponse
     {
         $request->validate([
-            'jobID' => ['required', 'integer'],
-            'campaignID' => ['required', 'integer'],
+            'jobId'  => ['required', 'integer'],
+            'campaignId' => ['required', 'integer'],
         ]);
 
-        $campaign = UpworkCampaign::withoutTeam()->where('id', $request->input('campaignID'))->first();
-        $job = UpworkJob::where('uid', $request->input('jobID'))->first();
+        $campaign = UpworkCampaign::withoutTeam()->where('id', $request->input('campaignId'))->first();
+        $job = UpworkJob::where('uid', $request->input('jobId'))->first();
+
+        if(!$job || !$campaign) {
+            return response()->json(['error' => 'Job or campaign not found'], 404);
+        }
 
         $jobData = [
             'title' => $job->title,
@@ -113,10 +174,14 @@ class BotController extends Controller
         ];
         $campaignData = [
             'ai_prompt' => $campaign->ai_prompt,
-            'portfolios' => $campaign->portfolios,
+            'portfolios' => $campaign->portfoliosPromptText(),
             'questions_context' => $campaign->questions_context,
         ];
 
+
+        //return ['cover_letter' => 'test', 'questions' => [
+        //    ['question' => 'test', 'answer' => 'test'],
+        //]];
         $result = $this->botAIService->writeCoverLetter($jobData, $campaignData);
         
         //Make a entry in proposals table
@@ -146,48 +211,106 @@ class BotController extends Controller
     public function analysis(Request $request): JsonResponse
     {
         $request->validate([
-            'jobID' => ['required'],
-            'campaignID' => ['required'],
+            'jobId' => ['required'],
+            'campaignId' => ['required'],
         ]);
-        $jobId = (int) $request->input('jobID');
-        $campaignId = (int) $request->input('campaignID');
+        $jobUid = (int) $request->input('jobId');
+        $campaignId = (int) $request->input('campaignId');
 
         $campaign = UpworkCampaign::withoutTeam()->where('id', $campaignId)->first();
-        $job = UpworkJob::where('uid', $jobId)->first();
+        $job = UpworkJob::where('uid', $jobUid)->first();
 
-        //validate if campaign has max daily bid
-        if($campaign->max_daily_bid > 0) {
-            $appliedToday = UpworkCampaignJobStat::where('campaign_id', $campaignId)
-                ->where('is_applied', 1)
-                ->where('created_at', '>=', now()->startOfDay())
-                ->count();
-            if($appliedToday >= $campaign->max_daily_bid) {
-                return response()->json(false);
-            }
-        }
-
-        //check if job is already analyzed
-        $campaignJobStat = UpworkCampaignJobStat::where('job_id', $jobId)
-            ->where('campaign_id', $campaignId)
-            ->first();
-
-        if ($campaignJobStat) { //return if job is already analyzed
-            return response()->json(['is_matched' => $campaignJobStat->is_matched]);
-        }
-        
-
-        if (!$campaign || !$job || $job->is_expired == 1) {
+        if (! $job || ! $campaign) {
             return response()->json(false);
         }
 
-        $jobData = $job->toArray();
+        if ($job->is_expired == 1) {
+            return $this->recordAnalysisAndRespond($job, $campaign, false, 'Job expired');
+        }
+
+        $existingStat = UpworkCampaignJobStat::where('job_id', $job->id)
+            ->where('campaign_id', $campaignId)
+            ->first();
+
+        if ($existingStat) {
+            return response()->json(['is_matched' => (bool) $existingStat->is_matched]);
+        }
+        
+        $ruleRejection = $this->campaignRuleRejectionReason($job, $campaign);
+        if ($ruleRejection !== null) {
+            return $this->recordAnalysisAndRespond($job, $campaign, false, $ruleRejection);
+        }
+
         $campaignData = $campaign->toArray();
+        $campaignData['portfolios'] = $campaign->portfoliosPromptText();
 
-        //analyze the job
-        $result = $this->botAIService->analyzeJob($jobData, $campaignData);
-        $reason = $result['reason'];
-        $isMatched = $result['is_matched'];
+        $result = $this->botAIService->analyzeJob($job->toArray(), $campaignData);
 
+        return $this->recordAnalysisAndRespond(
+            $job,
+            $campaign,
+            (bool) $result['is_matched'],
+            $result['reason'],
+        );
+    }
+
+    private function campaignRuleRejectionReason(UpworkJob $job, UpworkCampaign $campaign): ?string
+    {
+        if ($campaign->max_daily_bid > 0) {
+            $appliedToday = UpworkCampaignJobStat::where('campaign_id', $campaign->id)
+                ->where('is_applied', 1)
+                ->where('created_at', '>=', now()->startOfDay())
+                ->count();
+            if ($appliedToday >= $campaign->max_daily_bid) {
+                return 'Max daily bid reached';
+            }
+        }
+
+        if (isset($job->connects) && $job->connects > $campaign->max_connect_per_bid) {
+            return 'Connects exceed campaign limit';
+        }
+
+        if ($campaign->rule_min_client_rating !== null
+            && isset($job->client_rating)
+            && is_numeric($job->client_rating)
+            && (float) $job->client_rating > 0
+            && (float) $job->client_rating < (float) $campaign->rule_min_client_rating
+        ) {
+            return 'Client rating below campaign minimum';
+        }
+
+        if (isset($job->client_avgspent) && $job->client_avgspent < $campaign->rule_client_avg_spent) {
+            return 'Client avg. spent below campaign minimum';
+        }
+
+        if (isset($job->interviews) && $job->interviews > $campaign->rule_max_interviews) {
+            return 'Interviews exceed campaign limit';
+        }
+
+        if (isset($job->posted_at)) {
+            try {
+                $diffMins = \Carbon\Carbon::parse($job->posted_at)->diffInMinutes(now());
+                if ($diffMins > $campaign->rule_job_posted_ago) {
+                    return 'Job posted too long ago';
+                }
+            } catch (\Exception) {
+                // Unable to parse posted_at, ignore filter
+            }
+        }
+
+        if (isset($job->proposals) && is_numeric($job->proposals) && $job->proposals > $campaign->rule_max_proposal) {
+            return 'Proposals exceed campaign limit';
+        }
+
+        return null;
+    }
+
+    private function recordAnalysisAndRespond(
+        UpworkJob $job,
+        UpworkCampaign $campaign,
+        bool $isMatched,
+        string $note,
+    ): JsonResponse {
         UpworkCampaignJobStat::updateOrCreate(
             [
                 'job_id' => $job->id,
@@ -195,22 +318,22 @@ class BotController extends Controller
             ],
             [
                 'is_matched' => $isMatched,
-                'note' => $reason,
+                'note' => $note,
             ]
         );
 
-        return response()->json($result['is_matched']);
+        return response()->json(['is_matched' => $isMatched]);
     }
 
     public function apply(Request $request): JsonResponse
     {
         $request->validate([
-            'jobID' => ['required'],
-            'campaignID' => ['required'],
+            'jobId' => ['required'],
+            'campaignId' => ['required'],
         ]);
 
-        $jobId = (int) $request->input('jobID');
-        $campaignId = (int) $request->input('campaignID');
+        $jobId = (int) $request->input('jobId');
+        $campaignId = (int) $request->input('campaignId');
 
         $job = UpworkJob::where('uid', $jobId)->first();
         $campaign = UpworkCampaign::withoutTeam()->where('id', $campaignId)->first();
@@ -245,5 +368,45 @@ class BotController extends Controller
         );
 
         return response()->json(['success' => true]);
+    }
+
+    public function recentAnalysis(Request $request): JsonResponse
+    {
+        // Get workspace ID from request (set by middleware)
+        $workspaceId = request()->workspace_id ?? null;
+        if (!$workspaceId) {
+            return response()->json(['error' => 'Workspace ID missing'], 400);
+        }
+
+        // Get campaigns for this workspace
+        $campaigns = \App\Models\UpworkCampaign::withoutTeam()
+            ->select('id', 'title')
+            ->where('is_active', true)
+            ->whereHas('team', fn($q) => $q->where('workspace_id', $workspaceId))
+            ->get();
+
+        // Get job stats for these campaigns; recently analyzed
+        $campaignIds = $campaigns->pluck('id')->toArray();
+
+        if ($campaignIds === []) {
+            return response()->json([]);
+        }
+
+        $statFields = ['job_id', 'campaign_id', 'is_matched', 'is_applied'];
+
+        $result = UpworkCampaignJobStat::query()
+            ->with('job:id,uid')
+            ->select($statFields)
+            ->whereIn('campaign_id', $campaignIds)
+            ->orderByDesc('created_at')
+            ->get()
+            ->map(fn (UpworkCampaignJobStat $stat) => array_merge(
+                $stat->only($statFields),
+                ['job_uid' => $stat->job?->uid],
+            ))
+            ->values()
+            ->all();
+
+        return response()->json($result);
     }
 }

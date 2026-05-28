@@ -14,26 +14,34 @@ class WeeklyAiInsights extends Command
      *
      * @var string
      */
-    protected $signature = 'ai:weekly-insights';
+    protected $signature = 'ai:weekly-insights {--year=} {--month=} {--team_id=}';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Generate weekly AI insights for all teams based on the previous week lead activity';
+    protected $description = 'Deprecated: kept for compatibility. Generates monthly AI insights (team + member) for the selected month.';
 
     /**
      * Execute the console command.
      */
     public function handle(AIInsightService $aiInsightService): int
     {
-        $this->info('Starting weekly AI insights generation...');
+        $year = (int) ($this->option('year') ?: Carbon::now()->year);
+        $month = (int) ($this->option('month') ?: Carbon::now()->month);
+        $teamId = $this->option('team_id') ? (int) $this->option('team_id') : null;
 
-        // Use previous full week (Monday to Sunday)
-        $weekStart = Carbon::now()->subWeek()->startOfWeek(Carbon::MONDAY);
+        $monthStart = Carbon::create($year, $month, 1)->startOfMonth();
 
-        $teams = Team::all();
+        $this->info("Starting AI insights generation for {$monthStart->format('M Y')}...");
+
+        $teamsQuery = Team::query();
+        if ($teamId) {
+            $teamsQuery->where('id', $teamId);
+        }
+
+        $teams = $teamsQuery->get();
 
         $this->info("Found {$teams->count()} teams to process.");
         $progressBar = $this->output->createProgressBar($teams->count());
@@ -41,7 +49,7 @@ class WeeklyAiInsights extends Command
 
         foreach ($teams as $team) {
             try {
-                $aiInsightService->generateWeeklyInsightForTeam($team, $weekStart);
+                $aiInsightService->generateMonthlyInsightForTeam($team, $monthStart);
             } catch (\Throwable $e) {
                 $this->error("\nError generating AI insights for team {$team->id}: " . $e->getMessage());
             }
@@ -51,7 +59,7 @@ class WeeklyAiInsights extends Command
 
         $progressBar->finish();
         $this->newLine();
-        $this->info('Weekly AI insights generation completed!');
+        $this->info('AI insights generation completed!');
 
         return Command::SUCCESS;
     }

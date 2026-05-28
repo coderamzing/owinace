@@ -24,6 +24,8 @@ class Contact extends Model implements HasMedia
         'email',
         'phone_number',
         'website',
+        'linkedin_url',
+        'personalized_message',
         'first_name',
         'last_name',
         'job_title',

@@ -6,7 +6,9 @@ use App\Traits\TeamTraits;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Collection;
 
 class UpworkCampaign extends Model
 {
@@ -25,7 +27,6 @@ class UpworkCampaign extends Model
         'timezone',
         'max_daily_bid',
         'auto_bidding',
-        'portfolios',
         'ai_prompt',
         'questions_context',
         'matching_critieria',
@@ -33,6 +34,7 @@ class UpworkCampaign extends Model
         'rule_max_interviews',
         'rule_job_posted_ago',
         'rule_max_proposal',
+        'rule_min_client_rating',
         'rule_clock_in',
         'rule_clock_out',
         'member_id',
@@ -55,6 +57,7 @@ class UpworkCampaign extends Model
             'rule_max_interviews' => 'decimal:2',
             'rule_job_posted_ago' => 'decimal:2',
             'rule_max_proposal' => 'decimal:2',
+            'rule_min_client_rating' => 'integer',
             'max_daily_bid' => 'integer',
         ];
     }
@@ -81,6 +84,59 @@ class UpworkCampaign extends Model
 
     public function campaignJobStats(): HasMany
     {
-        return $this->hasMany(CampaignJobStat::class, 'campaign_id');
+        return $this->hasMany(UpworkCampaignJobStat::class, 'campaign_id');
+    }
+
+    public function linkedPortfolios(): BelongsToMany
+    {
+        return $this->belongsToMany(
+            Portfolio::class,
+            'upwork_campaigns_portfolios',
+            'campaign_id',
+            'portfolio_id',
+        )->orderBy('portfolios.sort_order');
+    }
+
+    /**
+     * Text block for AI prompts from attached portfolios (falls back to legacy text column).
+     */
+    public function portfoliosPromptText(): string
+    {
+        $this->loadMissing('linkedPortfolios');
+
+        if ($this->linkedPortfolios->isNotEmpty()) {
+            return $this->formatPortfoliosForPrompt($this->linkedPortfolios);
+        }
+
+        return trim((string) ($this->attributes['portfolios'] ?? ''));
+    }
+
+    /**
+     * @param  Collection<int, Portfolio>  $portfolios
+     */
+    protected function formatPortfoliosForPrompt(Collection $portfolios): string
+    {
+        if ($portfolios->isEmpty()) {
+            return '';
+        }
+
+        return $portfolios
+            ->values()
+            ->map(function (Portfolio $portfolio, int $index): string {
+                $parts = [($index + 1).'. '.$portfolio->title];
+
+                $keywords = $portfolio->keywords;
+                if (is_array($keywords) && $keywords !== []) {
+                    $parts[] = 'Keywords: '.implode(', ', $keywords);
+                }
+
+                $description = trim((string) $portfolio->description);
+                if ($description !== '') {
+                    $parts[] = 'Description: '.$description;
+                }
+
+                return implode(' | ', $parts);
+            })
+            ->implode("\n");
     }
 }

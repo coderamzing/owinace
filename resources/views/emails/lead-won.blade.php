@@ -15,7 +15,7 @@
 
     <p style="margin:0 0 20px;">A lead was marked <strong>won</strong>. Here are the details.</p>
 
-    <div style="background-color:#f3f3e5;border:1px solid #e8e8dc;border-radius:10px;padding:22px 22px;margin:20px 0;">
+    <div style="background-color:#f6f7fb;border:1px solid #e6e8ef;border-radius:10px;padding:22px 22px;margin:20px 0;">
         <h2 style="margin:0 0 14px;font-size:20px;font-weight:700;color:#061d19;padding-bottom:12px;border-bottom:2px solid #b8ff90;">
             {{ $lead_title }}
         </h2>

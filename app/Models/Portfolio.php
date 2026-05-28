@@ -8,6 +8,7 @@ use App\Traits\TeamTraits;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use Spatie\MediaLibrary\HasMedia;
@@ -101,6 +102,16 @@ class Portfolio extends Model implements HasMedia
     public function team(): BelongsTo
     {
         return $this->belongsTo(Team::class, 'team_id');
+    }
+
+    public function upworkCampaigns(): BelongsToMany
+    {
+        return $this->belongsToMany(
+            UpworkCampaign::class,
+            'upwork_campaigns_portfolios',
+            'portfolio_id',
+            'campaign_id',
+        );
     }
 
     /**

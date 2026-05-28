@@ -18,8 +18,7 @@ class AiInsight extends Model
     protected $fillable = [
         'team_id',
         'year',
-        'week',
-        'week_key',
+        'month',
         'summary',
         'highlights',
         'recommendations',

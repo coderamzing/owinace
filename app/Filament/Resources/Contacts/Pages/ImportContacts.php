@@ -72,7 +72,7 @@ class ImportContacts extends Page implements HasForms
                             ->content(new HtmlString('
                                 <div class="space-y-3">
                                     <div class="font-mono text-sm bg-gray-50 dark:bg-gray-800 p-3 rounded">
-                                        first_name,last_name,email,phone_number,company,job_title,website
+                                        first_name,last_name,email,phone_number,company,job_title,website,linkedin_url,personalized_message
                                     </div>
                                     <div class="text-sm space-y-2">
                                         <p><strong>Column Details:</strong></p>
@@ -84,6 +84,8 @@ class ImportContacts extends Page implements HasForms
                                             <li><strong>company</strong>: Company name</li>
                                             <li><strong>job_title</strong>: Job title or position</li>
                                             <li><strong>website</strong>: Website URL</li>
+                                            <li><strong>linkedin_url</strong>: LinkedIn profile URL</li>
+                                            <li><strong>personalized_message</strong>: Personalized message text</li>
                                         </ul>
                                         <p class="mt-3"><strong>Important Notes:</strong></p>
                                         <ul class="list-disc list-inside space-y-1 ml-2">
@@ -213,6 +215,8 @@ class ImportContacts extends Page implements HasForms
                     'company' => isset($data['company']) ? trim($data['company']) : null,
                     'job_title' => isset($data['job_title']) ? trim($data['job_title']) : null,
                     'website' => isset($data['website']) ? trim($data['website']) : null,
+                    'linkedin_url' => isset($data['linkedin_url']) ? trim($data['linkedin_url']) : null,
+                    'personalized_message' => isset($data['personalized_message']) ? trim($data['personalized_message']) : null,
                 ];
                 
                 // Remove null and empty values

@@ -7,6 +7,7 @@
     "license": "MIT",
     "require": {
         "php": "^8.2",
+        "deepseek-php/deepseek-laravel": "^2.0",
         "filament/actions": "^4.4",
         "filament/filament": "^4.4",
         "filament/spatie-laravel-media-library-plugin": "^4.4",

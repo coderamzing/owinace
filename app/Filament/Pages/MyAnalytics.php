@@ -8,7 +8,6 @@ use App\Models\Lead;
 use App\Models\LeadKanban;
 use App\Models\Proposal;
 use App\Models\Team;
-use BackedEnum;
 use Filament\Pages\Page;
 use Filament\Support\Icons\Heroicon;
 use Illuminate\Support\Facades\Auth;
@@ -16,6 +15,11 @@ use Illuminate\Support\Facades\Session;
 use Carbon\Carbon;
 use UnitEnum;
 use App\Traits\HasPermission;
+use App\Filament\Widgets\MyAnalyticsGoalsStatsWidget;
+use App\Filament\Widgets\MyAnalyticsLeadsStatsWidget;
+use App\Filament\Widgets\MyAnalyticsValueStatsWidget;
+use App\Filament\Widgets\MyAnalyticsGoalsTableWidget;
+use App\Filament\Widgets\MyAnalyticsStagesBreakdownWidget;
 
 class MyAnalytics extends Page
 {
@@ -23,7 +27,7 @@ class MyAnalytics extends Page
     
     protected static ?string $permission = 'analytics.my';
     
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedChartBar;
+    protected static string|\BackedEnum|null $navigationIcon = Heroicon::OutlinedChartBar;
 
     protected static ?string $navigationLabel = 'My Analytics';
 
@@ -366,6 +370,22 @@ class MyAnalytics extends Page
         $maxDate = Carbon::now()->endOfMonth();
 
         return $next->lte($maxDate);
+    }
+
+    public function getColumns(): int | string | array
+    {
+        return 12;
+    }
+
+    protected function getWidgets(): array
+    {
+        return [
+            MyAnalyticsGoalsStatsWidget::class,
+            MyAnalyticsLeadsStatsWidget::class,
+            MyAnalyticsValueStatsWidget::class,
+            MyAnalyticsGoalsTableWidget::class,
+            MyAnalyticsStagesBreakdownWidget::class,
+        ];
     }
 }
 

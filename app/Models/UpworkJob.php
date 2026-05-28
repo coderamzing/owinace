@@ -24,6 +24,9 @@ class UpworkJob extends Model
         'location',
         'proposals',
         'client_name',
+        'client_org',
+        'client_website',
+        'client_project',
         'client_rating',
         'client_totalspent',
         'client_jobposted',
@@ -39,7 +42,8 @@ class UpworkJob extends Model
         'type',
         'questions',
         'connects',
-        'is_expired'
+        'is_expired',
+        'is_warm',
     ];
 
     protected $casts = [

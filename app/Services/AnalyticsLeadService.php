@@ -8,11 +8,12 @@ use App\Models\LeadKanban;
 use App\Models\Team;
 use App\Models\TeamMember;
 use App\Models\User;
+use App\Services\Contracts\AnalyticsRefreshServiceInterface;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
-class AnalyticsLeadService
+class AnalyticsLeadService implements AnalyticsRefreshServiceInterface
 {
     /**
      * Generate analytics lead data for a specific month and year
@@ -279,6 +280,11 @@ class AnalyticsLeadService
         }
 
         return true;
+    }
+
+    public function refreshForTeam(int $teamId): void
+    {
+        $this->syncAnalyticLead($teamId);
     }
 }
 

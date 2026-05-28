@@ -65,6 +65,21 @@ class ContactsTable
                     ->openUrlInNewTab()
                     ->placeholder('N/A')
                     ->toggleable(isToggledHiddenByDefault: true),
+
+                TextColumn::make('linkedin_url')
+                    ->label('LinkedIn')
+                    ->searchable()
+                    ->url(fn ($record) => $record->linkedin_url ? (str_starts_with($record->linkedin_url, 'http') ? $record->linkedin_url : 'https://' . $record->linkedin_url) : null)
+                    ->openUrlInNewTab()
+                    ->placeholder('N/A')
+                    ->toggleable(isToggledHiddenByDefault: true),
+
+                TextColumn::make('personalized_message')
+                    ->label('Personalized Message')
+                    ->searchable()
+                    ->limit(40)
+                    ->placeholder('N/A')
+                    ->toggleable(isToggledHiddenByDefault: true),
                 
                 TextColumn::make('created_at')
                     ->label('Created')

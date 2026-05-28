@@ -23,6 +23,17 @@ class UpworkCampaignJobStat extends Model
         'note',
     ];
 
+    /**
+     * @return array<string, string>
+     */
+    protected function casts(): array
+    {
+        return [
+            'is_matched' => 'boolean',
+            'is_applied' => 'boolean',
+        ];
+    }
+
     public function campaign(): BelongsTo
     {
         return $this->belongsTo(UpworkCampaign::class, 'campaign_id');

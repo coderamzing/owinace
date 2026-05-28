@@ -10,7 +10,7 @@ use Carbon\Carbon;
 
 class WeeklyAiInsightsWidget extends Widget
 {
-    protected string $view = 'filament.widgets.weekly-ai-insights-widget';
+    protected string $view = 'filament.widgets.monthly-ai-insights-widget';
 
     protected int | string | array $columnSpan = 12;
 
@@ -34,14 +34,11 @@ class WeeklyAiInsightsWidget extends Widget
             return;
         }
 
-        // Show the previous full week (same as the command)
-        $weekStart = Carbon::now()->subWeek()->startOfWeek(Carbon::MONDAY);
-        $year = (int) $weekStart->year;
-        $week = (int) $weekStart->isoWeek;
-        $weekKey = sprintf('%d-W%02d', $year, $week);
+        $monthStart = Carbon::now()->startOfMonth();
 
         $aiInsight = AiInsight::where('team_id', $teamId)
-            ->where('week_key', $weekKey)
+            ->where('year', (int) $monthStart->year)
+            ->where('month', (int) $monthStart->month)
             ->first();
 
         if (! $aiInsight) {
@@ -51,11 +48,7 @@ class WeeklyAiInsightsWidget extends Widget
 
         $this->insight = [
             'team_name' => $team->name,
-            'period_label' => sprintf(
-                '%s – %s',
-                $weekStart->format('M d, Y'),
-                $weekStart->copy()->endOfWeek(Carbon::SUNDAY)->format('M d, Y')
-            ),
+            'period_label' => $monthStart->format('M Y'),
             'summary' => $aiInsight->summary,
             'highlights' => $aiInsight->highlights ?? [],
             'recommendations' => $aiInsight->recommendations ?? [],

@@ -20,7 +20,7 @@
     </p>
 
     @foreach($leads as $lead)
-    <div style="background-color:{{ $lead['is_urgent'] ? '#fff5f5' : '#f3f3e5' }};border-left:4px solid {{ $lead['is_urgent'] ? '#ef4444' : '#b8ff90' }};padding:20px;margin-bottom:18px;border-radius:0 10px 10px 0;border:1px solid #e8e8dc;border-left-width:4px;">
+    <div style="background-color:{{ $lead['is_urgent'] ? '#fff5f5' : '#f6f7fb' }};border-left:4px solid {{ $lead['is_urgent'] ? '#ef4444' : '#b8ff90' }};padding:20px;margin-bottom:18px;border-radius:0 10px 10px 0;border:1px solid #e6e8ef;border-left-width:4px;">
         <div style="margin-bottom:14px;">
             <h3 style="margin:0 0 8px;font-size:17px;font-weight:700;color:#061d19;">
                 {{ $lead['title'] }}
@@ -35,7 +35,7 @@
             </p>
         </div>
 
-        <div style="background-color:#ffffff;padding:14px 16px;border-radius:8px;margin-bottom:12px;border:1px solid #e8e8dc;">
+        <div style="background-color:#ffffff;padding:14px 16px;border-radius:8px;margin-bottom:12px;border:1px solid #e6e8ef;">
             <div style="margin-bottom:8px;font-size:14px;">
                 <span style="color:#475569;font-size:13px;">Follow-up:</span>
                 <span style="color:#061d19;font-weight:600;">{{ $lead['next_follow_up'] }}</span>
@@ -58,7 +58,7 @@
         </div>
 
         @if(!empty($lead['contacts']))
-        <div style="background-color:#f8faf8;padding:12px 14px;border-radius:8px;margin-bottom:12px;border:1px solid #e8e8dc;">
+        <div style="background-color:#f8fafc;padding:12px 14px;border-radius:8px;margin-bottom:12px;border:1px solid #e6e8ef;">
             <div style="color:#061d19;font-size:13px;font-weight:600;margin-bottom:8px;">Contacts</div>
             @foreach($lead['contacts'] as $contact)
             <div style="color:#475569;font-size:13px;margin-bottom:4px;">
@@ -82,7 +82,7 @@
         @endif
 
         @if($lead['notes'])
-        <div style="color:#475569;font-size:13px;margin-bottom:12px;padding:12px 14px;background-color:#f3f3e5;border-radius:8px;border:1px dashed #c5d4c0;">
+        <div style="color:#475569;font-size:13px;margin-bottom:12px;padding:12px 14px;background-color:#f6f7fb;border-radius:8px;border:1px dashed #cbd5e1;">
             <strong style="color:#061d19;">Notes:</strong><br>
             {{ Str::limit($lead['notes'], 150) }}
         </div>
@@ -113,7 +113,7 @@
 
     @include('emails.partials.centered-button', ['url' => $url, 'label' => 'View all leads'])
 
-    <div style="border-top:1px solid #e8e8dc;padding-top:22px;margin-top:28px;">
+    <div style="border-top:1px solid #e6e8ef;padding-top:22px;margin-top:28px;">
         <p style="margin:0;font-size:14px;line-height:1.55;color:#475569;">
             Timely follow-ups improve conversions. Reach out while leads are still warm.
         </p>

@@ -15,6 +15,7 @@ use Filament\Auth\MultiFactor\App\Contracts\HasAppAuthentication;
 use Filament\Auth\MultiFactor\App\Contracts\HasAppAuthenticationRecovery;
 use Filament\Auth\MultiFactor\Email\Contracts\HasEmailAuthentication;
 use Filament\Panel;
+use App\Notifications\VerifyEmailPremium;
 
 class User extends Authenticatable implements MustVerifyEmail, HasMedia, HasAppAuthentication, HasAppAuthenticationRecovery, HasEmailAuthentication
 {
@@ -165,5 +166,10 @@ class User extends Authenticatable implements MustVerifyEmail, HasMedia, HasAppA
     public function canAccessPanel(Panel $panel): bool
     {
         return true;
+    }
+
+    public function sendEmailVerificationNotification(): void
+    {
+        $this->notify(new VerifyEmailPremium());
     }
 }

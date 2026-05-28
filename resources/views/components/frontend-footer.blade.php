@@ -3,7 +3,7 @@
         <div class="grid md:grid-cols-2 md:gap-12.5 lg:grid-cols-8 lg:gap-5 gap-10">
             <div class="lg:col-span-3">
                 <a href="{{ route('home') }}">
-                    <img src="/images/leadcliq.svg" alt="LeadCliq" class="h-11 invert">
+                    <img src="{{ asset('images/leadcliq-dark-logo.png') }}" alt="LeadCliq" class="h-11 w-auto">
                 </a>
                 <p class="mt-2.5 text-white">
                     Trusted solutions for your growing business

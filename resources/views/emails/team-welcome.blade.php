@@ -19,7 +19,7 @@
         You have been added to the <strong>{{ $team['name'] }}</strong> team. Use the credentials below to sign in and get started.
     </p>
 
-    <div style="background-color:#f3f3e5;border-left:4px solid #061d19;padding:18px 20px;margin:24px 0;border-radius:0 8px 8px 0;">
+    <div style="background-color:#f6f7fb;border-left:4px solid #061d19;padding:18px 20px;margin:24px 0;border-radius:0 8px 8px 0;">
         <p style="margin:0;font-size:15px;"><strong>Email:</strong> {{ $user['email'] }}</p>
         <p style="margin:10px 0 0;font-size:15px;"><strong>Password:</strong> {{ $password }}</p>
     </div>

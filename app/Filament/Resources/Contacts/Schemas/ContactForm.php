@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\Contacts\Schemas;
 
 use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
+use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Schema;
 
@@ -48,6 +49,18 @@ class ContactForm
                     ->label('Website')
                     ->url()
                     ->maxLength(200)
+                    ->columnSpanFull(),
+
+                TextInput::make('linkedin_url')
+                    ->label('LinkedIn URL')
+                    ->url()
+                    ->maxLength(500)
+                    ->columnSpanFull(),
+
+                Textarea::make('personalized_message')
+                    ->label('Personalized Message')
+                    ->rows(5)
+                    ->maxLength(5000)
                     ->columnSpanFull(),
             ]);
     }

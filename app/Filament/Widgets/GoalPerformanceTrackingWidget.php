@@ -50,49 +50,27 @@ class GoalPerformanceTrackingWidget extends Widget
             $first = $userGoals->first();
             $user = $first?->user;
 
-            $memberGoals = [];
+            $totalTarget = (float) $userGoals->sum('target_value');
+            $totalProgress = (float) $userGoals->sum('progress_value');
+            $percentage = $totalTarget > 0 ? min(100, ($totalProgress / $totalTarget) * 100) : 0;
 
-            foreach ($userGoals as $goal) {
-                $target = (float) ($goal->target_value ?? 0);
-                $progress = (float) ($goal->progress_value ?? 0);
-                $percentage = $target > 0 ? min(100, ($progress / $target) * 100) : 0;
-
-                // Format value & unit similar to other goals widgets
-                $value = $progress;
-                $unit = '';
-
-                if ($value >= 1000) {
-                    $value = $value / 1000;
-                    $unit = 'Gb';
-                } else {
-                    $unit = 'Mb';
-                }
-
-                if ($value >= 100) {
-                    $formattedValue = number_format($value, 0);
-                } else {
-                    $formattedValue = number_format($value, 1);
-                }
-
-                $memberGoals[] = [
-                    'type' => $goal->goal_type,
-                    'label' => $this->getGoalLabel((string) $goal->goal_type),
-                    'target' => $target,
-                    'progress' => $progress,
-                    'value' => $formattedValue,
-                    'unit' => $unit,
-                    'percentage' => round($percentage, 1),
-                    'color' => $this->getColorForPercentage($percentage),
-                    'is_active' => $percentage >= 75,
-                ];
+            $status = 'behind';
+            if ($percentage >= 75) {
+                $status = 'on_track';
+            }
+            if ($percentage >= 100) {
+                $status = 'achieved';
             }
 
             $result[] = [
                 'id' => $userId,
                 'name' => $first?->fullname ?: ($user?->name ?? 'Unknown'),
-                'role' => 'Member',
+                'role' => 'Sales Rep',
                 'avatar_url' => $user?->avatar_url ?? asset('/images/avatars/avatar-1.png'),
-                'goals' => $memberGoals,
+                'percentage' => round($percentage, 0),
+                'progress_value' => $totalProgress,
+                'target_value' => $totalTarget,
+                'status' => $status,
             ];
         }
 
