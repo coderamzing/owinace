@@ -13,7 +13,9 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        //
+        $middleware->alias([
+            'workspace.token' => \App\Http\Middleware\ValidateWorkspaceApiToken::class,
+        ]);
     })
     ->withSchedule(function (Schedule $schedule): void {
         // Daily analytics commands - run at midnight UTC
@@ -37,6 +39,11 @@ return Application::configure(basePath: dirname(__DIR__))
         // Weekly summary - run every Monday at midnight UTC
         $schedule->command('summary:weekly')
             ->weeklyOn(1, '00:00')
+            ->timezone('UTC');
+
+        // Monthly AI insights for admin review - run twice per month (1st & 15th) at midnight UTC
+        $schedule->command('ai:monthly-insights')
+            ->twiceMonthly(1, 15, '00:00')
             ->timezone('UTC');
     })
     ->withExceptions(function (Exceptions $exceptions): void {
