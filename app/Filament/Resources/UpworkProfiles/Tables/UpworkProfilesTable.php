@@ -57,7 +57,7 @@ class UpworkProfilesTable
                     ->modalHeading('Edit Profile')
                     ->modalSubmitActionLabel('Save')
                     ->slideOver()
-                    ->afterFormValidated(function (array $data, UpworkProfile $record): void {
+                    ->before(function (array $data, UpworkProfile $record): void {
                         ListUpworkProfiles::assertProxyOnSave($data, $record);
                     })
                     ->after(function (UpworkProfile $record): void {

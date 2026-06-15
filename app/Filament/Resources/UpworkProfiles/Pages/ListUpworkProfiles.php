@@ -45,7 +45,7 @@ class ListUpworkProfiles extends BaseListRecords
 
                     return $data;
                 })
-                ->afterFormValidated(function (array $data): void {
+                ->before(function (array $data): void {
                     self::assertProxyOnSave($data);
                 })
                 ->after(function (UpworkProfile $record): void {
