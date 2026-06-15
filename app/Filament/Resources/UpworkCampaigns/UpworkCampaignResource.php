@@ -6,7 +6,6 @@ use App\Filament\Resources\UpworkCampaigns\Pages\CreateUpworkCampaign;
 use App\Filament\Resources\UpworkCampaigns\Pages\EditUpworkCampaign;
 use App\Filament\Resources\UpworkCampaigns\Pages\ListUpworkCampaigns;
 use App\Filament\Resources\UpworkCampaigns\Pages\ViewUpworkCampaign;
-use App\Filament\Resources\UpworkCampaigns\RelationManagers\UpworkCampaignJobStatsRelationManager;
 use App\Filament\Resources\UpworkCampaigns\Schemas\UpworkCampaignForm;
 use App\Filament\Resources\UpworkCampaigns\Schemas\UpworkCampaignInfolist;
 use App\Filament\Resources\UpworkCampaigns\Tables\UpworkCampaignsTable;
@@ -52,14 +51,12 @@ class UpworkCampaignResource extends Resource
     public static function getEloquentQuery(): Builder
     {
         return parent::getEloquentQuery()
-            ->with(['member.user', 'source', 'kanban', 'linkedPortfolios']);
+            ->with(['member.user', 'profile', 'source', 'kanban', 'linkedPortfolios', 'slots']);
     }
 
     public static function getRelations(): array
     {
-        return [
-            UpworkCampaignJobStatsRelationManager::class,
-        ];
+        return [];
     }
 
     public static function getPages(): array

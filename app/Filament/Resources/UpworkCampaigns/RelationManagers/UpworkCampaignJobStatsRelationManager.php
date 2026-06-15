@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\UpworkCampaigns\RelationManagers;
 
+use App\Filament\Resources\UpworkCampaigns\Pages\ViewUpworkCampaign;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
@@ -18,12 +19,13 @@ class UpworkCampaignJobStatsRelationManager extends RelationManager
 
     public static function canViewForRecord(Model $ownerRecord, string $pageClass): bool
     {
-        return true;
+        return $pageClass === ViewUpworkCampaign::class;
     }
 
     public function table(Table $table): Table
     {
         return $table
+            ->heading(null)
             ->modifyQueryUsing(fn (Builder $query): Builder => $query->with(['job']))
             ->defaultSort('updated_at', 'desc')
             ->paginated([10, 25, 50, 100])

@@ -2,8 +2,13 @@
 
 namespace App\Filament\Resources\UpworkCampaigns\Schemas;
 
+use App\Filament\Resources\UpworkCampaigns\Pages\ViewUpworkCampaign;
+use App\Filament\Resources\UpworkCampaigns\RelationManagers\LinkedPortfoliosRelationManager;
+use App\Filament\Resources\UpworkCampaigns\RelationManagers\UpworkCampaignJobStatsRelationManager;
+use App\Filament\Support\ExpandableText;
 use Filament\Infolists\Components\IconEntry;
 use Filament\Infolists\Components\TextEntry;
+use Filament\Schemas\Components\Livewire;
 use Filament\Schemas\Components\Tabs;
 use Filament\Schemas\Components\Tabs\Tab;
 use Filament\Schemas\Schema;
@@ -23,7 +28,7 @@ class UpworkCampaignInfolist
                                 IconEntry::make('is_active')
                                     ->label('Active')
                                     ->boolean(),
-                                
+
                                 TextEntry::make('search_url')
                                     ->label('Search URL')
                                     ->url(fn ($state) => filled($state) ? $state : null)
@@ -35,6 +40,14 @@ class UpworkCampaignInfolist
                                 IconEntry::make('auto_bidding')
                                     ->label('Auto bidding')
                                     ->boolean(),
+                                TextEntry::make('profile.title')
+                                    ->label('Upwork profile')
+                                    ->placeholder('—'),
+                                TextEntry::make('profile.code')
+                                    ->label('Profile bot code')
+                                    ->placeholder('—')
+                                    ->copyable()
+                                    ->fontFamily('mono'),
                                 TextEntry::make('member_id')
                                     ->label('Team member')
                                     ->formatStateUsing(function ($state, $record): string {
@@ -73,32 +86,70 @@ class UpworkCampaignInfolist
                                 TextEntry::make('rule_min_client_rating')
                                     ->label('Min client rating')
                                     ->placeholder('—'),
-                                TextEntry::make('rule_clock_in')
-                                    ->label('Clock in(UTC)')
-                                    ->placeholder('—'),
-                                TextEntry::make('rule_clock_out')
-                                    ->label('Clock out(UTC)')
-                                    ->placeholder('—'),
+                                TextEntry::make('slots')
+                                    ->label('Bidding time slots (UTC)')
+                                    ->formatStateUsing(function ($state, $record): string {
+                                        $slots = $record->slots;
+                                        if ($slots->isEmpty()) {
+                                            return '—';
+                                        }
+
+                                        return $slots
+                                            ->map(fn ($slot): string => substr((string) $slot->clock_in, 0, 5)
+                                                .' – '
+                                                .substr((string) $slot->clock_out, 0, 5))
+                                            ->implode(', ');
+                                    })
+                                    ->columnSpanFull(),
                             ])
                             ->columns(2),
+                        Tab::make('Portfolios')
+                            ->icon('heroicon-o-briefcase')
+                            ->schema([
+                                Livewire::make(LinkedPortfoliosRelationManager::class)
+                                    ->key('campaign-linked-portfolios-view')
+                                    ->data(fn (ViewUpworkCampaign $livewire): array => [
+                                        'ownerRecord' => $livewire->getRecord(),
+                                        'pageClass' => ViewUpworkCampaign::class,
+                                    ])
+                                    ->columnSpanFull(),
+                            ]),
+                        Tab::make('Job stats')
+                            ->icon('heroicon-o-chart-bar')
+                            ->schema([
+                                Livewire::make(UpworkCampaignJobStatsRelationManager::class)
+                                    ->key('campaign-job-stats')
+                                    ->data(fn (ViewUpworkCampaign $livewire): array => [
+                                        'ownerRecord' => $livewire->getRecord(),
+                                        'pageClass' => ViewUpworkCampaign::class,
+                                    ])
+                                    ->columnSpanFull(),
+                            ]),
                         Tab::make('Prompts')
                             ->icon('heroicon-o-chat-bubble-left-right')
                             ->schema([
-                                TextEntry::make('linkedPortfolios.title')
-                                    ->label('Portfolios')
-                                    ->listWithLineBreaks()
-                                    ->bulleted()
-                                    ->placeholder('No portfolios attached')
-                                    ->columnSpanFull(),
+                                TextEntry::make('ai_cover_letter')
+                                    ->label('AI cover letter')
+                                    ->formatStateUsing(fn ($state): string => $state ? 'Yes' : 'No'),
                                 TextEntry::make('ai_prompt')
                                     ->label('AI prompt')
+                                    ->formatStateUsing(fn (?string $state) => ExpandableText::render($state))
+                                    ->html()
+                                    ->columnSpanFull(),
+                                TextEntry::make('experience')
+                                    ->label('Experience')
+                                    ->formatStateUsing(fn (?string $state) => ExpandableText::render($state))
+                                    ->html()
                                     ->columnSpanFull(),
                                 TextEntry::make('questions_context')
                                     ->label('Questions context')
+                                    ->formatStateUsing(fn (?string $state) => ExpandableText::render($state))
+                                    ->html()
                                     ->columnSpanFull(),
                                 TextEntry::make('matching_critieria')
                                     ->label('Matching criteria')
-                                    ->placeholder('—')
+                                    ->formatStateUsing(fn (?string $state) => ExpandableText::render($state))
+                                    ->html()
                                     ->columnSpanFull(),
                             ]),
                     ])

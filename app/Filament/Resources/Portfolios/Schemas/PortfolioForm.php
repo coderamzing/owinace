@@ -2,10 +2,11 @@
 
 namespace App\Filament\Resources\Portfolios\Schemas;
 
+use App\Models\Portfolio;
 use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
-use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TagsInput;
+use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Schema;
 
@@ -29,14 +30,21 @@ class PortfolioForm
                     ->columnSpanFull(),
                 Textarea::make('description')
                     ->required()
-                    ->maxLength(500)
-                    ->rule('max:500')
+                    ->rows(12)
+                    ->helperText('Maximum '.number_format(Portfolio::DESCRIPTION_MAX_WORDS).' words.')
+                    ->rules([
+                        fn (): \Closure => function (string $attribute, mixed $value, \Closure $fail): void {
+                            if (Portfolio::exceedsDescriptionWordLimit((string) $value)) {
+                                $fail('The description must not exceed '.number_format(Portfolio::DESCRIPTION_MAX_WORDS).' words.');
+                            }
+                        },
+                    ])
                     ->columnSpanFull(),
                 TagsInput::make('keywords')
                     ->required()
-                    ->rules(['array', 'max:10'])
+                    ->rules(['array', 'max:15'])
                     ->reorderable(false)
-                    ->placeholder('Add up to 10 keywords')
+                    ->placeholder('Add up to 15 keywords')
                     ->columnSpanFull(),
                 Toggle::make('is_active')
                     ->required()
@@ -44,4 +52,3 @@ class PortfolioForm
             ]);
     }
 }
-

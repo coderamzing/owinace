@@ -7,6 +7,7 @@ use App\Filament\Resources\UpworkCampaigns\RelationManagers\LinkedPortfoliosRela
 use App\Models\LeadKanban;
 use App\Models\LeadSource;
 use App\Models\TeamMember;
+use App\Models\UpworkProfile;
 use Filament\Actions\Action;
 use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\Repeater;
@@ -17,13 +18,13 @@ use Filament\Forms\Components\TimePicker;
 use Filament\Forms\Components\Toggle;
 use Filament\Resources\Pages\CreateRecord;
 use Filament\Resources\Pages\EditRecord;
-use Filament\Schemas\Components\Livewire;
 use Filament\Schemas\Components\Actions;
 use Filament\Schemas\Components\Callout;
+use Filament\Schemas\Components\Livewire;
 use Filament\Schemas\Components\Tabs;
-use Filament\Support\Enums\Alignment;
 use Filament\Schemas\Components\Tabs\Tab;
 use Filament\Schemas\Schema;
+use Filament\Support\Enums\Alignment;
 
 class UpworkCampaignForm
 {
@@ -43,7 +44,7 @@ class UpworkCampaignForm
                                 Toggle::make('is_active')
                                     ->label('Active')
                                     ->default(true),
-                                
+
                                 TextInput::make('search_url')
                                     ->label('Search URL')
                                     ->url()
@@ -59,6 +60,24 @@ class UpworkCampaignForm
                                 Toggle::make('auto_bidding')
                                     ->label('Auto bidding')
                                     ->default(false),
+                                Select::make('profile_id')
+                                    ->label('Upwork profile')
+                                    ->options(function (): array {
+                                        $teamId = session('team_id');
+                                        if (! $teamId || $teamId < 1) {
+                                            return [];
+                                        }
+
+                                        return UpworkProfile::query()
+                                            ->where('team_id', $teamId)
+                                            ->where('is_active', true)
+                                            ->orderBy('title')
+                                            ->pluck('title', 'id')
+                                            ->all();
+                                    })
+                                    ->searchable()
+                                    ->helperText('Required for the auto-bidding bot. Create profiles via the Profiles button on the campaigns list.')
+                                    ->nullable(),
                                 Select::make('member_id')
                                     ->label('Team member')
                                     ->options(function (): array {
@@ -150,16 +169,30 @@ class UpworkCampaignForm
                                     ])
                                     ->nullable()
                                     ->placeholder('No minimum'),
-                                TimePicker::make('rule_clock_in')
-                                    ->label('Clock in(UTC)')
-                                    ->seconds(false),
-                                TimePicker::make('rule_clock_out')
-                                    ->label('Clock out(UTC)')
-                                    ->seconds(false),
+                                Repeater::make('slots')
+                                    ->label('Bidding time slots (UTC)')
+                                    ->relationship('slots')
+                                    ->schema([
+                                        TimePicker::make('clock_in')
+                                            ->label('Clock in (UTC)')
+                                            ->seconds(false)
+                                            ->required(),
+                                        TimePicker::make('clock_out')
+                                            ->label('Clock out (UTC)')
+                                            ->seconds(false)
+                                            ->required(),
+                                    ])
+                                    ->columns(2)
+                                    ->reorderableWithButtons()
+                                    ->orderColumn('sort_order')
+                                    ->addActionLabel('Add time slot')
+                                    ->defaultItems(0)
+                                    ->columnSpanFull()
+                                    ->helperText('Leave empty to allow bidding at any time. Add multiple slots for split schedules (e.g. morning and evening).'),
                             ])
                             ->columns(2),
-                        Tab::make('Prompts')
-                            ->icon('heroicon-o-chat-bubble-left-right')
+                        Tab::make('Portfolios')
+                            ->icon('heroicon-o-briefcase')
                             ->schema([
                                 Placeholder::make('portfolios_create_hint')
                                     ->label('Portfolios')
@@ -174,8 +207,20 @@ class UpworkCampaignForm
                                     ])
                                     ->visibleOn([EditRecord::class])
                                     ->columnSpanFull(),
+                            ]),
+                        Tab::make('Prompts')
+                            ->icon('heroicon-o-chat-bubble-left-right')
+                            ->schema([
+                                Toggle::make('ai_cover_letter')
+                                    ->label('AI cover letter')
+                                    ->helperText('When off, the AI prompt is submitted as the cover letter without AI rewriting. Screening questions still use AI when present.')
+                                    ->default(true),
                                 Textarea::make('ai_prompt')
                                     ->label('AI prompt')
+                                    ->rows(8)
+                                    ->columnSpanFull(),
+                                Textarea::make('experience')
+                                    ->label('Experience')
                                     ->rows(8)
                                     ->columnSpanFull(),
                                 Textarea::make('questions_context')

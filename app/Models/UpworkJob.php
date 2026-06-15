@@ -22,6 +22,8 @@ class UpworkJob extends Model
         'skills',
         'url',
         'location',
+        'preferred_location',
+        'preferred_talent',
         'proposals',
         'client_name',
         'client_org',
@@ -33,6 +35,7 @@ class UpworkJob extends Model
         'client_openjob',
         'client_hirerate',
         'client_hires',
+        'hires',
         'interviews',
         'client_avgspent',
         'client_avghourlyrate',
@@ -49,7 +52,9 @@ class UpworkJob extends Model
     protected $casts = [
         'skills' => 'array',
         'questions' => 'array',
+        'client_rating' => 'integer',
     ];
+
     /**
      * Get the attributes that should be cast.
      *
@@ -60,6 +65,7 @@ class UpworkJob extends Model
         return [
             'client_totalspent' => 'decimal:2',
             'client_hirerate' => 'decimal:2',
+            'client_rating' => 'integer',
         ];
     }
 

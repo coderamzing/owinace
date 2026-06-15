@@ -3,36 +3,37 @@
 namespace App\Services;
 
 use GuzzleHttp\Client;
-use RuntimeException;
 use Illuminate\Support\Facades\Log;
+use RuntimeException;
 
 class DeepseekService
 {
     public function request(
-        array $messages
+        array $messages,
+        mixed $model = 'deepseek-chat'
     ): array {
 
         $client = new Client([
             'base_uri' => 'https://api.deepseek.com',
             'headers' => [
-                'Authorization' => 'Bearer ' . env('DEEPSEEK_API_KEY'),
+                'Authorization' => 'Bearer '.env('DEEPSEEK_API_KEY'),
             ],
         ]);
         $rawresponse = $client->post('/v1/chat/completions', [
             'json' => [
-                'model' => 'deepseek-chat',
+                'model' => $model,
                 'messages' => $messages,
                 'response_format' => [
-                    'type' => 'json_object'
+                    'type' => 'json_object',
                 ],
             ],
         ]);
 
         $response = json_decode($rawresponse->getBody()->getContents(), true);
-        //Log::info('Deepseek response: ' . json_encode($response));
+        // Log::info('Deepseek response: ' . json_encode($response));
 
         $content = $response['choices'][0]['message']['content'] ?? null;
-        if (!$content) {
+        if (! $content) {
             throw new RuntimeException('Empty response from OpenAI');
         }
 
@@ -40,7 +41,7 @@ class DeepseekService
         if (json_last_error() !== JSON_ERROR_NONE) {
             throw new RuntimeException('Invalid JSON returned by OpenAI');
         }
+
         return $decoded;
     }
-
 }

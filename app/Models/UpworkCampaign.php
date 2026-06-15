@@ -28,17 +28,18 @@ class UpworkCampaign extends Model
         'max_daily_bid',
         'auto_bidding',
         'ai_prompt',
+        'ai_cover_letter',
         'questions_context',
         'matching_critieria',
+        'experience',
         'rule_client_avg_spent',
         'rule_max_interviews',
         'rule_job_posted_ago',
         'rule_max_proposal',
         'rule_min_client_rating',
-        'rule_clock_in',
-        'rule_clock_out',
         'member_id',
         'team_id',
+        'profile_id',
         'source_id',
         'kanban_id',
     ];
@@ -52,13 +53,14 @@ class UpworkCampaign extends Model
     {
         return [
             'is_active' => 'boolean',
+            'max_daily_bid' => 'integer',
             'auto_bidding' => 'boolean',
             'rule_client_avg_spent' => 'decimal:2',
-            'rule_max_interviews' => 'decimal:2',
-            'rule_job_posted_ago' => 'decimal:2',
-            'rule_max_proposal' => 'decimal:2',
+            'rule_max_interviews' => 'integer',
+            'rule_job_posted_ago' => 'integer',
+            'rule_max_proposal' => 'integer',
             'rule_min_client_rating' => 'integer',
-            'max_daily_bid' => 'integer',
+            'ai_cover_letter' => 'boolean',
         ];
     }
 
@@ -70,6 +72,11 @@ class UpworkCampaign extends Model
     public function team(): BelongsTo
     {
         return $this->belongsTo(Team::class, 'team_id');
+    }
+
+    public function profile(): BelongsTo
+    {
+        return $this->belongsTo(UpworkProfile::class, 'profile_id');
     }
 
     public function source(): BelongsTo
@@ -87,6 +94,32 @@ class UpworkCampaign extends Model
         return $this->hasMany(UpworkCampaignJobStat::class, 'campaign_id');
     }
 
+    public function slots(): HasMany
+    {
+        return $this->hasMany(UpworkCampaignSlot::class, 'campaign_id')
+            ->orderBy('sort_order')
+            ->orderBy('id');
+    }
+
+    public function isWithinClockSlots(?string $nowUtc = null): bool
+    {
+        $this->loadMissing('slots');
+
+        if ($this->slots->isEmpty()) {
+            return true;
+        }
+
+        $nowUtc ??= now('UTC')->format('H:i');
+
+        return $this->slots->contains(
+            fn (UpworkCampaignSlot $slot): bool => UpworkCampaignSlot::isTimeWithinSlot(
+                $nowUtc,
+                (string) $slot->clock_in,
+                (string) $slot->clock_out,
+            ),
+        );
+    }
+
     public function linkedPortfolios(): BelongsToMany
     {
         return $this->belongsToMany(
@@ -95,6 +128,27 @@ class UpworkCampaign extends Model
             'campaign_id',
             'portfolio_id',
         )->orderBy('portfolios.sort_order');
+    }
+
+    public function cloneAsCopy(): self
+    {
+        $this->loadMissing(['linkedPortfolios', 'slots']);
+
+        $clone = $this->replicate();
+        $clone->title = $this->title.' (Copy)';
+        $clone->is_active = false;
+        $clone->save();
+
+        $portfolioIds = $this->linkedPortfolios->pluck('id')->all();
+        if ($portfolioIds !== []) {
+            $clone->linkedPortfolios()->attach($portfolioIds);
+        }
+
+        foreach ($this->slots as $slot) {
+            $clone->slots()->create($slot->only(['clock_in', 'clock_out', 'sort_order']));
+        }
+
+        return $clone->fresh(['linkedPortfolios', 'slots']);
     }
 
     /**

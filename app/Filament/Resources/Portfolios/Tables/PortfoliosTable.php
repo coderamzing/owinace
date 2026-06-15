@@ -2,18 +2,20 @@
 
 namespace App\Filament\Resources\Portfolios\Tables;
 
+use App\Traits\HasPermission;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\EditAction;
-use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\IconColumn;
+use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TagsColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
-use App\Traits\HasPermission;
+use Illuminate\Database\Eloquent\Builder;
 
 class PortfoliosTable
 {
     use HasPermission;
+
     public static function configure(Table $table): Table
     {
         return $table
@@ -25,7 +27,12 @@ class PortfoliosTable
                     ->circular()
                     ->size(40),
                 TextColumn::make('title')
-                    ->searchable()
+                    ->searchable(query: function (Builder $query, string $search): Builder {
+                        return $query->where(function (Builder $q) use ($search): void {
+                            $q->where('title', 'like', "%{$search}%")
+                                ->orWhere('keywords', 'like', "%{$search}%");
+                        });
+                    })
                     ->color('primary')
                     ->weight('bold')
                     ->sortable(),
@@ -73,4 +80,3 @@ class PortfoliosTable
             ->bulkActions([]);
     }
 }
-

@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Portfolios;
 
+use App\Filament\Resources\Portfolios\Pages\ImportPortfolios;
 use App\Filament\Resources\Portfolios\Pages\ListPortfolios;
 use App\Filament\Resources\Portfolios\Schemas\PortfolioForm;
 use App\Filament\Resources\Portfolios\Tables\PortfoliosTable;
@@ -41,7 +42,7 @@ class PortfolioResource extends Resource
     {
         return [
             'index' => ListPortfolios::route('/'),
+            'import' => ImportPortfolios::route('/import'),
         ];
     }
 }
-

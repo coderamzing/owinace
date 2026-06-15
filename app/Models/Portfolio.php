@@ -16,7 +16,9 @@ use Spatie\MediaLibrary\InteractsWithMedia;
 
 class Portfolio extends Model implements HasMedia
 {
-    use HasFactory, TeamTraits, InteractsWithMedia;
+    use HasFactory, InteractsWithMedia, TeamTraits;
+
+    public const DESCRIPTION_MAX_WORDS = 5000;
 
     /**
      * The attributes that are mass assignable.
@@ -49,10 +51,20 @@ class Portfolio extends Model implements HasMedia
         ];
     }
 
+    public static function descriptionWordCount(string $description): int
+    {
+        return str_word_count(strip_tags($description));
+    }
+
+    public static function exceedsDescriptionWordLimit(string $description): bool
+    {
+        return self::descriptionWordCount($description) > self::DESCRIPTION_MAX_WORDS;
+    }
+
     protected static function booted(): void
     {
         static::addGlobalScope(new TeamScope);
-        
+
         static::saving(function (Portfolio $portfolio): void {
             $portfolio->updateEmbedding();
         });

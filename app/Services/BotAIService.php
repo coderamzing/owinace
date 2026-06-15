@@ -3,11 +3,11 @@
 namespace App\Services;
 
 use RuntimeException;
-use Carbon\Carbon;
 
 class BotAIService
 {
     protected OpenAIService $openAIService;
+
     protected DeepseekService $deepseekService;
 
     public function __construct(OpenAIService $openAIService, DeepseekService $deepseekService)
@@ -18,73 +18,109 @@ class BotAIService
 
     public function parseJob(array $jobData): array
     {
-        //remove not needed fields
-        $rawText = $jobData['rawText'];
+        $prompt = <<<'EOT'
+        # ROLE
+        You are an expert information extraction and data organization specialist.
 
-        $prompt = <<<EOT
-        Return only valid JSON.
+        # OBJECTIVE
+        Extract key information from the raw text of an Upwork job details page and convert it into structured JSON.
 
-        DATA:
-        {$rawText}
+        # Context
+        - CURRENT_UTC_TIME = current UTC time in YYYY-MM-DD HH:MM:SS format.
 
-        Rules:
-        - Extract values from selected text only.
-        - Missing values = null.
-        - Numbers only.
-        - K=1000, M=1000000.
-        - %=number only.
-        - proposals:
-        "5-10"=6
-        "10-15"=12
-        "10-20"=15
-        "20-50"=40
-        "50+"=55
-        "Less than 5"=4
-        - posted_at = return into mysql datetime format.
-        - client_since = date after "Member since" in YYYY-MM-DD.
-        - type = fixed|hourly.
-        - client_rating = overall rating only return 0 if rating is not found.
-        - client_totalspent = detect "total spent" from section "About the client" or return 0 if not found.
-        - client_jobposted = detect "jobs posted" from section "About the client" or return 0 if not found.
-        - client_openjob = detect "open jobs" from section "About the client" or return 0 if not found.
-        - client_hirerate = calculate hirerate from jobposted / detect "hires" from section "About the client" or return 0 if not found.
-        - client_avgspent = detect "hire rate" from section "About the client" or return 0 if not found.
-        - client_avghourlyrate = detect "avg hourly rate paid" from section "About the client" or return 0 if not found.
-        - client_hires = detect "hires" from section "About the client" or return 0 if not found.
-        - client_org = detect company/business/org name from JD.
-        - client_website = detect website/domain/url from JD.
-        - client_project = detect product/project/platform/app/SaaS name from JD.
-        - client_name = detect client/person name from reviews or JD.
-        - is_warm = 1 if client_name OR client_org OR client_website OR client_project found, else 0.
-        - location = client location from section About the client.
-        - interviews = detect interviews from activity on this job or 0 if not found.
-        - invitesent = detect invitesent from activity on this job or 0 if not found.
-        - connects = detect connects from required connects for this job or 0 if not found.
+        # INSTRUCTIONS
+        - Ignore navigation elements and irrelevant text.
+        - Identify the job title, description, skills, url, questions, location, preferred_location, preferred_talent, proposals, client_name, client_rating, client_totalspent, client_jobposted, client_openjob, client_hirerate, client_avghourlyrate, client_hires, interviews, invitesent, connects, hires, client_since, type, posted_at, client_org, client_website, client_project, is_warm.
+            - proposals: detect from section "Activity on this job" as integer the pattern you can see "Proposals: {number} to {number}".
+                'Proposals:5 to 10' => 6
+                'Proposals:10-15' => 12
+                'Proposals:10-20' => 15
+                'Proposals:20-50' => 40
+                'Proposals:50+' => 55
+                'Proposals:Less than 5' => 4
+            - title = detect title from jobdescription in the first line before "Posted yesterday".
+            - description = detect description from "Summary".
+            - skills: detect form "Mandatory skills" section and return as array.
+            - url = detect url from "Job link".
+            - questions = detect questions as [] from section "questions".
+            - posted_at:
+                - REQUIRED FIELD.
+                - Search only for the FIRST line beginning with "Posted ".
+                - Ignore all other dates in the page.
+                - Convert:
+                    Posted just now
+                    Posted x minutes
+                    Posted x hours
+                    Posted yesterday
+                    Posted x days
+                    Posted x weeks
+                    Posted x months
+                    Posted x years
+                relative to CURRENT_UTC_TIME.
+                - Return YYYY-MM-DD HH:MM:SS.
+                - Never return null if a "Posted ..." line exists.
+            - type = fixed|hourly.
+            - client_rating = overall rating only return 0 if rating is not found.
+            - client_totalspent = detect "total spent" from section "About the client", Process value from K, M, B to actual number format or return 0 if not found.
+            - client_jobposted = detect "jobs posted" from section "About the client" or return 0 if not found.
+            - client_openjob = detect "open jobs" from section "About the client" or return 0 if not found.
+            - client_hirerate = detect from section "About the client" as integer the pattern you can see "{number}% hire rate".
+            - client_avghourlyrate = detect "avg hourly rate paid" from section "About the client" or return 0 if not found.
+            - client_hires = detect "hires" from section "About the client" or return 0 if not found.
+            - client_org = detect company/business/org name from JD.
+            - client_website = detect website/domain/url from JD.
+            - client_project = detect product/project/platform/app/SaaS name from JD.
+            - client_name = detect client/person name from reviews or JD.
+            - is_warm = 1 if client_name OR client_org OR client_website OR client_project found, else 0.
+            - location = detect location from section About the client, return in format "City, Country".
+            - preferred_location = detect from section "Preferred qualifications" under "Location:" or return null if not found.
+            - preferred_talent = detect from section "Preferred qualifications" under "Talent Type:" or return null if not found.
+            - interviews = detect interviews from activity on this job or 0 if not found.
+            - invitesent = detect invitesent from activity on this job or 0 if not found.
+            - connects = detect connects from required connects for this job or 0 if not found.
+            - hires = detect hires from "Activity on this job" section if job as already hired or 0 if not found.
+            - client_since = date after "Member since" in YYYY-MM-DD.
+        - Normalize values where possible.
+        - Return null for missing fields.
+        - Do not invent information.
 
-        Output format:
+        # OUTPUT FORMAT
         {
-        "location": null,
-        "proposals": null,
-        "client_name": null,
-        "client_rating": null,
-        "client_totalspent": null,
-        "client_jobposted": null,
-        "client_openjob": null,
-        "client_hirerate": null,
-        "client_avgspent": null,
-        "client_avghourlyrate": null,
-        "client_hires": null,
-        "interviews": null,
-        "invitesent": null,
-        "client_since": null,
-        "type": null,
-        "posted_at": null,
-        "connects": null,
-        "client_org": null,
-        "client_website": null,
-        "client_project": null,
-        "is_warm": 0
+            "title": null,
+            "description": null,
+            "skills": [],
+            "url": null,
+            "questions": [],
+            "location": null,
+            "preferred_location": null,
+            "preferred_talent": null,
+            "proposals": null,
+            "client_name": null,
+            "client_rating": null,
+            "client_totalspent": null,
+            "client_jobposted": null,
+            "client_openjob": null,
+            "client_hirerate": null,
+            "client_avghourlyrate": null,
+            "client_hires": null,
+            "interviews": null,
+            "invitesent": null,
+            "client_since": null,
+            "type": null,
+            "posted_at": YYYY-MM-DD HH:MM:SS,
+            "connects": null,
+            "client_org": null,
+            "client_website": null,
+            "client_project": null,
+            "is_warm": 0,
+            "hires": 0
         }
+        # VALIDATION
+        - Every value must come from the provided text.
+        - Never guess.
+        - Use null for unavailable fields.
+        - posted_at must be in YYYY-MM-DD HH:MM:SS format.
+        
         EOT;
 
         $response = $this->deepseekService->request([
@@ -94,9 +130,13 @@ class BotAIService
             ],
             [
                 'role' => 'user',
-                'content' => json_encode($jobData, JSON_THROW_ON_ERROR | JSON_UNESCAPED_UNICODE),
+                'content' => json_encode([
+                    'source' => 'Upwork job details page',
+                    'raw_text' => $jobData['rawText'],
+                    'CURRENT_UTC_TIME' => now('UTC')->format('Y-m-d H:i:s'),
+                ], JSON_THROW_ON_ERROR | JSON_UNESCAPED_UNICODE),
             ],
-        ]);
+        ], 'deepseek-reasoner');
 
         if (! is_array($response)) {
             throw new RuntimeException('Invalid AI response shape');
@@ -112,88 +152,120 @@ class BotAIService
      */
     public function analyzeJob(array $jobData, array $campaignData): array
     {
-        $jobDescription = trim((string) ($jobData['description'] ?? ''));
-        $camPortfolios = trim((string) ($campaignData['portfolios'] ?? ''));
-        $camMatchingCriteria = trim((string) ($campaignData['matching_criteria'] ?? ''));
+        $prompt = <<<'EOT'
+        # ROLE
 
-        $decoded = $this->deepseekService->request([
-            [
-                'role' => 'system',
-                'content' => <<<EOT
-        You are a strict job alignment validator.
+        You are a senior technical recruiter and freelance opportunity evaluator with extensive experience assessing software development projects.
+
+        You specialize in analyzing job descriptions, identifying the required skills and experience, and determining whether a project is a good match based on previous work and available expertise.
+
+        You prioritize accuracy and evidence-based matching and never assume experience that is not supported by the provided information.
+
+        # OBJECTIVE
+
+        Determine whether the opportunity is a suitable match for the candidate's experience and whether the available portfolios and question context provide enough evidence to confidently apply for the job.
+
+        # CONTEXT
+
+        The user message contains:
+
+        - JOB_DESCRIPTION (job description from job data)
+        - JOB_QUESTIONS (job questions from job data)
+        - JOB_SKILLS (job skills from job data)
+        - CAMPAIGN_PORTFOLIOS (campaign portfolios from campaign data)
+        - CAMPAIGN_EXPERIENCE (candidate experience from campaign data)
+        - CAMPAIGN_QUESTIONS_CONTEXT (campaign questions context from campaign data)
+        - CAMPAING_MATCHING_CRITERIA (set of rules from campaign data)
+
+        # INSTRUCTIONS
+        - Analyze the job requirements, technologies, features, integrations, domain, and experience level.
+        - Compare the requirements against CAMPAIGN_PORTFOLIOS, CAMPAIGN_EXPERIENCE, and CAMPAING_MATCHING_CRITERIA.
+        - Determine whether the available portfolios and experience demonstrate similar work and relevant expertise.
+        - Determine whether JOB_QUESTIONS can be reasonably answered using CAMPAIGN_QUESTIONS_CONTEXT, CAMPAIGN_EXPERIENCE, or CAMPAIGN_PORTFOLIOS.
+        - A partial match is acceptable if the core requirements are strongly aligned.
+        - Reject the opportunity if major requirements are unsupported or if important questions cannot be answered.
+        - Base the decision only on the supplied information.
+        - Never fabricate experience or assume unsupported knowledge.
+
+        ### CAMPAING_MATCHING_CRITERIA
+
+        CAMPAING_MATCHING_CRITERIA contains human-written conditions that define which jobs are suitable.
+
+        These rules may describe:
+
+        - Required technologies.
+        - Required skills.
+        - Allowed or forbidden locations.
+        - Project types.
+        - Experience requirements.
+        - Feature work vs. new development.
+        - Budget constraints.
+        - Availability requirements.
+        - Any other inclusion or exclusion conditions.
+
+        Interpret these rules semantically rather than requiring exact wording.
+
+        Examples:
+
+        - "Job skills must include Laravel"
+            → Match against JOB_SKILLS and JOB_DESCRIPTION.
+
+        - "Job should be about adding new features or fixing an existing website"
+            → Accept jobs involving maintenance, bug fixes, feature additions, or existing systems.
+
+        - "If any location is mentioned and it is not India, return false"
+            → Treat explicit country requirements such as South Africa, USA, Canada, Germany, etc. as exclusion rules.
+
+        - "Must be long-term"
+            → Reject short-term projects.
+
+        - "Avoid full-time positions"
+            → Reject jobs requiring fixed working hours or full-time commitments.
+
+        CAMPAING_MATCHING_CRITERIA has higher priority than portfolio matching.
+
+        # CONSTRAINTS
+
+        - Never invent experience.
+        - Never assume skills that are not supported by the provided information.
+        - Favor accuracy over optimism.
+        - The reason must be concise and no longer than 80 characters.
+
+        # OUTPUT FORMAT
 
         Return ONLY valid JSON:
 
         {
-        "is_matched": true|false,
-        "reason": "max 80 chars"
+            "is_matched": true,
+            "reason": "Strong React and Node.js experience with similar SaaS projects"
         }
 
-        GOAL:
-        Determine whether:
-        1. The job aligns with the campaign matching criteria
-        2. At least one portfolio is strongly relevant to the actual work required
+        # VALIDATION
 
-        STRICT RULES:
+        - Ensure every conclusion is supported by the supplied data.
+        - Ensure the response is valid JSON.
+        - Ensure the reason is no longer than 80 characters.
+        - Ensure no text exists outside the JSON.
+        EOT;
 
-        STEP 1 — MATCHING CRITERIA
-        - Compare the matching criteria against the job description
-        - Reject if the job clearly does not satisfy the criteria
-        - Focus on:
-        - required skills
-        - technologies
-        - project scope
-        - business domain
-        - deliverables
-        - experience expectations
-
-        STEP 2 — PORTFOLIO RELEVANCE
-        - Compare the portfolios against the actual requirements of the job
-        - At least ONE portfolio must strongly align with:
-        - technologies used
-        - type of solution
-        - integrations
-        - business use case
-        - complexity level
-        - services requested
-
-        IMPORTANT:
-        - Reject weak keyword overlap
-        - Reject vague or generic similarity
-        - Reject unrelated experience
-        - Accept only if alignment is clear and meaningful
-        - Strong practical relevance is required
-
-        FINAL RULE:
-        - matching criteria must pass
-        - portfolio relevance must pass
-        - otherwise reject
-
-        IMPORTANT:
-        - Be conservative
-        - Avoid false positives
-        - Do not assume missing information
-        - Keep reason very short and specific
-
-        EOT
+        $decoded = $this->deepseekService->request([
+            [
+                'role' => 'system',
+                'content' => $prompt,
             ],
             [
                 'role' => 'user',
-                'content' => <<<EOT
-        JOB DESCRIPTION:
-        {$jobDescription}
-
-        MATCHING CRITERIA:
-        {$camMatchingCriteria}
-
-        PORTFOLIOS:
-        {$camPortfolios}
-
-        Now validate strictly.
-
-        EOT
-            ]
-        ]);
+                'content' => json_encode([
+                    'JOB_DESCRIPTION' => $jobData['description'],
+                    'JOB_QUESTIONS' => $jobData['questions'],
+                    'JOB_SKILLS' => implode(', ', $jobData['skills']),
+                    'CAMPAIGN_PORTFOLIOS' => $campaignData['portfolios'],
+                    'CAMPAIGN_EXPERIENCE' => $campaignData['experience'] ?? '',
+                    'CAMPAIGN_QUESTIONS_CONTEXT' => $campaignData['questions_context'],
+                    'CAMPAING_MATCHING_CRITERIA' => $campaignData['matching_criteria'] ?? $campaignData['matching_critieria'] ?? '',
+                ], JSON_THROW_ON_ERROR | JSON_UNESCAPED_UNICODE),
+            ],
+        ], 'deepseek-reasoner');
 
         if (! is_array($decoded)) {
             throw new RuntimeException('Invalid AI response shape');
@@ -215,134 +287,154 @@ class BotAIService
      */
     public function writeCoverLetter(array $jobData, array $campaignData): array
     {
-        $title = (string) ($jobData['title'] ?? 'Untitled');
-        $description = (string) ($jobData['description'] ?? '');
+        $prompt = <<<'EOT'
+        # ROLE
+        You are a senior freelance proposal and cover letter specialist with extensive experience helping full-stack developers win projects on platforms like Upwork.
+        You specialize in analyzing job descriptions, identifying the most relevant skills and experience, and writing concise, natural, and persuasive cover letters that maximize response rates.
+        You prioritize relevance, clarity, and professionalism while avoiding generic or overly sales-oriented language.
 
-        $questions = $jobData['questions'] ?? [];
-        if (!is_array($questions)) $questions = [];
+        # OBJECTIVE
+        Create a concise and professional Upwork proposal that highlights the most relevant experience, addresses the client's requirements, and encourages further discussion.
 
-        $questionsJson = json_encode($questions, JSON_UNESCAPED_UNICODE);
+        # CONTEXT
+        - CLIENT_NAME = client name from job data.
+        - JOB_TITLE = job title from job data.
+        - JOB_DESCRIPTION = job description from job data.
+        - JOB_QUESTIONS = job questions from job data which we need to answer.
+        - COVERLETTER_SKELETON = cover letter skeleton from campaign data.
+        - CAMPAIGN_PORTFOLIOS = campaign portfolios from campaign data.
+        - CAMPAIGN_EXPERIENCE = candidate experience from campaign data.
+        - CAMPAIGN_QUESTIONS_CONTEXT = campaign questions context from campaign data.
+        - AI_COVER_LETTER = ai cover letter flag from campaign data.
+    
+        # INSTRUCTIONS
+        ## Greeting
+        - Start with one of:
+            - Hi
+            - Hello
+            - Hey
+        - If CLIENT_NAME is available, append the client's name.
+        Example: Hi John,
 
-        $coverSkeleton   = (string) ($campaignData['ai_prompt'] ?? '');
-        $portfolios      = (string) ($campaignData['portfolios'] ?? '');
-        $questionsCtx    = (string) ($campaignData['questions_context'] ?? '');
+        ## Client Instructions
+        - If the job description requests a specific starting word or phrase, follow that requirement.
+
+        ## Placeholder Replacement
+        The proposal template may contain:
+        - [CLIENT_NAME]
+        - [CTA]
+        - [PORTFOLIOS]
+        - [HOOK]
+        - [INLINE_QUESTIONS]
+        Replace all placeholders.
+
+        ### [CTA]
+        Generate an appropriate call-to-action.
+        - Do not mention any person's name.
+
+        ### [PORTFOLIOS]
+        Select the most relevant portfolio items based on:
+        - keywords
+        - technologies
+        - project type
+        - business domain
+        Use only relevant portfolio information.
+
+
+        ### [INLINE_QUESTIONS]
+        Questions which are come from job description itself.
+        All questions must be answered & append to cover letter not to questions output
+        Answers should be derived from:
+        - CAMPAIGN_EXPERIENCE
+        - CAMPAIGN_QUESTIONS_CONTEXT
+        - PORTFOLIOS
+
+        ## Questions
+        Questions may come from:
+        1. JOB_QUESTIONS expect INLINE_QUESTIONS.
+        All questions must be answered.
+        Answers should be derived from:
+        - CAMPAIGN_EXPERIENCE
+        - CAMPAIGN_QUESTIONS_CONTEXT
+        - PORTFOLIOS
+
+        Never invent experience or facts.
+
+        ## AI_COVER_LETTER = enabled
+        - Write a completely personalized proposal.
+        - Use the template only as guidance.
+        - Adjust the proposal length according to the complexity of the job.
+        - Naturally incorporate relevant portfolio information.
+
+        ## AI_COVER_LETTER = disabled
+        - Preserve the original COVERLETTER_SKELETON.
+        - Only replace placeholders.
+        - Answer questions.
+        - Do not rewrite the template structure.
+
+        # CONSTRAINTS
+        - [HOOK] and Greetings should be written in the first paragraph of the cover letter.
+        - No [Your Name] or [Client Name] in the cover letter.
+        - No Inline Question's answers in the output questions array.
+        - No emojis.
+        - No unresolved placeholders.
+        - Do not mention names inside the CTA.
+        - Do not fabricate experience.
+        - Avoid overly sales-oriented language.
+        - Maintain a natural tone.
+        - Remove INLINE_QUESTIONS placeholder if there is no inline questions in the job description.
+
+
+        # OUTPUT FORMAT
+        Return ONLY valid JSON.
+        {
+            "cover_letter": "string",
+            "questions": [
+                {
+                    "question": "string",
+                    "answer": "string"
+                }
+            ]
+        }
+
+        # VALIDATION
+        Before returning:
+        - Ensure all placeholders are replaced.
+        - Ensure every question has an answer.
+        - Ensure answers are based only on the supplied context.
+        - Ensure the response is valid JSON.
+        - Ensure no explanatory text exists outside the JSON.
+        EOT;
 
         $response = $this->deepseekService->request([
             [
-                        'role' => 'system',
-                        'content' => <<<EOT
-                            You are a proposal compiler and proposal writer.
-
-                            Your task is to generate:
-                            1. A finalized cover letter
-                            2. Answers for screening questions
-
-                            Return ONLY valid JSON:
-                            {
-                            "cover_letter": "string",
-                            "questions": [
-                                {
-                                "question": "string",
-                                "answer": "string"
-                                }
-                            ]
-                            }
-
-                            RULES:
-
-                            1. COVER LETTER SKELETON
-                            - Treat COVERLETTERSKELETON as the base structure.
-                            - Resolve all placeholders and instructions.
-                            - Expand spintax by selecting only ONE option.
-                            - Never leave placeholders unresolved.
-
-                            2. PLACEHOLDERS
-                            Examples:
-                            [AI: ...]
-                            [PORTFOLIO_MATCH]
-                            [CTA]
-
-                            - AI blocks should be naturally written.
-                            - Portfolio blocks must use the most relevant portfolio items.
-                            - CTA blocks should sound natural and professional.
-
-                            3. PORTFOLIO MATCHING
-                            - Use only the most relevant 1-2 portfolio items.
-                            - Match based on job requirements.
-                            - Mention project name, tech relevance, and URL naturally.
-
-                            4. WRITING STYLE
-                            - Human sounding
-                            - Professional
-                            - Concise
-                            - Avoid AI sounding phrases
-                            - Avoid buzzwords
-                            - Avoid generic filler
-                            - Keep flow natural
-
-                            5. QUESTIONS
-                            - Answer using CAMPAIGN QUESTIONS CONTEXT.
-                            - Keep answers concise and relevant.
-
-                            6. STRICT RULES
-                            - No markdown
-                            - No explanations
-                            - No extra keys
-                            - No placeholders remaining
-                            - Cover letter max 350 words
-                            - Not Add [Your Name] Or [Client Name] in the cover letter.
-                            - the Cover letter should be ready to submit
-                
-                EOT
-                    ],
-                    [
-                        'role' => 'user',
-                        'content' => <<<EOT
-                            JOB TITLE:
-                            {$title}
-
-                            JOB DESCRIPTION:
-                            {$description}
-
-                            JOB QUESTIONS:
-                            {$questionsJson}
-
-                            COVERLETTERSKELETON:
-                            {$coverSkeleton}
-
-                            CAMPAIGN PORTFOLIOS:
-                            {$portfolios}
-
-                            CAMPAIGN QUESTIONS CONTEXT:
-                            {$questionsCtx}
-
-                            Generate the final proposal JSON.
-                EOT
-            ]
-        ]);
-
-        if (!is_array($response)) {
+                'role' => 'system',
+                'content' => $prompt,
+            ],
+            [
+                'role' => 'user',
+                'content' => json_encode([
+                    'CLIENT_NAME' => $jobData['client_name'],
+                    'JOB_TITLE' => $jobData['title'],
+                    'JOB_DESCRIPTION' => $jobData['description'],
+                    'JOB_QUESTIONS' => $jobData['questions'],
+                    'COVERLETTER_SKELETON' => $campaignData['ai_prompt'],
+                    'CAMPAIGN_PORTFOLIOS' => $campaignData['portfolios'],
+                    'CAMPAIGN_EXPERIENCE' => $campaignData['experience'] ?? '',
+                    'CAMPAIGN_QUESTIONS_CONTEXT' => $campaignData['questions_context'],
+                    'AI_COVER_LETTER' => $campaignData['ai_cover_letter'] ? 'enabled' : 'disabled',
+                ], JSON_THROW_ON_ERROR | JSON_UNESCAPED_UNICODE),
+            ],
+        ], 'deepseek-reasoner');
+        if (! is_array($response)) {
             throw new RuntimeException('Invalid AI response');
         }
-
-        $coverLetter = (string)($response['cover_letter'] ?? '');
+        $coverLetter = (string) ($response['cover_letter'] ?? '');
         $rows = $response['questions'] ?? [];
-
-        if (!is_array($rows)) $rows = [];
-
-        $normalized = [];
-        foreach ($rows as $row) {
-            if (!is_array($row)) continue;
-
-            $normalized[] = [
-                'question' => (string)($row['question'] ?? ''),
-                'answer'   => (string)($row['answer'] ?? ''),
-            ];
-        }
 
         return [
             'cover_letter' => $coverLetter,
-            'questions' => $normalized,
+            'questions' => $rows,
         ];
     }
 }

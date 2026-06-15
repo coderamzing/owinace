@@ -2,11 +2,11 @@
 
 namespace App\Models;
 
+use App\Models\Scopes\TeamScope;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use App\Models\Scopes\TeamScope;
 
 class Team extends Model
 {
@@ -56,5 +56,10 @@ class Team extends Model
     {
         return $this->hasMany(TeamMember::class, 'team_id')
             ->withoutGlobalScope(TeamScope::class);
+    }
+
+    public function upworkProfiles(): HasMany
+    {
+        return $this->hasMany(UpworkProfile::class, 'team_id');
     }
 }

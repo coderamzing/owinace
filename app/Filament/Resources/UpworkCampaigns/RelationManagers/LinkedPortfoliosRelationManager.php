@@ -3,14 +3,17 @@
 namespace App\Filament\Resources\UpworkCampaigns\RelationManagers;
 
 use App\Filament\Resources\UpworkCampaigns\Pages\EditUpworkCampaign;
+use App\Filament\Resources\UpworkCampaigns\Pages\ViewUpworkCampaign;
 use App\Filament\Tables\PortfolioAttachTable;
+use Filament\Actions\Action;
 use Filament\Actions\AttachAction;
 use Filament\Actions\DetachAction;
+use Filament\Notifications\Notification;
 use Filament\Resources\RelationManagers\RelationManager;
+use Filament\Support\Enums\Width;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TagsColumn;
 use Filament\Tables\Columns\TextColumn;
-use Filament\Support\Enums\Width;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
@@ -27,7 +30,10 @@ class LinkedPortfoliosRelationManager extends RelationManager
 
     public static function canViewForRecord(Model $ownerRecord, string $pageClass): bool
     {
-        return $pageClass === EditUpworkCampaign::class;
+        return in_array($pageClass, [
+            EditUpworkCampaign::class,
+            ViewUpworkCampaign::class,
+        ], true);
     }
 
     public function table(Table $table): Table
@@ -77,11 +83,31 @@ class LinkedPortfoliosRelationManager extends RelationManager
                         return $query
                             ->where('is_active', true)
                             ->orderBy('sort_order');
+                    })
+                    ->visible(fn (): bool => $this->pageClass === EditUpworkCampaign::class),
+                Action::make('detachAll')
+                    ->label('Detach all')
+                    ->color('danger')
+                    ->icon('heroicon-o-x-mark')
+                    ->requiresConfirmation()
+                    ->modalHeading('Detach all portfolios?')
+                    ->modalDescription('Remove every portfolio linked to this campaign. You can attach them again later.')
+                    ->modalSubmitActionLabel('Detach all')
+                    ->visible(fn (): bool => $this->pageClass === EditUpworkCampaign::class
+                        && $this->getOwnerRecord()->linkedPortfolios()->exists())
+                    ->action(function (): void {
+                        $this->getOwnerRecord()->linkedPortfolios()->detach();
+
+                        Notification::make()
+                            ->title('All portfolios detached')
+                            ->success()
+                            ->send();
                     }),
             ])
             ->recordActions([
                 DetachAction::make()
-                    ->label('Remove'),
+                    ->label('Remove')
+                    ->visible(fn (): bool => $this->pageClass === EditUpworkCampaign::class),
             ])
             ->toolbarActions([]);
     }
