@@ -4,6 +4,7 @@ namespace App\Filament\Resources\UpworkCampaigns\RelationManagers;
 
 use App\Filament\Resources\UpworkCampaigns\Pages\ViewUpworkCampaign;
 use App\Models\UpworkCampaignJobStat;
+use App\Models\UpworkJob;
 use App\Services\BotAIService;
 use Filament\Actions\Action;
 use Filament\Notifications\Notification;
@@ -24,6 +25,9 @@ class UpworkCampaignJobStatsRelationManager extends RelationManager
 
     /** @var array<int, array{cover_letter: string, qa: string}> */
     public array $testCoverLetterByStatId = [];
+
+    /** @var array<int, array{is_matched: bool, reason: string}> */
+    public array $testAnalyzeByStatId = [];
 
     public static function canViewForRecord(Model $ownerRecord, string $pageClass): bool
     {
@@ -105,6 +109,7 @@ class UpworkCampaignJobStatsRelationManager extends RelationManager
             ->modalWidth('2xl')
             ->modalContent(function ($record) {
                 $testResult = $this->testCoverLetterByStatId[$record->id] ?? null;
+                $analyzeResult = $this->testAnalyzeByStatId[$record->id] ?? null;
 
                 return view(
                     'filament.resources.upwork-campaigns.job-details-modal',
@@ -113,10 +118,20 @@ class UpworkCampaignJobStatsRelationManager extends RelationManager
                         'stat' => $record,
                         'coverLetter' => $testResult['cover_letter'] ?? null,
                         'qa' => $testResult['qa'] ?? null,
+                        'analyzeResult' => $analyzeResult,
                     ]
                 );
             })
             ->extraModalFooterActions([
+                Action::make('analyzeJob')
+                    ->label('Analyze')
+                    ->icon('heroicon-o-magnifying-glass-circle')
+                    ->color('gray')
+                    ->disabled(fn (UpworkCampaignJobStat $record): bool => blank($record->job?->description))
+                    ->tooltip(fn (UpworkCampaignJobStat $record): ?string => blank($record->job?->description)
+                        ? 'This job has no description to analyze.'
+                        : null)
+                    ->action(fn (UpworkCampaignJobStat $record) => $this->analyzeJobForStat($record)),
                 Action::make('testCoverLetter')
                     ->label('Test Cover Letter')
                     ->icon('heroicon-o-sparkles')
@@ -129,6 +144,47 @@ class UpworkCampaignJobStatsRelationManager extends RelationManager
             ])
             ->modalSubmitAction(false)
             ->modalCancelActionLabel('Close');
+    }
+
+    public function analyzeJobForStat(UpworkCampaignJobStat $record): void
+    {
+        $job = $record->job;
+
+        if (! $job || blank($job->description)) {
+            Notification::make()
+                ->title('Job description required')
+                ->body('This job does not have a description to analyze.')
+                ->warning()
+                ->send();
+
+            return;
+        }
+
+        try {
+            $result = app(BotAIService::class)->analyzeJob(
+                $this->jobDataForAiAnalyze($job),
+                $this->campaignDataForAi(),
+            );
+        } catch (Throwable $e) {
+            Notification::make()
+                ->title('AI request failed')
+                ->body($e->getMessage())
+                ->danger()
+                ->send();
+
+            return;
+        }
+
+        $this->testAnalyzeByStatId[$record->id] = [
+            'is_matched' => (bool) ($result['is_matched'] ?? false),
+            'reason' => (string) ($result['reason'] ?? ''),
+        ];
+
+        Notification::make()
+            ->title($result['is_matched'] ? 'Job matched' : 'Job not matched')
+            ->body($result['reason'] ?? '')
+            ->color($result['is_matched'] ? 'success' : 'warning')
+            ->send();
     }
 
     public function testCoverLetterForJob(UpworkCampaignJobStat $record): void
@@ -186,6 +242,30 @@ class UpworkCampaignJobStatsRelationManager extends RelationManager
             ->title('Cover letter generated')
             ->success()
             ->send();
+    }
+
+    /**
+     * @return array{description: string, questions: array<int, string>, skills: array<int, string>}
+     */
+    protected function jobDataForAiAnalyze(UpworkJob $job): array
+    {
+        $questions = collect(is_array($job->questions) ? $job->questions : [])
+            ->map(fn ($row) => is_array($row) ? trim((string) ($row['text'] ?? $row['question'] ?? '')) : trim((string) $row))
+            ->filter()
+            ->values()
+            ->all();
+
+        $skills = collect(is_array($job->skills) ? $job->skills : [])
+            ->map(fn ($skill) => is_array($skill) ? trim((string) ($skill['name'] ?? '')) : trim((string) $skill))
+            ->filter()
+            ->values()
+            ->all();
+
+        return [
+            'description' => $job->description,
+            'questions' => $questions,
+            'skills' => $skills,
+        ];
     }
 
     /**

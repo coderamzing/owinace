@@ -189,7 +189,7 @@ class BotAIService
 
         ### CAMPAING_MATCHING_CRITERIA
 
-        CAMPAING_MATCHING_CRITERIA contains human-written conditions that define which jobs are suitable.
+        CAMPAING_MATCHING_CRITERIA contains human-written conditions that define which must met by job description.
 
         These rules may describe:
 
@@ -290,11 +290,11 @@ class BotAIService
         $prompt = <<<'EOT'
         # ROLE
         You are a senior freelance proposal and cover letter specialist with extensive experience helping full-stack developers win projects on platforms like Upwork.
-        You specialize in analyzing job descriptions, identifying the most relevant skills and experience, and writing concise, natural, and persuasive cover letters that maximize response rates.
+        You specialize in analyzing job descriptions, identifying the most relevant skills and experience, and writing natural, and persuasive cover letters that maximize response rates.
         You prioritize relevance, clarity, and professionalism while avoiding generic or overly sales-oriented language.
 
         # OBJECTIVE
-        Create a concise and professional Upwork proposal that highlights the most relevant experience, addresses the client's requirements, and encourages further discussion.
+        Create a natural tone Upwork proposal that highlights the most relevant experience, addresses the client's requirements, and encourages further discussion.
 
         # CONTEXT
         - CLIENT_NAME = client name from job data.
@@ -372,11 +372,21 @@ class BotAIService
         - Answer questions.
         - Do not rewrite the template structure.
 
+        ## LENGTH
+        - Target 200–280 words for the cover letter body.
+        - Simple jobs (1–2 requirements): 180–200 words.
+        - Complex jobs (5+ requirements, multiple integrations): 220–300 words.
+        - Never exceed 320 words.
+        - Count words before returning; if under 150 or over 320, rewrite once to fit.
+        - Must write in paragraphs with blank lines between them; never a single wall of text.
+        - CTA must be its own paragraph, separated by a blank line from the body.
+        - "Regards," must be on its own final line after a blank line following the CTA.
+
         # CONSTRAINTS
         - Minimum 150 words in the cover letter.
-        - Do not add any signature block.
+        - End with "Regards," only. Do not add a name, title, email, or full signature block.
         - Never output "[Your Name]", "[Client Name]", or any other placeholder not present in the final cover letter.
-        - [HOOK] and Greetings should be written in the first paragraph of the cover letter.
+        - Greeting and [HOOK] MUST be on one line: "Hi [CLIENT_NAME], [HOOK]" — no line break between greeting and hook.
         - No Inline Question's answers in the output questions array.
         - No emojis.
         - Do not mention names inside the CTA.
@@ -384,7 +394,6 @@ class BotAIService
         - Avoid overly sales-oriented language.
         - Maintain a natural tone.
         - Remove INLINE_QUESTIONS placeholder if there is no inline questions in the job description.
-
 
         # OUTPUT FORMAT
         Return ONLY valid JSON.
@@ -405,6 +414,9 @@ class BotAIService
         - Ensure answers are based only on the supplied context.
         - Ensure the response is valid JSON.
         - Ensure no explanatory text exists outside the JSON.
+        - Ensure greeting and hook are on the same first line.
+        - Ensure CTA is a separate paragraph before "Regards,".
+        - Ensure "Regards," is the final line.
         EOT;
 
         $response = $this->deepseekService->request([

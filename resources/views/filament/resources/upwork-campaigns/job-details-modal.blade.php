@@ -3,6 +3,9 @@
     $questions = is_array($job?->questions) ? $job->questions : [];
     $coverLetter = $coverLetter ?? null;
     $qa = $qa ?? null;
+    $analyzeResult = $analyzeResult ?? null;
+    $analyzeMatched = $analyzeResult['is_matched'] ?? false;
+    $analyzeReason = $analyzeResult['reason'] ?? '';
 
     $formatMoney = fn ($value): string => filled($value) ? '$' . number_format((float) $value, 2) : '—';
     $formatNumber = fn ($value): string => filled($value) ? number_format((int) $value) : '—';
@@ -63,6 +66,31 @@
             <div>
                 <h3 class="text-sm font-semibold text-gray-950 dark:text-white">Campaign note</h3>
                 <p class="mt-1 leading-relaxed text-gray-700 dark:text-gray-200">{{ $stat->note }}</p>
+            </div>
+        @endif
+
+        @if (filled($analyzeResult))
+            <div class="rounded-xl border border-gray-200 bg-gray-50/50 p-4 dark:border-white/10 dark:bg-gray-800/50">
+                <h3 class="text-base font-semibold text-gray-950 dark:text-white">AI job analysis</h3>
+                <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">Match evaluation using this campaign's portfolios, experience, and criteria.</p>
+                <div class="mt-3 flex flex-wrap items-center gap-2">
+                    <span class="text-sm text-gray-600 dark:text-gray-400">Match:</span>
+                    @if ($analyzeMatched)
+                        <span
+                            class="inline-flex items-center rounded-md bg-success-50 px-2.5 py-1 text-xs font-medium text-success-700 ring-1 ring-inset ring-success-600/20 dark:bg-success-400/10 dark:text-success-400 dark:ring-success-400/20">
+                            Yes — good fit
+                        </span>
+                    @else
+                        <span
+                            class="inline-flex items-center rounded-md bg-danger-50 px-2.5 py-1 text-xs font-medium text-danger-700 ring-1 ring-inset ring-danger-600/20 dark:bg-danger-400/10 dark:text-danger-400 dark:ring-danger-400/20">
+                            No — weak or poor fit
+                        </span>
+                    @endif
+                </div>
+                <div class="mt-3">
+                    <h4 class="text-sm font-semibold text-gray-950 dark:text-white">Reason</h4>
+                    <p class="mt-1 leading-relaxed text-gray-700 dark:text-gray-200">{{ $analyzeReason ?: '—' }}</p>
+                </div>
             </div>
         @endif
 
