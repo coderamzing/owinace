@@ -142,7 +142,9 @@ class BotController extends Controller
                 'proposals' => $jobData['proposals'],
                 'client_totalspent' => $jobData['client_totalspent'],
                 'client_jobposted' => $jobData['client_jobposted'],
-                'client_avgspent' => number_format($jobData['client_totalspent'] / $jobData['client_jobposted'], 2, '.', ''),
+                'client_avgspent' => ($jobData['client_jobposted'] ?? 0) > 0
+                    ? number_format($jobData['client_totalspent'] / $jobData['client_jobposted'], 2, '.', '')
+                    : '0.00',
                 'client_hirerate' => $jobData['client_hirerate'],
                 'client_hires' => $jobData['client_hires'],
                 'interviews' => $jobData['interviews'],

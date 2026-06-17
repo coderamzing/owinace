@@ -200,63 +200,63 @@ return [
         'store' => 'default',
     ],
 
-
     'permissions' => [
-        //kanban
+        // kanban
         'kanban.my',
 
-        //calendar
+        // calendar
         'calender.my',
-        
-        //analytics
+
+        // analytics
         'analytics.my',
         'analytics.full',
 
-        //settings
+        // settings
         'settings.manage',
 
-        //proposal
+        // proposal
         'proposal.create',
         'proposal.list',
         'proposal.delete',
         'proposal.edit',
 
-        //portfolio
+        // portfolio
         'portfolio.create',
         'portfolio.list',
         'portfolio.delete',
         'portfolio.edit',
+        'portfolio.import',
 
-        //Noticeboard
+        // Noticeboard
         'noticeboard.create',
         'noticeboard.list',
         'noticeboard.delete',
         'noticeboard.edit',
 
-        //contact
+        // contact
         'contact.create',
         'contact.list',
         'contact.delete',
         'contact.edit',
         'contact.import',
 
-        //leads
+        // leads
         'leads.my',
         'leads.list',
         'leads.delete',
         'leads.edit',
         'leads.view',
 
-        //credit
-        'workspace.credit'
+        // credit
+        'workspace.credit',
     ],
 
     'roles' => [
         'owner' => [
-            'permissions' => ['all']
+            'permissions' => ['all'],
         ],
         'admin' => [
-            'permissions' => ['all']
+            'permissions' => ['all'],
         ],
         'member' => [
             'permissions' => [
@@ -264,29 +264,30 @@ return [
                 'calender.my',
                 'analytics.my',
 
-                //proposals
+                // proposals
                 'proposal.create',
                 'proposal.list',
                 'proposal.edit',
 
-                //portfolios
+                // portfolios
                 'portfolio.create',
                 'portfolio.list',
                 'portfolio.edit',
+                'portfolio.import',
 
-                //leads
+                // leads
                 'leads.my',
                 'leads.list',
                 'leads.edit',
                 'leads.view',
 
-                //contacts
+                // contacts
                 'contact.create',
                 'contact.list',
                 'contact.edit',
                 'contact.view',
                 'contact.import',
-            ]
-        ]
+            ],
+        ],
     ],
 ];

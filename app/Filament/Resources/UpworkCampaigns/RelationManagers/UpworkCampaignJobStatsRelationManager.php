@@ -3,6 +3,10 @@
 namespace App\Filament\Resources\UpworkCampaigns\RelationManagers;
 
 use App\Filament\Resources\UpworkCampaigns\Pages\ViewUpworkCampaign;
+use App\Models\UpworkCampaignJobStat;
+use App\Services\BotAIService;
+use Filament\Actions\Action;
+use Filament\Notifications\Notification;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
@@ -10,12 +14,16 @@ use Filament\Tables\Filters\TernaryFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Throwable;
 
 class UpworkCampaignJobStatsRelationManager extends RelationManager
 {
     protected static string $relationship = 'campaignJobStats';
 
     protected static ?string $title = 'Campaign job stats';
+
+    /** @var array<int, array{cover_letter: string, qa: string}> */
+    public array $testCoverLetterByStatId = [];
 
     public static function canViewForRecord(Model $ownerRecord, string $pageClass): bool
     {
@@ -39,8 +47,8 @@ class UpworkCampaignJobStatsRelationManager extends RelationManager
                         });
                     })
                     ->description(fn ($record) => $record->job?->uid)
-                    ->url(fn ($record): ?string => $record->job?->url)
-                    ->openUrlInNewTab()
+                    ->color('primary')
+                    ->action($this->viewJobAction())
                     ->wrap(),
                 IconColumn::make('is_matched')
                     ->label('Matched')
@@ -49,6 +57,12 @@ class UpworkCampaignJobStatsRelationManager extends RelationManager
                     ->falseIcon('heroicon-o-x-circle')
                     ->trueColor('success')
                     ->falseColor('danger'),
+                TextColumn::make('note')
+                    ->label('Note')
+                    ->placeholder('—')
+                    ->wrap()
+                    ->searchable()
+                    ->tooltip(fn ($state) => filled($state) ? (string) $state : null),
                 IconColumn::make('is_applied')
                     ->label('Applied')
                     ->boolean()
@@ -60,11 +74,6 @@ class UpworkCampaignJobStatsRelationManager extends RelationManager
                     ->label('Posted')
                     ->dateTime()
                     ->placeholder('—'),
-                TextColumn::make('note')
-                    ->placeholder('—')
-                    ->limit(40)
-                    ->tooltip(fn ($state) => filled($state) ? (string) $state : null)
-                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('updated_at')
                     ->label('Updated')
                     ->dateTime()
@@ -86,5 +95,123 @@ class UpworkCampaignJobStatsRelationManager extends RelationManager
             ->headerActions([])
             ->recordActions([])
             ->bulkActions([]);
+    }
+
+    protected function viewJobAction(): Action
+    {
+        return Action::make('viewJob')
+            ->modalHeading(fn ($record): string => $record->job?->title ?? 'Job details')
+            ->slideOver()
+            ->modalWidth('2xl')
+            ->modalContent(function ($record) {
+                $testResult = $this->testCoverLetterByStatId[$record->id] ?? null;
+
+                return view(
+                    'filament.resources.upwork-campaigns.job-details-modal',
+                    [
+                        'job' => $record->job,
+                        'stat' => $record,
+                        'coverLetter' => $testResult['cover_letter'] ?? null,
+                        'qa' => $testResult['qa'] ?? null,
+                    ]
+                );
+            })
+            ->extraModalFooterActions([
+                Action::make('testCoverLetter')
+                    ->label('Test Cover Letter')
+                    ->icon('heroicon-o-sparkles')
+                    ->color('primary')
+                    ->disabled(fn (UpworkCampaignJobStat $record): bool => blank($record->job?->description))
+                    ->tooltip(fn (UpworkCampaignJobStat $record): ?string => blank($record->job?->description)
+                        ? 'This job has no description to test with.'
+                        : null)
+                    ->action(fn (UpworkCampaignJobStat $record) => $this->testCoverLetterForJob($record)),
+            ])
+            ->modalSubmitAction(false)
+            ->modalCancelActionLabel('Close');
+    }
+
+    public function testCoverLetterForJob(UpworkCampaignJobStat $record): void
+    {
+        $job = $record->job;
+
+        if (! $job || blank($job->description)) {
+            Notification::make()
+                ->title('Job description required')
+                ->body('This job does not have a description to generate a cover letter from.')
+                ->warning()
+                ->send();
+
+            return;
+        }
+
+        $questions = collect(is_array($job->questions) ? $job->questions : [])
+            ->map(fn ($row) => is_array($row) ? trim((string) ($row['text'] ?? $row['question'] ?? '')) : trim((string) $row))
+            ->filter()
+            ->values()
+            ->all();
+
+        $jobData = [
+            'title' => $job->title,
+            'description' => $job->description,
+            'questions' => $questions,
+            'client_name' => $job->client_name ?? '',
+        ];
+
+        try {
+            $result = app(BotAIService::class)->writeCoverLetter($jobData, $this->campaignDataForAi());
+        } catch (Throwable $e) {
+            Notification::make()
+                ->title('AI request failed')
+                ->body($e->getMessage())
+                ->danger()
+                ->send();
+
+            return;
+        }
+
+        $lines = [];
+        foreach ($result['questions'] ?? [] as $row) {
+            $q = $row['question'] ?? '';
+            $a = $row['answer'] ?? '';
+            $lines[] = 'Q: '.$q."\n".'A: '.$a;
+        }
+
+        $this->testCoverLetterByStatId[$record->id] = [
+            'cover_letter' => $result['cover_letter'] ?? '',
+            'qa' => implode("\n\n", $lines),
+        ];
+
+        Notification::make()
+            ->title('Cover letter generated')
+            ->success()
+            ->send();
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    protected function campaignDataForAi(): array
+    {
+        $record = $this->getOwnerRecord()->fresh(['linkedPortfolios']);
+
+        return array_merge($record->only([
+            'title',
+            'ai_prompt',
+            'ai_cover_letter',
+            'experience',
+            'questions_context',
+            'matching_critieria',
+            'rule_client_avg_spent',
+            'rule_max_interviews',
+            'rule_job_posted_ago',
+            'rule_max_proposal',
+            'rule_min_client_rating',
+            'search_url',
+            'max_connect_per_bid',
+            'max_daily_bid',
+        ]), [
+            'portfolios' => $record->portfoliosPromptText(),
+        ]);
     }
 }

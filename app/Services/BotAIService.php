@@ -373,11 +373,12 @@ class BotAIService
         - Do not rewrite the template structure.
 
         # CONSTRAINTS
+        - Minimum 150 words in the cover letter.
+        - Do not add any signature block.
+        - Never output "[Your Name]", "[Client Name]", or any other placeholder not present in the final cover letter.
         - [HOOK] and Greetings should be written in the first paragraph of the cover letter.
-        - No [Your Name] or [Client Name] in the cover letter.
         - No Inline Question's answers in the output questions array.
         - No emojis.
-        - No unresolved placeholders.
         - Do not mention names inside the CTA.
         - Do not fabricate experience.
         - Avoid overly sales-oriented language.
