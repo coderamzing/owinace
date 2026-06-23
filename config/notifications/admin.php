@@ -24,5 +24,11 @@ return [
         'permission' => 'team.view',
         'module' => 'team',
     ],
+
+    'portfolio.url_unreachable' => [
+        'label' => 'Portfolio URL Unreachable',
+        'permission' => 'portfolio.list',
+        'module' => 'portfolio',
+    ],
 ];
 

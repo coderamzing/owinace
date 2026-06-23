@@ -239,7 +239,7 @@ class NotificationService
      * Notify all admins of a team
      * Sends notifications to team members with admin role
      */
-    public function notifyAdmin(int $teamId, string $notificationType, array $data): void
+    public function notifyAdmin(int $teamId, string $notificationType, array $data, bool $inAppOnly = false): void
     {
         $team = Team::find($teamId);
 
@@ -274,7 +274,7 @@ class NotificationService
             );
 
             // Send email if user has email
-            if ($member->user->email) {
+            if (! $inAppOnly && $member->user->email) {
                 $this->sendEmailNotification(
                     user: $member->user,
                     notificationType: $notificationType,

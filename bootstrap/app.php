@@ -45,6 +45,11 @@ return Application::configure(basePath: dirname(__DIR__))
         $schedule->command('ai:monthly-insights')
             ->twiceMonthly(1, 15, '00:00')
             ->timezone('UTC');
+
+        // Portfolio URL health check - daily, up to 500 URLs not pinged in 3+ days
+        $schedule->command('portfolios:ping-urls')
+            ->dailyAt('01:00')
+            ->timezone('UTC');
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //

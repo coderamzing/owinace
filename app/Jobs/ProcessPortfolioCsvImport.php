@@ -103,7 +103,7 @@ class ProcessPortfolioCsvImport implements ShouldQueue
 
     protected function validateHeader(array $header): void
     {
-        $requiredHeaders = ['title', 'description', 'keywords'];
+        $requiredHeaders = ['title', 'description', 'keywords', 'url'];
         $missingHeaders = array_diff($requiredHeaders, $header);
 
         if (! empty($missingHeaders)) {
@@ -118,8 +118,13 @@ class ProcessPortfolioCsvImport implements ShouldQueue
         $title = trim((string) ($data['title'] ?? ''));
         $description = trim((string) ($data['description'] ?? ''));
         $keywordsRaw = trim((string) ($data['keywords'] ?? ''));
+        $url = trim((string) ($data['url'] ?? ''));
 
-        if ($title === '' || $description === '' || $keywordsRaw === '') {
+        if ($title === '' || $description === '' || $keywordsRaw === '' || $url === '') {
+            return null;
+        }
+
+        if (! filter_var($url, FILTER_VALIDATE_URL)) {
             return null;
         }
 
@@ -150,6 +155,7 @@ class ProcessPortfolioCsvImport implements ShouldQueue
             'team_id' => $this->teamId,
             'created_by_id' => $this->userId,
             'title' => $title,
+            'url' => $url,
             'description' => $description,
             'keywords' => $keywords,
             'is_active' => $this->parseBoolean($data['is_active'] ?? true),

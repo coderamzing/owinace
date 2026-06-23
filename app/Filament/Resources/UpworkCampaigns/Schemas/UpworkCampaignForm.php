@@ -4,6 +4,7 @@ namespace App\Filament\Resources\UpworkCampaigns\Schemas;
 
 use App\Filament\Resources\UpworkCampaigns\Pages\EditUpworkCampaign;
 use App\Filament\Resources\UpworkCampaigns\RelationManagers\LinkedPortfoliosRelationManager;
+use App\Filament\Resources\UpworkCampaigns\RelationManagers\UpworkCampaignJobStatsRelationManager;
 use App\Models\LeadKanban;
 use App\Models\LeadSource;
 use App\Models\TeamMember;
@@ -25,9 +26,54 @@ use Filament\Schemas\Components\Tabs;
 use Filament\Schemas\Components\Tabs\Tab;
 use Filament\Schemas\Schema;
 use Filament\Support\Enums\Alignment;
+use Filament\Support\Icons\Heroicon;
+use Illuminate\Support\HtmlString;
 
 class UpworkCampaignForm
 {
+    private static function coverLetterTemplateHelpAction(): Action
+    {
+        return Action::make('coverLetterTemplateHelp')
+            ->icon(Heroicon::OutlinedQuestionMarkCircle)
+            ->iconButton()
+            ->color('gray')
+            ->label('Template help')
+            ->tooltip('Cover letter placeholders & sample')
+            ->modalHeading('Cover letter template')
+            ->modalSubmitAction(false)
+            ->modalCancelActionLabel('Close')
+            ->modalContent(fn (): HtmlString => new HtmlString(<<<'HTML'
+<div class="space-y-4 text-sm">
+    <div>
+        <p class="font-medium text-gray-950 dark:text-white">Allowed placeholders</p>
+        <p class="mt-1 font-mono text-xs text-gray-600 dark:text-gray-300">[START_WITH] [GREETINGS] [HOOK] [PORTFOLIOS_LIST] [PORTFOLIOS_PARAGRAPH] [INLINE_QUESTIONS] [CTA]</p>
+    </div>
+    <div>
+        <p class="font-medium text-gray-950 dark:text-white">Sample structure</p>
+        <pre class="mt-1 overflow-x-auto rounded-lg bg-gray-50 p-3 font-mono text-xs text-gray-800 dark:bg-gray-900 dark:text-gray-100">[START_WITH][GREETINGS] [HOOK]
+
+[PORTFOLIOS_PARAGRAPH]
+
+[INLINE_QUESTIONS]
+
+[CTA]
+
+Thanks</pre>
+    </div>
+    <ul class="list-disc space-y-1 pl-5 text-gray-600 dark:text-gray-300">
+        <li><strong>[START_WITH]</strong> — required opening word from the job, or empty</li>
+        <li><strong>[GREETINGS]</strong> — Hi/Hello/Hey + client name</li>
+        <li><strong>[HOOK]</strong> — one-line fit statement (same line as greeting)</li>
+        <li><strong>[PORTFOLIOS_LIST]</strong> — relevant work as bullets</li>
+        <li><strong>[PORTFOLIOS_PARAGRAPH]</strong> — relevant work as prose</li>
+        <li><strong>[INLINE_QUESTIONS]</strong> — answers to questions in the job post</li>
+        <li><strong>[CTA]</strong> — call-to-action paragraph</li>
+        <li>End with <strong>Thanks</strong> on its own line</li>
+    </ul>
+</div>
+HTML));
+    }
+
     public static function configure(Schema $schema): Schema
     {
         return $schema
@@ -146,6 +192,12 @@ class UpworkCampaignForm
                                     ->label('Client avg. spent')
                                     ->numeric()
                                     ->step(0.01),
+                                TextInput::make('rule_client_avghire')
+                                    ->label('Min client hire rate (%)')
+                                    ->numeric()
+                                    ->minValue(0)
+                                    ->maxValue(100)
+                                    ->step(0.01),
                                 TextInput::make('rule_max_interviews')
                                     ->label('Max interviews')
                                     ->numeric()
@@ -169,16 +221,26 @@ class UpworkCampaignForm
                                     ])
                                     ->nullable()
                                     ->placeholder('No minimum'),
+                                Select::make('bidding_timezone')
+                                    ->label('Bidding timezone')
+                                    ->options(fn (): array => array_combine(
+                                        timezone_identifiers_list(),
+                                        timezone_identifiers_list(),
+                                    ))
+                                    ->searchable()
+                                    ->default('UTC')
+                                    ->required()
+                                    ->helperText('Clock-in and clock-out times below are interpreted in this timezone.'),
                                 Repeater::make('slots')
-                                    ->label('Bidding time slots (UTC)')
+                                    ->label('Bidding time slots')
                                     ->relationship('slots')
                                     ->schema([
                                         TimePicker::make('clock_in')
-                                            ->label('Clock in (UTC)')
+                                            ->label('Clock in')
                                             ->seconds(false)
                                             ->required(),
                                         TimePicker::make('clock_out')
-                                            ->label('Clock out (UTC)')
+                                            ->label('Clock out')
                                             ->seconds(false)
                                             ->required(),
                                     ])
@@ -208,6 +270,18 @@ class UpworkCampaignForm
                                     ->visibleOn([EditRecord::class])
                                     ->columnSpanFull(),
                             ]),
+                        Tab::make('Job stats')
+                            ->icon('heroicon-o-chart-bar')
+                            ->visibleOn([EditRecord::class])
+                            ->schema([
+                                Livewire::make(UpworkCampaignJobStatsRelationManager::class)
+                                    ->key('campaign-job-stats-edit')
+                                    ->data(fn (EditUpworkCampaign $livewire): array => [
+                                        'ownerRecord' => $livewire->getRecord(),
+                                        'pageClass' => EditUpworkCampaign::class,
+                                    ])
+                                    ->columnSpanFull(),
+                            ]),
                         Tab::make('Prompts')
                             ->icon('heroicon-o-chat-bubble-left-right')
                             ->schema([
@@ -217,7 +291,25 @@ class UpworkCampaignForm
                                     ->default(true),
                                 Textarea::make('ai_prompt')
                                     ->label('AI prompt')
-                                    ->rows(8)
+                                    ->afterLabel(self::coverLetterTemplateHelpAction())
+                                    ->rows(12)
+                                    ->placeholder(<<<'TXT'
+[START_WITH][GREETINGS] [HOOK]
+
+[PORTFOLIOS_PARAGRAPH]
+
+[INLINE_QUESTIONS]
+
+[CTA]
+
+Thanks
+TXT)
+                                    ->helperText('Cover letter skeleton. Use ? next to the label for placeholders and a sample structure.')
+                                    ->columnSpanFull(),
+                                Textarea::make('ai_instruction')
+                                    ->label('AI instruction')
+                                    ->rows(6)
+                                    ->helperText('Extra instructions for the AI when writing proposals or analyzing jobs.')
                                     ->columnSpanFull(),
                                 Textarea::make('experience')
                                     ->label('Experience')
@@ -227,8 +319,14 @@ class UpworkCampaignForm
                                     ->label('Questions context')
                                     ->rows(6)
                                     ->columnSpanFull(),
-                                Textarea::make('matching_critieria')
-                                    ->label('Matching criteria')
+                                Textarea::make('job_do')
+                                    ->label('Job do')
+                                    ->helperText('The job must meet all of these rules to qualify (e.g. required skills, technologies, project type).')
+                                    ->rows(6)
+                                    ->columnSpanFull(),
+                                Textarea::make('job_dont')
+                                    ->label('Job don\'t')
+                                    ->helperText('The job is disqualified if any of these rules match (e.g. forbidden locations, full-time only, unsupported stacks).')
                                     ->rows(6)
                                     ->columnSpanFull(),
                             ]),
@@ -274,6 +372,7 @@ class UpworkCampaignForm
                                     ->alignment(Alignment::Start),
                             ]),
                     ])
+                    ->persistTabInQueryString()
                     ->columnSpanFull(),
             ]);
     }

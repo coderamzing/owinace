@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\UpworkCampaigns\RelationManagers;
 
+use App\Filament\Resources\UpworkCampaigns\Pages\EditUpworkCampaign;
 use App\Filament\Resources\UpworkCampaigns\Pages\ViewUpworkCampaign;
 use App\Models\UpworkCampaignJobStat;
 use App\Models\UpworkJob;
@@ -31,15 +32,36 @@ class UpworkCampaignJobStatsRelationManager extends RelationManager
 
     public static function canViewForRecord(Model $ownerRecord, string $pageClass): bool
     {
-        return $pageClass === ViewUpworkCampaign::class;
+        return in_array($pageClass, [
+            EditUpworkCampaign::class,
+            ViewUpworkCampaign::class,
+        ], true);
     }
 
     public function table(Table $table): Table
     {
+        $searchTerm = $this->getOwnerRecord()->searchQueryTerm();
+
         return $table
             ->heading(null)
-            ->modifyQueryUsing(fn (Builder $query): Builder => $query->with(['job']))
-            ->defaultSort('updated_at', 'desc')
+            ->description($searchTerm !== null
+                ? 'Jobs whose skills match the search URL keyword «'.$searchTerm.'».'
+                : null)
+            ->modifyQueryUsing(function (Builder $query) use ($searchTerm): Builder {
+                $query->with(['job']);
+
+                if ($searchTerm === null) {
+                    return $query;
+                }
+
+                $needle = '%'.mb_strtolower($searchTerm).'%';
+
+                return $query
+                    ->join('upwork_jobs', 'upwork_jobs.id', '=', 'upwork_campaign_job_stats.job_id')
+                    ->whereRaw('LOWER(upwork_jobs.skills) LIKE ?', [$needle])
+                    ->select('upwork_campaign_job_stats.*');
+            })
+            ->defaultSort('upwork_campaign_job_stats.updated_at', 'desc')
             ->paginated([10, 25, 50, 100])
             ->defaultPaginationPageOption(25)
             ->columns([
@@ -81,7 +103,7 @@ class UpworkCampaignJobStatsRelationManager extends RelationManager
                 TextColumn::make('updated_at')
                     ->label('Updated')
                     ->dateTime()
-                    ->sortable()
+                    ->sortable(query: fn (Builder $query, string $direction): Builder => $query->orderBy('upwork_campaign_job_stats.updated_at', $direction))
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
@@ -154,6 +176,23 @@ class UpworkCampaignJobStatsRelationManager extends RelationManager
             Notification::make()
                 ->title('Job description required')
                 ->body('This job does not have a description to analyze.')
+                ->warning()
+                ->send();
+
+            return;
+        }
+
+        $campaign = $this->getOwnerRecord()->fresh(['linkedPortfolios']);
+        $ruleRejection = $campaign->ruleRejectionReasonForJob($job, checkDailyBidLimit: false);
+        if ($ruleRejection !== null) {
+            $this->testAnalyzeByStatId[$record->id] = [
+                'is_matched' => false,
+                'reason' => $ruleRejection,
+            ];
+
+            Notification::make()
+                ->title('Job not matched')
+                ->body($ruleRejection)
                 ->warning()
                 ->send();
 
@@ -281,8 +320,10 @@ class UpworkCampaignJobStatsRelationManager extends RelationManager
             'ai_cover_letter',
             'experience',
             'questions_context',
-            'matching_critieria',
+            'job_do',
+            'job_dont',
             'rule_client_avg_spent',
+            'rule_client_avghire',
             'rule_max_interviews',
             'rule_job_posted_ago',
             'rule_max_proposal',

@@ -77,6 +77,9 @@ class UpworkCampaignInfolist
                                     ->label('Max connect per bid'),
                                 TextEntry::make('rule_client_avg_spent')
                                     ->label('Client avg. spent'),
+                                TextEntry::make('rule_client_avghire')
+                                    ->label('Min client hire rate (%)')
+                                    ->placeholder('—'),
                                 TextEntry::make('rule_max_interviews')
                                     ->label('Max interviews'),
                                 TextEntry::make('rule_job_posted_ago')
@@ -86,19 +89,25 @@ class UpworkCampaignInfolist
                                 TextEntry::make('rule_min_client_rating')
                                     ->label('Min client rating')
                                     ->placeholder('—'),
+                                TextEntry::make('bidding_timezone')
+                                    ->label('Bidding timezone')
+                                    ->placeholder('UTC'),
                                 TextEntry::make('slots')
-                                    ->label('Bidding time slots (UTC)')
+                                    ->label('Bidding time slots')
                                     ->formatStateUsing(function ($state, $record): string {
                                         $slots = $record->slots;
                                         if ($slots->isEmpty()) {
                                             return '—';
                                         }
 
+                                        $tz = $record->bidding_timezone ?: 'UTC';
+
                                         return $slots
                                             ->map(fn ($slot): string => substr((string) $slot->clock_in, 0, 5)
                                                 .' – '
                                                 .substr((string) $slot->clock_out, 0, 5))
-                                            ->implode(', ');
+                                            ->implode(', ')
+                                            ." ({$tz})";
                                     })
                                     ->columnSpanFull(),
                             ])
@@ -136,6 +145,11 @@ class UpworkCampaignInfolist
                                     ->formatStateUsing(fn (?string $state) => ExpandableText::render($state))
                                     ->html()
                                     ->columnSpanFull(),
+                                TextEntry::make('ai_instruction')
+                                    ->label('AI instruction')
+                                    ->formatStateUsing(fn (?string $state) => ExpandableText::render($state))
+                                    ->html()
+                                    ->columnSpanFull(),
                                 TextEntry::make('experience')
                                     ->label('Experience')
                                     ->formatStateUsing(fn (?string $state) => ExpandableText::render($state))
@@ -146,13 +160,19 @@ class UpworkCampaignInfolist
                                     ->formatStateUsing(fn (?string $state) => ExpandableText::render($state))
                                     ->html()
                                     ->columnSpanFull(),
-                                TextEntry::make('matching_critieria')
-                                    ->label('Matching criteria')
+                                TextEntry::make('job_do')
+                                    ->label('Job do')
+                                    ->formatStateUsing(fn (?string $state) => ExpandableText::render($state))
+                                    ->html()
+                                    ->columnSpanFull(),
+                                TextEntry::make('job_dont')
+                                    ->label('Job don\'t')
                                     ->formatStateUsing(fn (?string $state) => ExpandableText::render($state))
                                     ->html()
                                     ->columnSpanFull(),
                             ]),
                     ])
+                    ->persistTabInQueryString()
                     ->columnSpanFull(),
             ]);
     }

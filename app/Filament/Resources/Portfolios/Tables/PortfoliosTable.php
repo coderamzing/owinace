@@ -2,6 +2,8 @@
 
 namespace App\Filament\Resources\Portfolios\Tables;
 
+use App\Filament\Resources\Portfolios\Pages\ListPortfolios;
+use App\Models\Portfolio;
 use App\Traits\HasPermission;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\EditAction;
@@ -30,12 +32,19 @@ class PortfoliosTable
                     ->searchable(query: function (Builder $query, string $search): Builder {
                         return $query->where(function (Builder $q) use ($search): void {
                             $q->where('title', 'like', "%{$search}%")
-                                ->orWhere('keywords', 'like', "%{$search}%");
+                                ->orWhere('keywords', 'like', "%{$search}%")
+                                ->orWhere('url', 'like', "%{$search}%");
                         });
                     })
                     ->color('primary')
                     ->weight('bold')
                     ->sortable(),
+                TextColumn::make('url')
+                    ->label('URL')
+                    ->limit(40)
+                    ->url(fn (Portfolio $record): ?string => $record->url)
+                    ->openUrlInNewTab()
+                    ->toggleable(),
                 TagsColumn::make('keywords')
                     ->label('Keywords')
                     ->limit(5)
@@ -51,6 +60,12 @@ class PortfoliosTable
                     ])->random()),
                 IconColumn::make('is_active')
                     ->boolean(),
+                TextColumn::make('pinged_at')
+                    ->label('Last ping')
+                    ->dateTime()
+                    ->placeholder('Never')
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -68,6 +83,12 @@ class PortfoliosTable
                     ->modalHeading('Edit Portfolio')
                     ->modalSubmitActionLabel('Save')
                     ->slideOver()
+                    ->before(function (array $data, Portfolio $record): void {
+                        ListPortfolios::assertUrlOnSave($data, $record);
+                    })
+                    ->after(function (Portfolio $record): void {
+                        ListPortfolios::storeUrlPingTimestamp($record);
+                    })
                     ->visible(fn ($record) => self::hasPermissionTo('portfolio.edit')),
                 DeleteAction::make()
                     ->requiresConfirmation()

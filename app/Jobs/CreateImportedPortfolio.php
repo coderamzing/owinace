@@ -3,6 +3,7 @@
 namespace App\Jobs;
 
 use App\Models\Portfolio;
+use App\Services\PortfolioUrlPingService;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -23,11 +24,21 @@ class CreateImportedPortfolio implements ShouldQueue
         public int $rowNumber,
     ) {}
 
-    public function handle(): void
+    public function handle(PortfolioUrlPingService $pingService): void
     {
         try {
+            $url = trim((string) ($this->portfolioData['url'] ?? ''));
+
+            if ($url === '') {
+                throw new \RuntimeException('URL is required.');
+            }
+
+            $pingService->assertReachable($url);
+
             Portfolio::withoutGlobalScope(\App\Models\Scopes\TeamScope::class)
-                ->create($this->portfolioData);
+                ->create(array_merge($this->portfolioData, [
+                    'pinged_at' => now(),
+                ]));
         } catch (\Throwable $exception) {
             Log::error('Portfolio import failed', [
                 'row' => $this->rowNumber,

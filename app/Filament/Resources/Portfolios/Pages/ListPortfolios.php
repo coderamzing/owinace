@@ -4,15 +4,21 @@ namespace App\Filament\Resources\Portfolios\Pages;
 
 use App\Filament\Resources\BaseListRecords;
 use App\Filament\Resources\Portfolios\PortfolioResource;
+use App\Models\Portfolio;
+use App\Services\PortfolioUrlPingService;
 use App\Traits\HasPermission;
 use Filament\Actions\Action;
 use Filament\Actions\CreateAction;
+use Filament\Notifications\Notification;
+use Filament\Support\Exceptions\Halt;
 
 class ListPortfolios extends BaseListRecords
 {
     use HasPermission;
 
     protected static string $resource = PortfolioResource::class;
+
+    protected static bool $urlPingedOnSave = false;
 
     protected string $searchPlaceholder = 'Search portfolios by title, keywords...';
 
@@ -43,7 +49,53 @@ class ListPortfolios extends BaseListRecords
                     }
 
                     return $data;
+                })
+                ->before(function (array $data): void {
+                    self::assertUrlOnSave($data);
+                })
+                ->after(function (Portfolio $record): void {
+                    self::storeUrlPingTimestamp($record);
                 }),
         ];
+    }
+
+    /**
+     * @param  array<string, mixed>  $data
+     */
+    public static function assertUrlOnSave(array $data, ?Portfolio $record = null): void
+    {
+        self::$urlPingedOnSave = false;
+
+        $url = trim((string) ($data['url'] ?? ''));
+
+        if ($record !== null && $url === trim((string) $record->url)) {
+            return;
+        }
+
+        try {
+            app(PortfolioUrlPingService::class)->assertReachable($url);
+            self::$urlPingedOnSave = true;
+        } catch (\Throwable $e) {
+            Notification::make()
+                ->title('URL check failed')
+                ->body($e->getMessage())
+                ->danger()
+                ->send();
+
+            throw new Halt;
+        }
+    }
+
+    public static function storeUrlPingTimestamp(Portfolio $record): void
+    {
+        if (! self::$urlPingedOnSave) {
+            return;
+        }
+
+        $record->forceFill([
+            'pinged_at' => now(),
+        ])->saveQuietly();
+
+        self::$urlPingedOnSave = false;
     }
 }

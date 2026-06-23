@@ -290,7 +290,7 @@ class BotAIService
         - CAMPAIGN_PORTFOLIOS = campaign portfolios from campaign data.
         - CAMPAIGN_EXPERIENCE = candidate experience from campaign data.
         - CAMPAIGN_QUESTIONS_CONTEXT = campaign questions context from campaign data.
-        - AI_COVER_LETTER = weather to write full cover letter with ai or not
+        - AI_COVER_LETTER = ai cover letter flag from campaign data.
     
         # INSTRUCTIONS
         ## Placeholder Replacement
@@ -390,8 +390,7 @@ class BotAIService
         - Maintain a natural tone.
         - Remove [INLINE_QUESTIONS] if there are no inline questions in the job description.
         - Use [PORTFOLIOS_LIST] or [PORTFOLIOS_PARAGRAPH] as dictated by the skeleton — do not invent the other format if it is not in the template.
-        - Use AI_INSTRUCTIONS to write the cover letter.
-        
+
         # OUTPUT FORMAT
         Return ONLY valid JSON.
         {
@@ -433,7 +432,6 @@ class BotAIService
                     'CAMPAIGN_EXPERIENCE' => $campaignData['experience'] ?? '',
                     'CAMPAIGN_QUESTIONS_CONTEXT' => $campaignData['questions_context'],
                     'AI_COVER_LETTER' => $campaignData['ai_cover_letter'] ? 'enabled' : 'disabled',
-                    'AI_INSTRUCTIONS' => $campaignData['ai_instructions'] ?? '',
                 ], JSON_THROW_ON_ERROR | JSON_UNESCAPED_UNICODE),
             ],
         ], 'deepseek-reasoner');

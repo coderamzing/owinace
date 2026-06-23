@@ -28,6 +28,14 @@ class PortfolioForm
                     ->required()
                     ->maxLength(255)
                     ->columnSpanFull(),
+                TextInput::make('url')
+                    ->label('URL')
+                    ->required()
+                    ->url()
+                    ->maxLength(2000)
+                    ->placeholder('https://example.com/portfolio')
+                    ->helperText('Must return HTTP 200 when checked.')
+                    ->columnSpanFull(),
                 Textarea::make('description')
                     ->required()
                     ->rows(12)

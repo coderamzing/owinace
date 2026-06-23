@@ -25,14 +25,19 @@ class UpworkCampaign extends Model
         'max_connect_per_bid',
         'search_url',
         'timezone',
+        'bidding_timezone',
         'max_daily_bid',
         'auto_bidding',
         'ai_prompt',
         'ai_cover_letter',
+        'ai_instruction',
         'questions_context',
         'matching_critieria',
+        'job_do',
+        'job_dont',
         'experience',
         'rule_client_avg_spent',
+        'rule_client_avghire',
         'rule_max_interviews',
         'rule_job_posted_ago',
         'rule_max_proposal',
@@ -56,6 +61,7 @@ class UpworkCampaign extends Model
             'max_daily_bid' => 'integer',
             'auto_bidding' => 'boolean',
             'rule_client_avg_spent' => 'decimal:2',
+            'rule_client_avghire' => 'decimal:2',
             'rule_max_interviews' => 'integer',
             'rule_job_posted_ago' => 'integer',
             'rule_max_proposal' => 'integer',
@@ -94,6 +100,26 @@ class UpworkCampaign extends Model
         return $this->hasMany(UpworkCampaignJobStat::class, 'campaign_id');
     }
 
+    /**
+     * Search keyword from the campaign Upwork jobs search URL (`q` query parameter).
+     */
+    public function searchQueryTerm(): ?string
+    {
+        if (blank($this->search_url)) {
+            return null;
+        }
+
+        $queryString = parse_url($this->search_url, PHP_URL_QUERY);
+        if (! is_string($queryString) || $queryString === '') {
+            return null;
+        }
+
+        parse_str($queryString, $params);
+        $term = trim((string) ($params['q'] ?? ''));
+
+        return $term !== '' ? $term : null;
+    }
+
     public function slots(): HasMany
     {
         return $this->hasMany(UpworkCampaignSlot::class, 'campaign_id')
@@ -101,7 +127,57 @@ class UpworkCampaign extends Model
             ->orderBy('id');
     }
 
-    public function isWithinClockSlots(?string $nowUtc = null): bool
+    public function ruleRejectionReasonForJob(UpworkJob $job, bool $checkDailyBidLimit = true): ?string
+    {
+        if ($checkDailyBidLimit && $this->max_daily_bid > 0) {
+            $appliedToday = UpworkCampaignJobStat::where('campaign_id', $this->id)
+                ->where('is_applied', 1)
+                ->where('created_at', '>=', now()->startOfDay())
+                ->count();
+            if ($appliedToday >= $this->max_daily_bid) {
+                return 'Max daily bid reached';
+            }
+        }
+
+        if ($this->max_connect_per_bid > 0 && $job->connects > $this->max_connect_per_bid) {
+            return 'Connects exceed campaign limit';
+        }
+
+        if ($this->rule_min_client_rating > 0 && $job->client_rating < $this->rule_min_client_rating) {
+            return 'Client rating below campaign minimum';
+        }
+
+        if ($this->rule_client_avg_spent > 0 && $job->client_avgspent < $this->rule_client_avg_spent) {
+            return 'Client avg. spent below campaign minimum';
+        }
+
+        if ($this->rule_client_avghire > 0 && $job->client_hirerate < $this->rule_client_avghire) {
+            return 'Client hire rate below campaign minimum';
+        }
+
+        if ($this->rule_max_interviews > 0 && $job->interviews > $this->rule_max_interviews) {
+            return 'Interviews exceed campaign limit';
+        }
+
+        if (isset($job->posted_at)) {
+            try {
+                $diffMins = \Carbon\Carbon::parse($job->posted_at)->diffInMinutes(now());
+                if ($diffMins > $this->rule_job_posted_ago) {
+                    return 'Job posted too long ago';
+                }
+            } catch (\Exception) {
+                // Unable to parse posted_at, ignore filter
+            }
+        }
+
+        if ($this->rule_max_proposal > 0 && $job->proposals > $this->rule_max_proposal) {
+            return 'Proposals exceed campaign limit';
+        }
+
+        return null;
+    }
+
+    public function isWithinClockSlots(?string $nowInTimezone = null): bool
     {
         $this->loadMissing('slots');
 
@@ -109,11 +185,17 @@ class UpworkCampaign extends Model
             return true;
         }
 
-        $nowUtc ??= now('UTC')->format('H:i');
+        $timezone = $this->bidding_timezone ?: 'UTC';
+
+        try {
+            $nowInTimezone ??= now($timezone)->format('H:i');
+        } catch (\Exception) {
+            $nowInTimezone ??= now('UTC')->format('H:i');
+        }
 
         return $this->slots->contains(
             fn (UpworkCampaignSlot $slot): bool => UpworkCampaignSlot::isTimeWithinSlot(
-                $nowUtc,
+                $nowInTimezone,
                 (string) $slot->clock_in,
                 (string) $slot->clock_out,
             ),

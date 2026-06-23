@@ -29,9 +29,11 @@ class Portfolio extends Model implements HasMedia
         'scale',
         'keywords',
         'title',
+        'url',
         'description',
         'embedding',
         'is_active',
+        'pinged_at',
         'sort_order',
         'created_by_id',
         'team_id',
@@ -48,6 +50,7 @@ class Portfolio extends Model implements HasMedia
             'is_active' => 'boolean',
             'keywords' => 'array',
             'embedding' => 'array',
+            'pinged_at' => 'datetime',
         ];
     }
 

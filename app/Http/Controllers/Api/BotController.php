@@ -270,7 +270,7 @@ class BotController extends Controller
             return response()->json(['is_matched' => (bool) $existingStat->is_matched]);
         }
 
-        $ruleRejection = $this->campaignRuleRejectionReason($job, $campaign);
+        $ruleRejection = $campaign->ruleRejectionReasonForJob($job);
         if ($ruleRejection !== null) {
             return $this->recordAnalysisAndRespond($job, $campaign, false, $ruleRejection);
         }
@@ -286,53 +286,6 @@ class BotController extends Controller
             (bool) $result['is_matched'],
             $result['reason'],
         );
-    }
-
-    private function campaignRuleRejectionReason(UpworkJob $job, UpworkCampaign $campaign): ?string
-    {
-        if ($campaign->max_daily_bid > 0) {
-            $appliedToday = UpworkCampaignJobStat::where('campaign_id', $campaign->id)
-                ->where('is_applied', 1)
-                ->where('created_at', '>=', now()->startOfDay())
-                ->count();
-            if ($appliedToday >= $campaign->max_daily_bid) {
-                return 'Max daily bid reached';
-            }
-        }
-
-        if ($campaign->max_connect_per_bid > 0 && $job->connects > $campaign->max_connect_per_bid) {
-            return 'Connects exceed campaign limit';
-        }
-
-        if ($campaign->rule_min_client_rating > 0 && $job->client_rating < $campaign->rule_min_client_rating
-        ) {
-            return 'Client rating below campaign minimum';
-        }
-
-        if ($campaign->rule_client_avg_spent > 0 && $job->client_avgspent < $campaign->rule_client_avg_spent) {
-            return 'Client avg. spent below campaign minimum';
-        }
-
-        if ($campaign->rule_max_interviews > 0 && $job->interviews > $campaign->rule_max_interviews) {
-            return 'Interviews exceed campaign limit';
-        }
-
-        if (isset($job->posted_at)) {
-            try {
-                $diffMins = \Carbon\Carbon::parse($job->posted_at)->diffInMinutes(now());
-                if ($diffMins > $campaign->rule_job_posted_ago) {
-                    return 'Job posted too long ago';
-                }
-            } catch (\Exception) {
-                // Unable to parse posted_at, ignore filter
-            }
-        }
-
-        if ($campaign->rule_max_proposal > 0 && $job->proposals > $campaign->rule_max_proposal) {
-            return 'Proposals exceed campaign limit';
-        }
-
-        return null;
     }
 
     private function recordAnalysisAndRespond(
