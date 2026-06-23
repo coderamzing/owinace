@@ -13,6 +13,8 @@ class PortfolioUrlPingService
 
     public const REQUEST_TIMEOUT_SECONDS = 15;
 
+    private const BROWSER_USER_AGENT = 'Mozilla/5.0 (compatible; LeadCliq-PortfolioHealthCheck/1.0; +https://leadcliq.com)';
+
     /**
      * @return array{success: bool, status: ?int, message: string}
      */
@@ -36,25 +38,26 @@ class PortfolioUrlPingService
                 ->timeout(self::REQUEST_TIMEOUT_SECONDS)
                 ->connectTimeout(10)
                 ->withHeaders([
-                    'User-Agent' => 'LeadCliq-PortfolioHealthCheck/1.0',
-                    'Accept' => '*/*',
+                    'User-Agent' => self::BROWSER_USER_AGENT,
+                    'Accept' => 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+                    'Accept-Language' => 'en-US,en;q=0.9',
                 ])
                 ->get($url);
 
             $status = $response->status();
 
-            if ($status === 200) {
+            if ($this->isReachableStatus($status)) {
                 return [
                     'success' => true,
                     'status' => $status,
-                    'message' => 'URL responded with HTTP 200.',
+                    'message' => $this->reachableStatusMessage($status),
                 ];
             }
 
             return [
                 'success' => false,
                 'status' => $status,
-                'message' => "URL responded with HTTP {$status}. A 200 response is required.",
+                'message' => "URL responded with HTTP {$status}. Expected a reachable response (2xx/3xx, or 401/403 from bot protection).",
             ];
         } catch (\Throwable $exception) {
             return [
@@ -72,5 +75,24 @@ class PortfolioUrlPingService
         if (! $result['success']) {
             throw new RuntimeException($result['message']);
         }
+    }
+
+    private function isReachableStatus(int $status): bool
+    {
+        if ($status >= 200 && $status < 400) {
+            return true;
+        }
+
+        // Site exists but blocks automated/server requests (common WAF behaviour).
+        return in_array($status, [401, 403], true);
+    }
+
+    private function reachableStatusMessage(int $status): string
+    {
+        if ($status === 403 || $status === 401) {
+            return "URL responded with HTTP {$status} (reachable, but blocks automated checks).";
+        }
+
+        return "URL responded with HTTP {$status}.";
     }
 }

@@ -34,7 +34,7 @@ class PortfolioForm
                     ->url()
                     ->maxLength(2000)
                     ->placeholder('https://example.com/portfolio')
-                    ->helperText('Must return HTTP 200 when checked.')
+                    ->helperText('Must be reachable when checked (2xx/3xx, or 401/403 if bot-protected).')
                     ->columnSpanFull(),
                 Textarea::make('description')
                     ->required()
