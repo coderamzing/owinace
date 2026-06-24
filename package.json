@@ -3,8 +3,8 @@
     "private": true,
     "type": "module",
     "scripts": {
-        "build": "vite build && npm run build:flatpickr",
-        "build:flatpickr": "node bin/build-flatpickr-time-picker.js && php artisan filament:assets",
+        "build": "vite build && php artisan filament:assets --ansi",
+        "build:flatpickr": "node bin/build-flatpickr-time-picker.js && php artisan filament:assets --ansi",
         "dev": "vite"
     },
     "devDependencies": {
