@@ -12,6 +12,7 @@ use App\Models\UpworkProfile;
 use Filament\Actions\Action;
 use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\Repeater;
+use Filament\Forms\Components\Repeater\TableColumn;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
@@ -262,15 +263,24 @@ HTML));
                                 Repeater::make('slots')
                                     ->label('Bidding time slots')
                                     ->relationship('slots')
+                                    ->table([
+                                        TableColumn::make('Clock in')
+                                            ->markAsRequired(),
+                                        TableColumn::make('Clock out')
+                                            ->markAsRequired(),
+                                    ])
+                                    ->compact()
                                     ->schema([
                                         FlatpickrTimePicker::make('clock_in')
                                             ->label('Clock in')
+                                            ->hiddenLabel()
                                             ->placeholder('09:00')
                                             ->minuteIncrement(5)
                                             ->live(onBlur: true)
                                             ->required(),
                                         FlatpickrTimePicker::make('clock_out')
                                             ->label('Clock out')
+                                            ->hiddenLabel()
                                             ->placeholder('17:00')
                                             ->minuteIncrement(5)
                                             ->live(onBlur: true)
@@ -292,8 +302,7 @@ HTML));
                                                 },
                                             ]),
                                     ])
-                                    ->columns(2)
-                                    ->reorderableWithButtons()
+                                    ->reorderableWithDragAndDrop()
                                     ->orderColumn('sort_order')
                                     ->addActionLabel('Add time slot')
                                     ->defaultItems(0)
