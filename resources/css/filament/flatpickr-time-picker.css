@@ -1,0 +1,28 @@
+.fi-fo-flatpickr-time-picker .flatpickr-input {
+    background: transparent;
+}
+
+.fi-fo-flatpickr-time-picker .flatpickr-calendar {
+    border-radius: 0.5rem;
+    box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+    font-family: inherit;
+}
+
+.dark .fi-fo-flatpickr-time-picker .flatpickr-calendar {
+    background: rgb(24 24 27);
+    border-color: rgb(63 63 70);
+    color: rgb(244 244 245);
+}
+
+.dark .fi-fo-flatpickr-time-picker .flatpickr-time input,
+.dark .fi-fo-flatpickr-time-picker .flatpickr-time .flatpickr-am-pm {
+    color: rgb(244 244 245);
+}
+
+.dark .fi-fo-flatpickr-time-picker .flatpickr-time .numInputWrapper span.arrowUp:after {
+    border-bottom-color: rgb(161 161 170);
+}
+
+.dark .fi-fo-flatpickr-time-picker .flatpickr-time .numInputWrapper span.arrowDown:after {
+    border-top-color: rgb(161 161 170);
+}

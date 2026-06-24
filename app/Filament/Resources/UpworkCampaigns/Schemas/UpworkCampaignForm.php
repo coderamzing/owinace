@@ -15,7 +15,7 @@ use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\TimePicker;
+use App\Filament\Forms\Components\FlatpickrTimePicker;
 use Filament\Forms\Components\Toggle;
 use Filament\Resources\Pages\CreateRecord;
 use Filament\Resources\Pages\EditRecord;
@@ -24,9 +24,11 @@ use Filament\Schemas\Components\Callout;
 use Filament\Schemas\Components\Livewire;
 use Filament\Schemas\Components\Tabs;
 use Filament\Schemas\Components\Tabs\Tab;
+use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Schema;
 use Filament\Support\Enums\Alignment;
 use Filament\Support\Icons\Heroicon;
+use Closure;
 use Illuminate\Support\HtmlString;
 
 class UpworkCampaignForm
@@ -46,15 +48,33 @@ class UpworkCampaignForm
 <div class="space-y-4 text-sm">
     <div>
         <p class="font-medium text-gray-950 dark:text-white">Allowed placeholders</p>
-        <p class="mt-1 font-mono text-xs text-gray-600 dark:text-gray-300">[START_WITH] [GREETINGS] [HOOK] [PORTFOLIOS_LIST] [PORTFOLIOS_PARAGRAPH] [INLINE_QUESTIONS] [CTA]</p>
+        <p class="mt-1 font-mono text-xs text-gray-600 dark:text-gray-300">[START_WITH] [GREETINGS] [HOOK] [UNDERSTANDING] [WHY_ME] [SIMILAR_PROJECT] [PORTFOLIOS_PARAGRAPH] [PORTFOLIOS_LIST] [TECH_MATCH] [APPROACH] [QUICK_WIN] [INLINE_QUESTIONS] [DISCOVERY_QUESTIONS] [VALUE_STATEMENT] [CTA]</p>
     </div>
     <div>
         <p class="font-medium text-gray-950 dark:text-white">Sample structure</p>
-        <pre class="mt-1 overflow-x-auto rounded-lg bg-gray-50 p-3 font-mono text-xs text-gray-800 dark:bg-gray-900 dark:text-gray-100">[START_WITH][GREETINGS] [HOOK]
+        <pre class="mt-1 overflow-x-auto rounded-lg bg-gray-50 p-3 font-mono text-xs text-gray-800 dark:bg-gray-900 dark:text-gray-100">[START_WITH]
+[GREETINGS]
+[HOOK]
+
+[UNDERSTANDING]
+
+[WHY_ME]
+
+[SIMILAR_PROJECT]
 
 [PORTFOLIOS_PARAGRAPH]
 
+[TECH_MATCH]
+
+[APPROACH]
+
+[QUICK_WIN]
+
 [INLINE_QUESTIONS]
+
+[DISCOVERY_QUESTIONS]
+
+[VALUE_STATEMENT]
 
 [CTA]
 
@@ -63,12 +83,20 @@ Thanks</pre>
     <ul class="list-disc space-y-1 pl-5 text-gray-600 dark:text-gray-300">
         <li><strong>[START_WITH]</strong> — required opening word from the job, or empty</li>
         <li><strong>[GREETINGS]</strong> — Hi/Hello/Hey + client name</li>
-        <li><strong>[HOOK]</strong> — one-line fit statement (same line as greeting)</li>
-        <li><strong>[PORTFOLIOS_LIST]</strong> — relevant work as bullets</li>
+        <li><strong>[HOOK]</strong> — one-line fit statement</li>
+        <li><strong>[UNDERSTANDING]</strong> — show you understand the client's problem</li>
+        <li><strong>[WHY_ME]</strong> — why you are the right fit for this job</li>
+        <li><strong>[SIMILAR_PROJECT]</strong> — most relevant past project</li>
         <li><strong>[PORTFOLIOS_PARAGRAPH]</strong> — relevant work as prose</li>
+        <li><strong>[PORTFOLIOS_LIST]</strong> — relevant work as bullets</li>
+        <li><strong>[TECH_MATCH]</strong> — map job tech/skills to your experience</li>
+        <li><strong>[APPROACH]</strong> — how you would tackle the project</li>
+        <li><strong>[QUICK_WIN]</strong> — early deliverable or fast value</li>
         <li><strong>[INLINE_QUESTIONS]</strong> — answers to questions in the job post</li>
+        <li><strong>[DISCOVERY_QUESTIONS]</strong> — thoughtful questions for the client</li>
+        <li><strong>[VALUE_STATEMENT]</strong> — outcome/value you deliver</li>
         <li><strong>[CTA]</strong> — call-to-action paragraph</li>
-        <li>End with <strong>Thanks</strong> on its own line</li>
+        <li>Static text (e.g. <strong>Thanks</strong>, your name) stays exactly where you place it</li>
     </ul>
 </div>
 HTML));
@@ -235,14 +263,34 @@ HTML));
                                     ->label('Bidding time slots')
                                     ->relationship('slots')
                                     ->schema([
-                                        TimePicker::make('clock_in')
+                                        FlatpickrTimePicker::make('clock_in')
                                             ->label('Clock in')
-                                            ->seconds(false)
+                                            ->placeholder('09:00')
+                                            ->minuteIncrement(5)
+                                            ->live(onBlur: true)
                                             ->required(),
-                                        TimePicker::make('clock_out')
+                                        FlatpickrTimePicker::make('clock_out')
                                             ->label('Clock out')
-                                            ->seconds(false)
-                                            ->required(),
+                                            ->placeholder('17:00')
+                                            ->minuteIncrement(5)
+                                            ->live(onBlur: true)
+                                            ->required()
+                                            ->rules([
+                                                fn (Get $get): Closure => function (string $attribute, mixed $value, Closure $fail) use ($get): void {
+                                                    $clockIn = $get('clock_in');
+
+                                                    if (blank($clockIn) || blank($value)) {
+                                                        return;
+                                                    }
+
+                                                    $clockIn = substr((string) $clockIn, 0, 5);
+                                                    $clockOut = substr((string) $value, 0, 5);
+
+                                                    if ($clockIn >= $clockOut) {
+                                                        $fail('Clock out must be after clock in.');
+                                                    }
+                                                },
+                                            ]),
                                     ])
                                     ->columns(2)
                                     ->reorderableWithButtons()
@@ -294,11 +342,29 @@ HTML));
                                     ->afterLabel(self::coverLetterTemplateHelpAction())
                                     ->rows(12)
                                     ->placeholder(<<<'TXT'
-[START_WITH][GREETINGS] [HOOK]
+[START_WITH]
+[GREETINGS]
+[HOOK]
+
+[UNDERSTANDING]
+
+[WHY_ME]
+
+[SIMILAR_PROJECT]
 
 [PORTFOLIOS_PARAGRAPH]
 
+[TECH_MATCH]
+
+[APPROACH]
+
+[QUICK_WIN]
+
 [INLINE_QUESTIONS]
+
+[DISCOVERY_QUESTIONS]
+
+[VALUE_STATEMENT]
 
 [CTA]
 

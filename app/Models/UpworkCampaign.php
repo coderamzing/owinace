@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Traits\TeamTraits;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -129,14 +130,8 @@ class UpworkCampaign extends Model
 
     public function ruleRejectionReasonForJob(UpworkJob $job, bool $checkDailyBidLimit = true): ?string
     {
-        if ($checkDailyBidLimit && $this->max_daily_bid > 0) {
-            $appliedToday = UpworkCampaignJobStat::where('campaign_id', $this->id)
-                ->where('is_applied', 1)
-                ->where('created_at', '>=', now()->startOfDay())
-                ->count();
-            if ($appliedToday >= $this->max_daily_bid) {
-                return 'Max daily bid reached';
-            }
+        if ($checkDailyBidLimit && $this->max_daily_bid > 0 && $this->hasReachedDailyBidLimit()) {
+            return 'Max daily bid reached';
         }
 
         if ($this->max_connect_per_bid > 0 && $job->connects > $this->max_connect_per_bid) {
@@ -177,6 +172,49 @@ class UpworkCampaign extends Model
         return null;
     }
 
+    public function biddingTimezone(): string
+    {
+        return $this->bidding_timezone ?: 'UTC';
+    }
+
+    /**
+     * @return array{0: Carbon, 1: Carbon}
+     */
+    public function biddingDayUtcRange(): array
+    {
+        $timezone = $this->biddingTimezone();
+
+        try {
+            $todayStart = now($timezone)->startOfDay()->timezone('UTC');
+            $todayEnd = now($timezone)->endOfDay()->timezone('UTC');
+        } catch (\Exception) {
+            $todayStart = now('UTC')->startOfDay();
+            $todayEnd = now('UTC')->endOfDay();
+        }
+
+        return [$todayStart, $todayEnd];
+    }
+
+    public function appliedBidsTodayCount(): int
+    {
+        [$todayStart, $todayEnd] = $this->biddingDayUtcRange();
+
+        return UpworkCampaignJobStat::query()
+            ->where('campaign_id', $this->id)
+            ->where('is_applied', 1)
+            ->whereBetween('created_at', [$todayStart, $todayEnd])
+            ->count();
+    }
+
+    public function hasReachedDailyBidLimit(): bool
+    {
+        if ($this->max_daily_bid <= 0) {
+            return false;
+        }
+
+        return $this->appliedBidsTodayCount() >= $this->max_daily_bid;
+    }
+
     public function isWithinClockSlots(?string $nowInTimezone = null): bool
     {
         $this->loadMissing('slots');
@@ -185,7 +223,7 @@ class UpworkCampaign extends Model
             return true;
         }
 
-        $timezone = $this->bidding_timezone ?: 'UTC';
+        $timezone = $this->biddingTimezone();
 
         try {
             $nowInTimezone ??= now($timezone)->format('H:i');

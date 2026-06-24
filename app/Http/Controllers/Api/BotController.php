@@ -42,41 +42,19 @@ class BotController extends Controller
         }
 
         $campaign = UpworkCampaign::withoutTeam()
-            ->select('id', 'title', 'timezone', 'auto_bidding', 'is_active', 'search_url', 'max_daily_bid')
+            ->select('id', 'title', 'bidding_timezone', 'auto_bidding', 'is_active', 'search_url', 'max_daily_bid')
             ->with('slots:id,campaign_id,clock_in,clock_out')
             ->where('is_active', true)
             ->where('auto_bidding', true)
             ->where('profile_id', $profileOrError->id)
             ->get();
 
-        // Filter out campaigns that have already reached max_daily_bid for today
-
-        // Get current date in the campaign's timezone, but fallback to UTC if missing
         $campaign = $campaign->filter(function ($item) {
-            // Check if max_daily_bid is set for campaign
-            if (empty($item->max_daily_bid)) {
-                return true; // No quota set, so always include
+            if ($item->max_daily_bid <= 0) {
+                return true;
             }
 
-            // Try to get the campaign's timezone, else use UTC
-            $tz = $item->timezone ?? 'UTC';
-            try {
-                $todayStart = now($tz)->startOfDay()->timezone('UTC');
-                $todayEnd = now($tz)->endOfDay()->timezone('UTC');
-            } catch (\Exception $e) {
-                // Fallback if bad timezone
-                $todayStart = now('UTC')->startOfDay();
-                $todayEnd = now('UTC')->endOfDay();
-            }
-
-            // Count bids applied by this campaign since the start of "today"
-            $appliedCount = UpworkCampaignJobStat::where('campaign_id', $item->id)
-                ->where('is_applied', 1)
-                ->whereBetween('created_at', [$todayStart, $todayEnd])
-                ->count();
-
-            // If quota reached, filter campaign out
-            return $appliedCount < $item->max_daily_bid;
+            return ! $item->hasReachedDailyBidLimit();
         })->values();
 
         $campaign = $campaign->filter(function ($item) {

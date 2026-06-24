@@ -293,32 +293,61 @@ class BotAIService
         - AI_COVER_LETTER = weather to write full cover letter with ai or not
     
         # INSTRUCTIONS
+        ## Skeleton Structure
+        COVERLETTER_SKELETON is a fixed layout: placeholders mixed with static text the user wrote.
+        - Replace ONLY the listed placeholders below.
+        - Every other character in the skeleton — fixed sentences, sign-off lines, names, blank lines — must appear in the final cover letter exactly as written, in the same order and position.
+        - Do not move, rewrite, delete, or paraphrase static skeleton text.
+        - Preserve blank lines between sections exactly as in the skeleton.
+
         ## Placeholder Replacement
         COVERLETTER_SKELETON may contain ONLY these placeholders. Replace every one that appears:
         - [START_WITH]
         - [GREETINGS]
         - [HOOK]
-        - [PORTFOLIOS_LIST]
+        - [UNDERSTANDING]
+        - [WHY_ME]
+        - [SIMILAR_PROJECT]
         - [PORTFOLIOS_PARAGRAPH]
+        - [PORTFOLIOS_LIST]
+        - [TECH_MATCH]
+        - [APPROACH]
+        - [QUICK_WIN]
         - [INLINE_QUESTIONS]
+        - [DISCOVERY_QUESTIONS]
+        - [VALUE_STATEMENT]
         - [CTA]
 
         Never leave unresolved placeholders in the final cover letter.
+        Only replace placeholders that appear in the skeleton — omit sections not in the template.
 
         ### [START_WITH]
         - If JOB_DESCRIPTION requires a specific opening word or phrase (e.g. "Start your proposal with BLUE"), output that exact phrase.
         - Otherwise output nothing (remove the placeholder with no replacement text).
-        - When present, [START_WITH] is concatenated directly before [GREETINGS] on the first line with no extra space unless the required phrase ends with one.
+        - When on the same line as [GREETINGS], concatenate directly before it with no extra space unless the required phrase ends with one.
 
         ### [GREETINGS]
         - Choose one of: Hi, Hello, or Hey.
         - If CLIENT_NAME is available, append the client's name followed by a comma.
         - Example: Hi John,
-        - [START_WITH][GREETINGS] and [HOOK] belong on the same first line: "[START_WITH][GREETINGS] [HOOK]" with no line break between them.
+        - Respect skeleton line breaks: if [GREETINGS] and [HOOK] are on the same line, keep them on one line separated by a single space.
 
         ### [HOOK]
         - One concise sentence that proves you read the job and states why you are a strong fit.
-        - Must appear on the same line as [GREETINGS], separated by a single space.
+        - If on the same line as [GREETINGS], separate with a single space; otherwise use its own line as the skeleton dictates.
+
+        ### [UNDERSTANDING]
+        - One short paragraph showing you understand the client's problem, goals, and priorities.
+        - Mirror key requirements from JOB_DESCRIPTION in natural language — do not copy-paste the listing.
+
+        ### [WHY_ME]
+        - One short paragraph on why you are the right fit for this specific job.
+        - Draw from CAMPAIGN_EXPERIENCE and CAMPAIGN_QUESTIONS_CONTEXT; be specific, not generic.
+
+        ### [SIMILAR_PROJECT]
+        - Highlight the single most relevant past project for this job.
+        - Name the project, tech stack overlap, outcome, and URL when available.
+        - Source from CAMPAIGN_PORTFOLIOS and CAMPAIGN_EXPERIENCE only.
 
         ### [PORTFOLIOS_LIST]
         - Select the most relevant portfolio items from CAMPAIGN_PORTFOLIOS based on keywords, technologies, project type, and business domain.
@@ -331,20 +360,35 @@ class BotAIService
         - Weave them into one or two natural paragraphs (no bullets).
         - Mention project name, tech relevance, and outcome; include URLs inline when available.
 
+        ### [TECH_MATCH]
+        - Brief paragraph mapping required technologies, tools, and skills from JOB_DESCRIPTION to your experience.
+        - Be concrete: name the tech and how you have used it; avoid vague claims.
+
+        ### [APPROACH]
+        - Short paragraph describing how you would tackle this project: phases, priorities, or first steps.
+        - Tailored to JOB_DESCRIPTION complexity; practical, not overly detailed.
+
+        ### [QUICK_WIN]
+        - One or two sentences on an early deliverable or fast value you can provide once hired.
+        - Must be realistic and grounded in CAMPAIGN_EXPERIENCE or CAMPAIGN_PORTFOLIOS.
+
         ### [INLINE_QUESTIONS]
         - Questions embedded in JOB_DESCRIPTION itself (not JOB_QUESTIONS).
         - Answer each inline question in the cover letter body.
-        - Remove this placeholder entirely if the job has no inline questions.
+        - If the job has no inline questions, remove only this placeholder — leave all static skeleton text around it unchanged.
         - Answers must come from CAMPAIGN_EXPERIENCE, CAMPAIGN_QUESTIONS_CONTEXT, and CAMPAIGN_PORTFOLIOS only.
+
+        ### [DISCOVERY_QUESTIONS]
+        - Two to four thoughtful questions for the client that show you read the job and want to clarify scope or priorities.
+        - Not screening questions (those belong in JOB_QUESTIONS output only).
+        - Format as a short bullet list or numbered list, one question per line.
+
+        ### [VALUE_STATEMENT]
+        - One concise sentence or short paragraph on the outcome or value you deliver — focused on the client's result, not self-promotion.
 
         ### [CTA]
         - Generate a natural call-to-action encouraging further discussion.
-        - Must be its own paragraph, separated by a blank line from the body above.
         - Do not mention any person's name.
-
-        ### Sign-off
-        - End with "Thanks," on its own final line after a blank line following [CTA].
-        - Do not add a name, title, email, or signature block after "Thanks,".
 
         ## Questions
         JOB_QUESTIONS (screening questions, not inline) must be answered in the questions output array only — not in the cover letter.
@@ -356,41 +400,41 @@ class BotAIService
         Never invent experience or facts.
 
         ## AI_COVER_LETTER = enabled
-        - Write a completely personalized proposal.
-        - Use the template only as guidance.
-        - Adjust the proposal length according to the complexity of the job.
-        - Naturally incorporate relevant portfolio information.
+        - Follow the COVERLETTER_SKELETON layout exactly: same static text, same line breaks, same section order.
+        - Only placeholder slots get AI-generated content.
+        - Personalize placeholder content to the job; adjust length of generated sections to job complexity.
+        - Apply AI_INSTRUCTIONS when writing placeholder content.
 
         ## AI_COVER_LETTER = disabled
-        - Preserve the original COVERLETTER_SKELETON.
-        - Only replace placeholders.
-        - Answer questions.
-        - Do not rewrite the template structure.
+        - Treat COVERLETTER_SKELETON as a fill-in-the-blank template.
+        - Replace placeholders only — do not change, add, or remove any static text or blank lines.
+        - Do not rewrite sentences outside placeholders.
+        - Answer screening questions in the questions array only.
 
         ## LENGTH
-        - Target 200–280 words for the cover letter body.
-        - Simple jobs (1–2 requirements): 180–200 words.
-        - Complex jobs (5+ requirements, multiple integrations): 220–300 words.
-        - Never exceed 320 words.
-        - Count words before returning; if under 150 or over 320, rewrite once to fit.
-        - Must write in paragraphs with blank lines between them; never a single wall of text.
-        - [CTA] must be its own paragraph, separated by a blank line from the body.
-        - "Thanks," must be on its own final line after a blank line following [CTA].
+        - Target 200–280 words for AI-generated placeholder content (not counting static skeleton text).
+        - Simple jobs (1–2 requirements): 180–200 words of generated content.
+        - Complex jobs (5+ requirements, multiple integrations): 220–300 words of generated content.
+        - Never exceed 320 words of generated placeholder content.
+        - Count words before returning; if generated content is under 150 or over 320 words, rewrite placeholder sections once to fit.
+        - Generated placeholder sections should use paragraphs with blank lines where natural; never a single wall of text inside a placeholder slot.
 
         # CONSTRAINTS
-        - Minimum 150 words in the cover letter.
-        - End with "Thanks," only. Do not add a name, title, email, or full signature block.
+        - Minimum 150 words in AI-generated placeholder content.
+        - Preserve every non-placeholder line from COVERLETTER_SKELETON verbatim — including sign-off lines, names, and custom sentences.
         - Never output "[Your Name]", "[Client Name]", or any other unresolved placeholder in the final cover letter.
-        - [START_WITH], [GREETINGS], and [HOOK] MUST be on one line with no line break between them.
+        - [START_WITH], [GREETINGS], and [HOOK] must follow the line layout in the skeleton — same line when the skeleton puts them together, separate lines when the skeleton separates them.
         - No inline-question answers in the output questions array.
+        - No discovery-question answers in the output questions array.
         - No emojis.
         - Do not mention names inside the CTA.
         - Do not fabricate experience.
         - Avoid overly sales-oriented language.
         - Maintain a natural tone.
-        - Remove [INLINE_QUESTIONS] if there are no inline questions in the job description.
-        - Use [PORTFOLIOS_LIST] or [PORTFOLIOS_PARAGRAPH] as dictated by the skeleton — do not invent the other format if it is not in the template.
-        - Use AI_INSTRUCTIONS to write the cover letter.
+        - If there are no inline questions in the job description, remove the [INLINE_QUESTIONS] placeholder only; keep all surrounding static text and blank lines.
+        - Use only placeholders present in the skeleton — do not add sections the admin omitted.
+        - Use [PORTFOLIOS_LIST] and/or [PORTFOLIOS_PARAGRAPH] as dictated by the skeleton.
+        - Use AI_INSTRUCTIONS when writing placeholder content.
         
         # OUTPUT FORMAT
         Return ONLY valid JSON.
@@ -407,13 +451,12 @@ class BotAIService
         # VALIDATION
         Before returning:
         - Ensure all placeholders are replaced.
+        - Ensure every static (non-placeholder) line from COVERLETTER_SKELETON appears unchanged in the same position.
         - Ensure every question has an answer.
         - Ensure answers are based only on the supplied context.
         - Ensure the response is valid JSON.
         - Ensure no explanatory text exists outside the JSON.
-        - Ensure [START_WITH], [GREETINGS], and [HOOK] are on the same first line.
-        - Ensure [CTA] is a separate paragraph before "Thanks,".
-        - Ensure "Thanks," is the final line.
+        - Ensure [START_WITH], [GREETINGS], and [HOOK] follow the skeleton's line layout.
         EOT;
 
         $response = $this->deepseekService->request([
