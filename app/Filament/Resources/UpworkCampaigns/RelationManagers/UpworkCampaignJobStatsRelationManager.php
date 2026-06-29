@@ -182,23 +182,6 @@ class UpworkCampaignJobStatsRelationManager extends RelationManager
             return;
         }
 
-        $campaign = $this->getOwnerRecord()->fresh(['linkedPortfolios']);
-        $ruleRejection = $campaign->ruleRejectionReasonForJob($job, checkDailyBidLimit: false);
-        if ($ruleRejection !== null) {
-            $this->testAnalyzeByStatId[$record->id] = [
-                'is_matched' => false,
-                'reason' => $ruleRejection,
-            ];
-
-            Notification::make()
-                ->title('Job not matched')
-                ->body($ruleRejection)
-                ->warning()
-                ->send();
-
-            return;
-        }
-
         try {
             $result = app(BotAIService::class)->analyzeJob(
                 $this->jobDataForAiAnalyze($job),
