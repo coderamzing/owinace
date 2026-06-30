@@ -13,6 +13,7 @@ use App\Models\UpworkProfile;
 use App\Services\BotAIService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Validator;
 
 class BotController extends Controller
@@ -85,7 +86,7 @@ class BotController extends Controller
         $jobData = $this->botAIService->parseJob($request->all());
 
         if (empty($jobData['posted_at'])) {
-            $jobData['posted_at'] = $data['posted_at'] ?? now()->toISOString();
+            $jobData['posted_at'] = $data['posted_at'] ?? Carbon::now()->format('Y-m-d H:i:s');
         }
         if (! is_array($jobData['skills'] ?? null)) {
             $jobData['skills'] = is_array($data['skills'] ?? null) ? $data['skills'] : [];
