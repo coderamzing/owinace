@@ -3,14 +3,11 @@
 namespace App\Models;
 
 use App\Models\Scopes\TeamScope;
-use App\Services\OpenAIService;
 use App\Traits\TeamTraits;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Str;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 
@@ -67,40 +64,6 @@ class Portfolio extends Model implements HasMedia
     protected static function booted(): void
     {
         static::addGlobalScope(new TeamScope);
-
-        static::saving(function (Portfolio $portfolio): void {
-            $portfolio->updateEmbedding();
-        });
-    }
-
-    /**
-     * Build semantic text and refresh the embedding field.
-     */
-    protected function updateEmbedding(): void
-    {
-        $keywordsValue = $this->keywords;
-        $keywordsArray = is_array($keywordsValue)
-            ? $keywordsValue
-            : array_filter(array_map('trim', explode(',', (string) $keywordsValue)));
-
-        $semanticText = implode(' | ', [
-            "{$this->title}",
-            implode(', ', $keywordsArray),
-            Str::limit(strip_tags((string) $this->description), 300),
-        ]);
-
-        try {
-            /** @var OpenAIService $openAI */
-            $openAI = app(OpenAIService::class);
-            $keywords = $openAI->findKeywords($semanticText);
-            Log::info('Portfolio keywords', ['keywords' => $keywords]);
-            $this->embedding = $openAI->createEmbedding($keywords);
-        } catch (\Throwable $exception) {
-            Log::warning('Failed to create portfolio embedding', [
-                'portfolio_id' => $this->id,
-                'message' => $exception->getMessage(),
-            ]);
-        }
     }
 
     /**

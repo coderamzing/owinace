@@ -1,0 +1,25 @@
+{
+    "rawText": "Open job in a new window\nSenior Full Stack Developer (PHP Laravel) for Custom Web Applications\nPosted yesterday\n\nWorldwide\n\nSummary\n\nWe're looking for a highly skilled Full Stack Developer with deep experience in PHP Laravel to help build custom web applications from concept to production.\n\nWhat You'll Be Doing\n• Build custom Laravel applications from Webflow designs and specifications\n• Convert front-end assets into clean, scalable, maintainable code\n• Develop APIs, admin panels, user dashboards, authentication systems, and custom business logic\n• Ensure responsive behavior across desktop, tablet, and mobile devices\n• Optimize performance, security, and database architecture\n• Work closely with founders to rapidly bring new ideas to market\n\nRequirements\n• 5+ years of PHP Laravel experience\n• Strong understanding of MySQL and database design\n• Experience building SaaS products, directories, marketplaces, or custom web applications\n• Excellent front-end skills (HTML, CSS, JavaScript)\n• Comfortable working from Webflow designs and AI-generated front-end code\n• Strong attention to detail\n• Ability to spot inconsistencies and proactively solve problems\n• Fast execution without sacrificing code quality\n• Strong communication skills\n\nMore than 30 hrs/week\nHourly\n3 to 6 months\nDuration\nIntermediate\nI am looking for a mix of experience and value\nContract-to-hire opportunity\nThis lets talent know that this job could become full time.\nLearn more\nProject Type: Ongoing project\nSkills and Expertise\nMandatory skills\nLaravel\nPHP\nActivity on this job\nProposals:\n50+\nInterviewing:\n0\nInvites sent:\n0\nUnanswered invites:\n0\nBid range - High $100.00 Avg $24.23 Low $5.00\nApply now\nSave job\nFlag as inappropriate\nSend a proposal for: 27 Connects\nAvailable Connects: 215\nAbout the client\nPayment method verified\nRating is 4.9 out of 5.\n4.9\n4.92 of 135 reviews\nCanada\nConcord 1:33 AM\n738 jobs posted\n24% hire rate, 3 open jobs\n$308K total spent\n221 hires, 46 active\n$14.80 /hr avg hourly rate paid\n11,595 hours\nMember since Apr 18, 2010\nJob link\nCopy link\nClient's recent history (50)\nJobs in progress\nFacebook Ad Video Editor / UGC Compilation Editor (Voiceover + Music + Editing)\nRating is 5.0 out of 5.\n5.0\nTo freelancer: Yurii M. No feedback given\nJan 2026 - Apr 2026\nFixed-price $20.00\nRedesign\nRating is 5.0 out of 5.\n5.0\n Working together was a great experience! Definitely would be happy to collaborate again!\nTo freelancer: Yevheniia H. No feedback given\nOct 2025 - Mar 2026\n14 hrs @ $35.00/hr\nBilled: $528.98\nContent Creation with Ai\nRating is 5.0 out of 5.\n5.0\nTo freelancer: Amir I. No feedback given\nFeb 2026 - Mar 2026\n2 hrs @ $10.00/hr\nBilled: $28.90\nSeeking Super strong WordPress Developer – Fast & Responsive Frontend Expert\nRating is 5.0 out of 5.\n5.0\n Excellent client, clear communication and smooth workflow. Would definitely work together again\nTo freelancer: Maksym S. No feedback given\nNov 2025 - Feb 2026\nFixed-price $30.00\nSeeking Framer Expert to launch landing page\nRating is 5.0 out of 5.\n5.0\nTo freelancer: Girish P. No feedback given\nMay 2025 - Nov 2025\nFixed-price $20.00\nView more (13)\nOther open jobs by this Client (2)\nTechnical SEO Expert Needed for Website Migration (Webflow → Custom Application) Hourly\nSocial Media Researcher & Content Manager (Instagram Product Releases & Reviews) Hourly",
+    "expected": {
+        "title": "Senior Full Stack Developer (PHP Laravel) for Custom Web Applications",
+        "questions": [],
+        "skills": ["Laravel", "PHP"],
+        "location": { "oneOf": ["Canada", "Concord", "Concord, Canada"] },
+        "proposals": 55,
+        "client_name": null,
+        "client_rating": 4.9,
+        "client_totalspent": 308000,
+        "client_jobposted": 738,
+        "client_openjob": 3,
+        "client_hirerate": 24,
+        "client_avghourlyrate": 14.80,
+        "client_since": "2010-04-18",
+        "invitesent": 0,
+        "type": { "oneOf": ["hourly", "Hourly"] },
+        "client_hires": 221,
+        "interviews": 0,
+        "hires": 0,
+        "connects": 27,
+        "posted_at": { "requiredDate": true }
+    }
+}

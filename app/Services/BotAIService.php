@@ -40,7 +40,7 @@ class BotAIService
                 'Proposals:Less than 5' => 4
             - title = detect title from jobdescription in the first line before "Posted yesterday".
             - description = detect description from "Summary".
-            - skills: detect form "Mandatory skills" section and return as array.
+            - skills: detect from "Mandatory skills" section and return as array; return [] if the section is missing.
             - url = detect url from "Job link".
             - questions = detect questions as [] from section "questions".
             - posted_at:
@@ -242,7 +242,7 @@ class BotAIService
                 'content' => json_encode([
                     'JOB_DESCRIPTION' => $jobData['description'],
                     'JOB_QUESTIONS' => $jobData['questions'],
-                    'JOB_SKILLS' => implode(', ', $jobData['skills']),
+                    'JOB_SKILLS' => implode(', ', $jobData['skills'] ?? []),
                     'CAMPAIGN_PORTFOLIOS' => $campaignData['portfolios'],
                     'CAMPAIGN_EXPERIENCE' => $campaignData['experience'] ?? '',
                     'CAMPAIGN_QUESTIONS_CONTEXT' => $campaignData['questions_context'],

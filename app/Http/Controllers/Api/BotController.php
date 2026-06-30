@@ -87,15 +87,15 @@ class BotController extends Controller
         if (empty($jobData['posted_at'])) {
             $jobData['posted_at'] = $data['posted_at'] ?? null;
         }
-        if (empty($jobData['skills'])) {
-            $jobData['skills'] = $data['skills'] ?? [];
+        if (! is_array($jobData['skills'] ?? null)) {
+            $jobData['skills'] = is_array($data['skills'] ?? null) ? $data['skills'] : [];
         }
 
         // Validate AI output mandatory fields
         $validator = Validator::make($jobData, [
             'title' => ['required', 'string'],
             'description' => ['required', 'string'],
-            'skills' => ['required', 'array'],
+            'skills' => ['nullable', 'array'],
             'posted_at' => ['required', 'date'],
         ]);
         if ($validator->fails()) {
@@ -104,6 +104,8 @@ class BotController extends Controller
                 'details' => $validator->errors(),
             ], 422);
         }
+
+        $jobData['skills'] = $jobData['skills'] ?? [];
 
         UpworkJob::query()->updateOrCreate(
             ['uid' => $data['id']],
