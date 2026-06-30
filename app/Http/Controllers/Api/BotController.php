@@ -85,7 +85,7 @@ class BotController extends Controller
         $jobData = $this->botAIService->parseJob($request->all());
 
         if (empty($jobData['posted_at'])) {
-            $jobData['posted_at'] = $data['posted_at'] ?? null;
+            $jobData['posted_at'] = $data['posted_at'] ?? now()->toISOString();
         }
         if (! is_array($jobData['skills'] ?? null)) {
             $jobData['skills'] = is_array($data['skills'] ?? null) ? $data['skills'] : [];
