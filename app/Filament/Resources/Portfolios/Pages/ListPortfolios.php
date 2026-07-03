@@ -5,6 +5,7 @@ namespace App\Filament\Resources\Portfolios\Pages;
 use App\Filament\Resources\BaseListRecords;
 use App\Filament\Resources\Portfolios\PortfolioResource;
 use App\Models\Portfolio;
+use App\Services\PortfolioCsvExportService;
 use App\Services\PortfolioUrlPingService;
 use App\Traits\HasPermission;
 use Filament\Actions\Action;
@@ -32,6 +33,14 @@ class ListPortfolios extends BaseListRecords
                 ->size('lg')
                 ->url(fn () => PortfolioResource::getUrl('import'))
                 ->visible(fn () => self::hasPermissionTo('portfolio.import')),
+
+            Action::make('export')
+                ->label('Export CSV')
+                ->icon('heroicon-o-arrow-down-tray')
+                ->color('gray')
+                ->size('lg')
+                ->visible(fn () => self::hasPermissionTo('portfolio.list'))
+                ->action(fn () => app(PortfolioCsvExportService::class)->toStreamedResponse()),
 
             CreateAction::make()
                 ->modalHeading('Create Portfolio')

@@ -61,7 +61,12 @@ class UpworkProfileForm
                             ])
                             ->default('http')
                             ->required()
-                            ->native(false),
+                            ->native(false)
+                            ->afterStateHydrated(function (Select $component, ?string $state): void {
+                                if (blank($state)) {
+                                    $component->state('http');
+                                }
+                            }),
                         TextInput::make('proxy_username')
                             ->label('Username')
                             ->required()

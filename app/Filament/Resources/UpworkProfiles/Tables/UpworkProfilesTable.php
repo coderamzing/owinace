@@ -33,6 +33,12 @@ class UpworkProfilesTable
                     ->label('Proxy host')
                     ->placeholder('—')
                     ->toggleable(),
+                TextColumn::make('proxy_protocol')
+                    ->label('Protocol')
+                    ->badge()
+                    ->formatStateUsing(fn (?string $state): string => strtoupper($state ?: 'http'))
+                    ->color(fn (?string $state): string => ($state ?: 'http') === 'socks5' ? 'info' : 'gray')
+                    ->toggleable(),
                 TextColumn::make('proxy_last_ip')
                     ->label('Proxy IP')
                     ->placeholder('—')
