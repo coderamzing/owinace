@@ -34,6 +34,53 @@ use Illuminate\Support\HtmlString;
 
 class UpworkCampaignForm
 {
+    /**
+     * Shared Write/Analyze test fields used on Edit form and View infolist.
+     *
+     * @return array<int, mixed>
+     */
+    public static function testTabSchema(): array
+    {
+        return [
+            Callout::make('Test before you go live')
+                ->description('Paste a job description (and optional client questions). Use Write to preview a proposal, or Analyze to see if the job fits this campaign. Results open in a dialog; nothing here is saved.')
+                ->icon('heroicon-o-information-circle')
+                ->columnSpanFull(),
+            Textarea::make('test_job_description')
+                ->label('Job description')
+                ->placeholder('Full job post text from Upwork…')
+                ->rows(12)
+                ->columnSpanFull()
+                ->dehydrated(false),
+            Repeater::make('test_job_questions')
+                ->label('Screening questions (optional)')
+                ->schema([
+                    TextInput::make('text')
+                        ->label('Question')
+                        ->maxLength(2000)
+                        ->columnSpanFull(),
+                ])
+                ->reorderableWithButtons()
+                ->addActionLabel('Add question')
+                ->default([])
+                ->columnSpanFull()
+                ->dehydrated(false),
+            Actions::make([
+                Action::make('writeCoverLetterTest')
+                    ->label('Write')
+                    ->icon('heroicon-o-sparkles')
+                    ->color('primary')
+                    ->action('writeCoverLetterTest'),
+                Action::make('analyzeJobTest')
+                    ->label('Analyze')
+                    ->icon('heroicon-o-magnifying-glass-circle')
+                    ->color('gray')
+                    ->action('analyzeJobTest'),
+            ])
+                ->alignment(Alignment::Start),
+        ];
+    }
+
     private static function coverLetterTemplateHelpAction(): Action
     {
         return Action::make('coverLetterTemplateHelp')
@@ -126,6 +173,20 @@ HTML));
                                     ->required()
                                     ->maxLength(255)
                                     ->columnSpanFull(),
+                                TextInput::make('webhook_url')
+                                    ->label('Match webhook URL')
+                                    ->url()
+                                    ->nullable()
+                                    ->maxLength(500)
+                                    ->helperText('Discord or Slack incoming webhook. Fired once when a job matches this campaign.')
+                                    ->columnSpanFull()
+                                    ->hintAction(
+                                        Action::make('testWebhook')
+                                            ->label('Test')
+                                            ->icon('heroicon-o-paper-airplane')
+                                            ->visible(fn (?Get $get, $record): bool => filled($get('webhook_url') ?: $record?->webhook_url))
+                                            ->action('testWebhook'),
+                                    ),
                                 TextInput::make('max_daily_bid')
                                     ->label('Max daily bid')
                                     ->numeric()
@@ -408,44 +469,7 @@ TXT)
                         Tab::make('Test')
                             ->icon('heroicon-o-beaker')
                             ->visibleOn([EditRecord::class])
-                            ->schema([
-                                Callout::make('Test before you go live')
-                                    ->description('Paste a job description (and optional client questions). Use Write to preview a proposal, or Analyze to see if the job fits this campaign. Results open in a dialog; nothing here is saved.')
-                                    ->icon('heroicon-o-information-circle')
-                                    ->columnSpanFull(),
-                                Textarea::make('test_job_description')
-                                    ->label('Job description')
-                                    ->placeholder('Full job post text from Upwork…')
-                                    ->rows(12)
-                                    ->columnSpanFull()
-                                    ->dehydrated(false),
-                                Repeater::make('test_job_questions')
-                                    ->label('Screening questions (optional)')
-                                    ->schema([
-                                        TextInput::make('text')
-                                            ->label('Question')
-                                            ->maxLength(2000)
-                                            ->columnSpanFull(),
-                                    ])
-                                    ->reorderableWithButtons()
-                                    ->addActionLabel('Add question')
-                                    ->default([])
-                                    ->columnSpanFull()
-                                    ->dehydrated(false),
-                                Actions::make([
-                                    Action::make('writeCoverLetterTest')
-                                        ->label('Write')
-                                        ->icon('heroicon-o-sparkles')
-                                        ->color('primary')
-                                        ->action('writeCoverLetterTest'),
-                                    Action::make('analyzeJobTest')
-                                        ->label('Analyze')
-                                        ->icon('heroicon-o-magnifying-glass-circle')
-                                        ->color('gray')
-                                        ->action('analyzeJobTest'),
-                                ])
-                                    ->alignment(Alignment::Start),
-                            ]),
+                            ->schema(self::testTabSchema()),
                     ])
                     ->persistTabInQueryString()
                     ->columnSpanFull(),

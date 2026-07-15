@@ -1,0 +1,433 @@
+<!doctype html>
+<html>
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<title>LeadCliq</title>
+	<style>
+		:root {
+			--color-primary: #b8ff90;
+			--color-dark: #061d19;
+			--color-muted: #718096;
+			--color-border: #e2e8f0;
+			--color-danger: #f5576c;
+		}
+		* { box-sizing: border-box; }
+		body {
+			font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+			margin: 0;
+			padding: 0;
+			width: 420px;
+			max-height: 640px;
+			overflow-y: auto;
+			color: #2d3748;
+			background: #fff;
+		}
+		.brand {
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			gap: 10px;
+			padding: 14px 16px;
+			background: #fff;
+			box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+		}
+		.brand img { width: 28px; height: 28px; object-fit: contain; }
+		.brand h1 {
+			margin: 0;
+			font-size: 18px;
+			font-weight: 700;
+			color: var(--color-dark);
+			letter-spacing: -0.4px;
+		}
+		.section { padding: 20px; }
+		label {
+			display: block;
+			margin: 14px 0 6px;
+			font-size: 11px;
+			font-weight: 600;
+			color: #4a5568;
+			text-transform: uppercase;
+			letter-spacing: 0.5px;
+		}
+		label:first-child { margin-top: 0; }
+		input, select {
+			width: 100%;
+			padding: 10px 12px;
+			border: 1px solid var(--color-border);
+			border-radius: 8px;
+			font-size: 13px;
+			background: #f7fafc;
+			color: #2d3748;
+		}
+		input:focus, select:focus {
+			outline: none;
+			border-color: var(--color-primary);
+			background: #fff;
+			box-shadow: 0 0 0 3px rgba(184, 255, 144, 0.25);
+		}
+		select {
+			appearance: none;
+			background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23061d19' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+			background-repeat: no-repeat;
+			background-position: right 12px center;
+			padding-right: 36px;
+		}
+		button {
+			display: block;
+			width: 100%;
+			max-width: 220px;
+			margin: 14px auto 0;
+			padding: 12px 20px;
+			background: var(--color-primary);
+			color: var(--color-dark);
+			border: none;
+			border-radius: 1rem;
+			cursor: pointer;
+			font-size: 13px;
+			font-weight: 600;
+			text-transform: uppercase;
+			letter-spacing: 0.4px;
+			transition: 0.2s;
+		}
+		button:hover { background: var(--color-dark); color: var(--color-primary); }
+		button.secondary { background: var(--color-danger); color: #fff; }
+		button.secondary:hover { opacity: 0.9; color: #fff; }
+		button:disabled { background: #cbd5e0; color: #718096; cursor: not-allowed; }
+		.hidden { display: none !important; }
+		.muted { color: var(--color-muted); font-size: 12px; line-height: 1.45; margin-top: 10px; }
+		.status {
+			padding: 10px 12px;
+			border-radius: 8px;
+			margin: 12px 16px;
+			font-size: 12px;
+			font-weight: 500;
+		}
+		.status.success { background: #84fab0; color: #155724; }
+		.status.error { background: #fa709a; color: #721c24; }
+		.status.info { background: #a8edea; color: #0c5460; }
+		.status.warning {
+			background: #fff3cd;
+			color: #856404;
+			border: 1px solid #ffeeba;
+			margin: 0 0 14px;
+		}
+		.tabs {
+			display: flex;
+			border-bottom: 2px solid var(--color-border);
+			padding: 0 2px;
+			overflow-x: auto;
+		}
+		.tab {
+			flex: 1;
+			min-width: 0;
+			max-width: none;
+			margin: 0;
+			padding: 10px 2px;
+			background: transparent;
+			border-radius: 0;
+			color: var(--color-muted);
+			font-size: 10px;
+			box-shadow: none;
+			white-space: nowrap;
+		}
+		.tab:hover { background: rgba(184,255,144,0.12); color: var(--color-dark); }
+		.tab.active {
+			color: var(--color-dark);
+			background: rgba(184,255,144,0.18);
+			box-shadow: inset 0 -3px 0 var(--color-primary);
+		}
+		.tab-content { display: none; padding: 18px; }
+		.tab-content.active { display: block; }
+		.stats {
+			display: grid;
+			grid-template-columns: repeat(3, 1fr);
+			gap: 10px;
+			margin-top: 8px;
+		}
+		.stat {
+			background: linear-gradient(160deg, #f7fafc 0%, #eef9e6 100%);
+			border: 1px solid #e6f0df;
+			border-radius: 12px;
+			padding: 14px 10px;
+			text-align: center;
+		}
+		.stat .num {
+			font-size: 26px;
+			font-weight: 700;
+			color: var(--color-dark);
+			line-height: 1.1;
+		}
+		.stat .lbl {
+			margin-top: 4px;
+			font-size: 10px;
+			font-weight: 600;
+			text-transform: uppercase;
+			letter-spacing: 0.4px;
+			color: var(--color-muted);
+		}
+		.scan-panel {
+			background: #f7fafc;
+			border: 1px solid var(--color-border);
+			border-radius: 12px;
+			padding: 12px;
+			margin-top: 14px;
+			font-size: 12px;
+			line-height: 1.5;
+		}
+		.scan-panel .row {
+			display: flex;
+			justify-content: space-between;
+			gap: 8px;
+			margin-top: 4px;
+		}
+		.scan-panel .row:first-child { margin-top: 0; }
+		.badge {
+			display: inline-block;
+			padding: 2px 8px;
+			border-radius: 999px;
+			font-size: 10px;
+			font-weight: 700;
+			text-transform: uppercase;
+		}
+		.badge.on { background: #b8ff90; color: #061d19; }
+		.badge.off { background: #e2e8f0; color: #718096; }
+		.input-group { margin-bottom: 4px; }
+		.error-message { color: var(--color-danger); font-size: 11px; margin-top: 4px; display: none; }
+		.error-message.show { display: block; }
+		input.error { border-color: var(--color-danger); background: #fff5f5; }
+		.text-center { text-align: center; }
+		.btn-row { display: flex; gap: 10px; margin-top: 8px; }
+		.btn-row button { margin: 0; max-width: none; flex: 1; }
+		textarea {
+			width: 100%;
+			padding: 10px 12px;
+			border: 1px solid var(--color-border);
+			border-radius: 8px;
+			font-size: 13px;
+			line-height: 1.45;
+			background: #f7fafc;
+			color: #2d3748;
+			resize: vertical;
+			font-family: inherit;
+		}
+		textarea:focus {
+			outline: none;
+			border-color: var(--color-primary);
+			background: #fff;
+			box-shadow: 0 0 0 3px rgba(184, 255, 144, 0.25);
+		}
+		.cl-qa {
+			margin-top: 12px;
+			padding: 10px 12px;
+			border-radius: 8px;
+			background: #f7fafc;
+			border: 1px solid var(--color-border);
+			font-size: 12px;
+			line-height: 1.45;
+			white-space: pre-wrap;
+			max-height: 160px;
+			overflow-y: auto;
+		}
+		button.ghost {
+			background: #edf2f7;
+			color: var(--color-dark);
+			text-transform: none;
+			letter-spacing: 0;
+			font-weight: 600;
+			max-width: none;
+		}
+		button.ghost:hover { background: var(--color-dark); color: #fff; }
+	</style>
+</head>
+<body>
+	<div class="brand">
+		<img src="icons/icon48.png" alt="LeadCliq" />
+		<h1>LeadCliq</h1>
+	</div>
+
+	<div id="loginSection" class="section">
+		<form id="loginForm" novalidate>
+			<p class="muted text-center" style="margin-top:0">Sign in with your <strong>LeadCliq.ai</strong> account (same email &amp; password as the website).</p>
+			<div class="input-group">
+				<label for="email">Email</label>
+				<input id="email" type="email" placeholder="you@example.com" required />
+				<div id="emailError" class="error-message"></div>
+			</div>
+			<div class="input-group">
+				<label for="password">Password</label>
+				<input id="password" type="password" placeholder="••••••••" required minlength="6" />
+				<div id="passwordError" class="error-message"></div>
+			</div>
+			<div class="text-center">
+				<button id="loginBtn" type="submit">Login</button>
+			</div>
+			<p class="muted text-center">
+				Forgot password?
+				<a href="https://leadcliq.ai/forgot-password" target="_blank" rel="noopener noreferrer" style="color:var(--color-dark);font-weight:600">Reset on LeadCliq.ai</a>
+			</p>
+		</form>
+	</div>
+
+	<div id="tabsContainer" class="hidden">
+		<div class="tabs">
+			<button class="tab active" data-tab="dashboard">Home</button>
+			<button class="tab" data-tab="proxy">Proxy</button>
+			<button class="tab" data-tab="autobid">Auto Bid</button>
+			<button class="tab" data-tab="cover">Cover</button>
+			<button class="tab" data-tab="account">Account</button>
+		</div>
+
+		<div id="tab-dashboard" class="tab-content active">
+			<div class="status warning">
+				<strong>Recommended:</strong> Connect a profile proxy before opening Upwork so your traffic uses the correct IP.
+			</div>
+			<p class="muted" style="margin-top:0">Your workspace at a glance.</p>
+			<div class="stats">
+				<div class="stat"><div class="num" id="statTeams">—</div><div class="lbl">Teams</div></div>
+				<div class="stat"><div class="num" id="statCampaigns">—</div><div class="lbl">Campaigns</div></div>
+				<div class="stat"><div class="num" id="statProfiles">—</div><div class="lbl">Profiles</div></div>
+			</div>
+			<div class="scan-panel" style="margin-top:14px">
+				<div class="row">
+					<span>Proxy</span>
+					<span id="dashProxyBadge" class="badge off">Off</span>
+				</div>
+				<div class="row"><span>Active</span><span id="dashProxyProfile">—</span></div>
+				<div class="row"><span>Browser IP</span><span id="dashProxyIp">—</span></div>
+			</div>
+			<div class="btn-row" style="margin-top:14px">
+				<button type="button" id="goProxyBtn">Open Proxy</button>
+				<button type="button" id="goAutobidBtn" class="ghost">Auto Bid</button>
+			</div>
+			<p class="muted">Enable a profile proxy first, then run Auto Bid so Upwork traffic matches the profile IP.</p>
+		</div>
+
+		<div id="tab-proxy" class="tab-content">
+			<p class="muted" style="margin-top:0">Pick a profile and enable its proxy. It stays on for all Chrome tabs until you disable it — independent of Auto Bid.</p>
+
+			<label for="proxyTeamSelect">Team</label>
+			<select id="proxyTeamSelect">
+				<option value="">Select team…</option>
+			</select>
+
+			<label for="proxyProfileSelect">Profile</label>
+			<select id="proxyProfileSelect" disabled>
+				<option value="">Select team first…</option>
+			</select>
+
+			<div class="scan-panel" id="proxyPanel" style="margin-top:14px">
+				<div class="row">
+					<span>Status</span>
+					<span id="proxyMatchBadge" class="badge off">Off</span>
+				</div>
+				<div class="row"><span>Active profile</span><span id="proxyActiveProfile">—</span></div>
+				<div class="row"><span>Browser IP</span><span id="proxyBrowserIp">—</span></div>
+				<div class="row"><span>Profile IP</span><span id="proxyExpectedIp">—</span></div>
+			</div>
+
+			<div class="btn-row">
+				<button type="button" id="enableProxyBtn" disabled>Enable proxy</button>
+				<button type="button" id="disableProxyBtn" class="secondary" disabled>Disable</button>
+			</div>
+			<div class="btn-row" style="margin-top:8px">
+				<button type="button" id="refreshProxyBtn" class="ghost" disabled>Recheck IP</button>
+			</div>
+			<p class="muted">Use the profile’s HTTP proxy with correct username/password. Disable other proxy extensions if LeadCliq cannot control Chrome. Logout clears the proxy.</p>
+		</div>
+
+		<div id="tab-autobid" class="tab-content">
+			<label for="teamSelect">Team</label>
+			<select id="teamSelect">
+				<option value="">Select team…</option>
+			</select>
+
+			<label for="profileSelect">Profile</label>
+			<select id="profileSelect" disabled>
+				<option value="">Select team first…</option>
+			</select>
+
+			<div id="campaignHint" class="muted">Select a profile to load its campaigns.</div>
+
+			<div class="scan-panel" style="margin-top:12px">
+				<div class="row">
+					<span>Proxy</span>
+					<span id="autobidProxyBadge" class="badge off">Off</span>
+				</div>
+				<div class="row"><span>Active</span><span id="autobidProxyProfile">—</span></div>
+			</div>
+			<p class="muted" style="margin-top:8px">Manage proxy on the <button type="button" id="goProxyFromAutobid" class="ghost" style="display:inline;width:auto;max-width:none;margin:0;padding:2px 8px;text-transform:none;letter-spacing:0;">Proxy</button> tab. Start Scan needs that profile’s proxy on.</p>
+
+			<div class="btn-row">
+				<button type="button" id="startScanBtn" disabled>Start Scan</button>
+				<button type="button" id="stopScanBtn" class="secondary" disabled>Stop</button>
+			</div>
+
+			<div class="scan-panel" id="scanPanel">
+				<div class="row">
+					<span>Status</span>
+					<span id="scanRunningBadge" class="badge off">Idle</span>
+				</div>
+				<div class="row"><span>Scan tab</span><span id="scanTabId">—</span></div>
+				<div class="row"><span>Message</span><span id="scanStatusText">—</span></div>
+				<div class="row"><span>Scanned</span><span id="scanStatScanned">0</span></div>
+				<div class="row"><span>Matched</span><span id="scanStatMatched">0</span></div>
+				<div class="row"><span>Passes</span><span id="scanStatPasses">0</span></div>
+				<div class="row"><span>Last match</span><span id="scanLastMatch">—</span></div>
+				<div class="btn-row" style="margin-top:10px">
+					<button type="button" id="focusScanTabBtn" disabled>Focus scan tab</button>
+				</div>
+			</div>
+		</div>
+
+		<div id="tab-cover" class="tab-content">
+			<p class="muted" style="margin-top:0">Open an Upwork job or proposal page, autofill the description, pick a campaign, then generate. Fill on Upwork writes the cover letter, answers, By project, and duration.</p>
+
+			<label for="clTeamSelect">Team</label>
+			<select id="clTeamSelect">
+				<option value="">Select team…</option>
+			</select>
+
+			<label for="clProfileSelect">Profile</label>
+			<select id="clProfileSelect" disabled>
+				<option value="">Select team first…</option>
+			</select>
+
+			<label for="clCampaignSelect">Campaign</label>
+			<select id="clCampaignSelect" disabled>
+				<option value="">Select profile first…</option>
+			</select>
+
+			<label for="clJobTitle">Job title</label>
+			<input id="clJobTitle" type="text" placeholder="Optional — filled from page" />
+
+			<label for="clJobDescription">Job description</label>
+			<textarea id="clJobDescription" rows="8" placeholder="Paste the job post, or click Fill from page…"></textarea>
+
+			<div class="btn-row">
+				<button type="button" id="clFillBtn" class="ghost">Fill from page</button>
+				<button type="button" id="clGenerateBtn">Generate</button>
+			</div>
+
+			<label for="clResult">Cover letter</label>
+			<textarea id="clResult" rows="10" placeholder="Generated cover letter appears here…"></textarea>
+
+			<div class="btn-row">
+				<button type="button" id="clCopyBtn" class="ghost" disabled>Copy</button>
+				<button type="button" id="clApplyBtn" class="ghost" disabled>Fill on Upwork</button>
+			</div>
+
+			<div id="clQaBox" class="cl-qa hidden"></div>
+			<p class="muted">Uses the selected campaign’s prompts, experience, and portfolios — same as the admin Test tab.</p>
+		</div>
+
+		<div id="tab-account" class="tab-content">
+			<div class="status success" style="margin:0 0 12px">You are logged in</div>
+			<button id="logoutBtn" class="secondary" type="button">Logout</button>
+		</div>
+	</div>
+
+	<div id="result"></div>
+	<script src="popup.js"></script>
+</body>
+</html>

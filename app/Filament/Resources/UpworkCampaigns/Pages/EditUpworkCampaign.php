@@ -2,25 +2,20 @@
 
 namespace App\Filament\Resources\UpworkCampaigns\Pages;
 
+use App\Filament\Resources\UpworkCampaigns\Concerns\TestsUpworkCampaignJobs;
 use App\Filament\Resources\UpworkCampaigns\UpworkCampaignResource;
-use App\Services\BotAIService;
-use Filament\Actions\Action;
+use App\Models\UpworkCampaign;
+use App\Services\CampaignMatchWebhookService;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\ViewAction;
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\EditRecord;
-use Throwable;
 
 class EditUpworkCampaign extends EditRecord
 {
+    use TestsUpworkCampaignJobs;
+
     protected static string $resource = UpworkCampaignResource::class;
-
-    /** @var array{is_matched: bool, reason: string}|null */
-    public ?array $modalAnalyzeResult = null;
-
-    public ?string $modalWriteCoverLetter = null;
-
-    public ?string $modalWriteQa = null;
 
     protected function getHeaderActions(): array
     {
@@ -30,41 +25,44 @@ class EditUpworkCampaign extends EditRecord
         ];
     }
 
-    /**
-     * Result modal: cover letter + Q&A (after Write).
-     */
-    public function viewWriteResultAction(): Action
+    public function testWebhook(): void
     {
-        return Action::make('viewWriteResult')
-            ->modalHeading('Cover letter & answers')
-            ->modalWidth('4xl')
-            ->modalContent(fn (): \Illuminate\Contracts\View\View => view(
-                'filament.resources.upwork-campaigns.test-modal-write',
-                [
-                    'coverLetter' => $this->modalWriteCoverLetter ?? '',
-                    'qa' => $this->modalWriteQa ?? '',
-                ],
-            ))
-            ->modalSubmitAction(false)
-            ->modalCancelActionLabel('Close');
-    }
+        /** @var UpworkCampaign $record */
+        $record = $this->getRecord();
+        $url = trim((string) ($this->data['webhook_url'] ?? $record->webhook_url));
 
-    /**
-     * Result modal: job vs campaign match (after Analyze).
-     */
-    public function viewAnalyzeResultAction(): Action
-    {
-        return Action::make('viewAnalyzeResult')
-            ->modalHeading('Job match analysis')
-            ->modalWidth('2xl')
-            ->modalContent(fn (): \Illuminate\Contracts\View\View => view(
-                'filament.resources.upwork-campaigns.test-modal-analyze',
-                [
-                    'result' => $this->modalAnalyzeResult,
-                ],
-            ))
-            ->modalSubmitAction(false)
-            ->modalCancelActionLabel('Close');
+        if ($url === '') {
+            Notification::make()
+                ->title('No webhook URL')
+                ->body('Enter a match webhook URL first.')
+                ->warning()
+                ->send();
+
+            return;
+        }
+
+        $campaign = $record->replicate();
+        $campaign->id = $record->id;
+        $campaign->title = $record->title;
+        $campaign->webhook_url = $url;
+
+        $result = app(CampaignMatchWebhookService::class)->sendTest($campaign);
+
+        if (! $result['success']) {
+            Notification::make()
+                ->title('Webhook test failed')
+                ->body($result['message'])
+                ->danger()
+                ->send();
+
+            return;
+        }
+
+        Notification::make()
+            ->title('Webhook test sent')
+            ->body($result['message'])
+            ->success()
+            ->send();
     }
 
     /**
@@ -100,139 +98,5 @@ class EditUpworkCampaign extends EditRecord
         }
 
         return parent::mutateFormDataBeforeSave($data);
-    }
-
-    public function writeCoverLetterTest(): void
-    {
-        $description = trim((string) ($this->data['test_job_description'] ?? ''));
-        $questionRows = $this->data['test_job_questions'] ?? [];
-
-        if ($description === '') {
-            Notification::make()
-                ->title('Add a job description')
-                ->body('Enter a sample job description before running Write.')
-                ->warning()
-                ->send();
-
-            return;
-        }
-
-        $questions = collect(is_array($questionRows) ? $questionRows : [])
-            ->map(fn ($row) => is_array($row) ? trim((string) ($row['text'] ?? '')) : '')
-            ->filter()
-            ->values()
-            ->all();
-
-        $jobData = [
-            'title' => 'Test job',
-            'description' => $description,
-            'questions' => $questions,
-            'client_name' => 'Test client',
-        ];
-
-        $record = $this->getRecord()->fresh(['linkedPortfolios']);
-
-        $campaignData = array_merge($record->only([
-            'title',
-            'ai_prompt',
-            'ai_cover_letter',
-            'experience',
-            'questions_context',
-            'job_do',
-            'job_dont',
-            'rule_client_avg_spent',
-            'rule_client_avghire',
-            'rule_max_interviews',
-            'rule_job_posted_ago',
-            'rule_max_proposal',
-            'rule_min_client_rating',
-            'search_url',
-            'max_connect_per_bid',
-            'max_daily_bid',
-        ]), [
-            'portfolios' => $record->portfoliosPromptText(),
-        ]);
-
-        try {
-            $result = app(BotAIService::class)->writeCoverLetter($jobData, $campaignData);
-        } catch (Throwable $e) {
-            Notification::make()
-                ->title('AI request failed')
-                ->body($e->getMessage())
-                ->danger()
-                ->send();
-
-            return;
-        }
-
-        $this->modalWriteCoverLetter = $result['cover_letter'] ?? '';
-
-        $lines = [];
-        foreach ($result['questions'] ?? [] as $row) {
-            $q = $row['question'] ?? '';
-            $a = $row['answer'] ?? '';
-            $lines[] = 'Q: '.$q."\n".'A: '.$a;
-        }
-        $this->modalWriteQa = implode("\n\n", $lines);
-
-        $this->mountAction('viewWriteResult');
-    }
-
-    public function analyzeJobTest(): void
-    {
-        $description = trim((string) ($this->data['test_job_description'] ?? ''));
-
-        if ($description === '') {
-            Notification::make()
-                ->title('Add a job description')
-                ->body('Enter a job description to analyze the match.')
-                ->warning()
-                ->send();
-
-            return;
-        }
-
-        $jobData = [
-            'description' => $description,
-            'questions' => [],
-            'skills' => [],
-        ];
-
-        $record = $this->getRecord()->fresh(['linkedPortfolios']);
-
-        $campaignData = array_merge($record->only([
-            'title',
-            'ai_prompt',
-            'ai_cover_letter',
-            'experience',
-            'questions_context',
-            'job_do',
-            'job_dont',
-            'rule_client_avg_spent',
-            'rule_client_avghire',
-            'rule_max_interviews',
-            'rule_job_posted_ago',
-            'rule_max_proposal',
-            'rule_min_client_rating',
-            'search_url',
-            'max_connect_per_bid',
-            'max_daily_bid',
-        ]), [
-            'portfolios' => $record->portfoliosPromptText(),
-        ]);
-
-        try {
-            $this->modalAnalyzeResult = app(BotAIService::class)->analyzeJob($jobData, $campaignData);
-        } catch (Throwable $e) {
-            Notification::make()
-                ->title('AI request failed')
-                ->body($e->getMessage())
-                ->danger()
-                ->send();
-
-            return;
-        }
-
-        $this->mountAction('viewAnalyzeResult');
     }
 }

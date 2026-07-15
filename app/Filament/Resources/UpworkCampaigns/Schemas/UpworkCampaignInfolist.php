@@ -6,8 +6,10 @@ use App\Filament\Resources\UpworkCampaigns\Pages\ViewUpworkCampaign;
 use App\Filament\Resources\UpworkCampaigns\RelationManagers\LinkedPortfoliosRelationManager;
 use App\Filament\Resources\UpworkCampaigns\RelationManagers\UpworkCampaignJobStatsRelationManager;
 use App\Filament\Support\ExpandableText;
+use Filament\Actions\Action;
 use Filament\Infolists\Components\IconEntry;
 use Filament\Infolists\Components\TextEntry;
+use Filament\Schemas\Components\Group;
 use Filament\Schemas\Components\Livewire;
 use Filament\Schemas\Components\Tabs;
 use Filament\Schemas\Components\Tabs\Tab;
@@ -33,6 +35,19 @@ class UpworkCampaignInfolist
                                     ->label('Search URL')
                                     ->url(fn ($state) => filled($state) ? $state : null)
                                     ->columnSpanFull(),
+                                TextEntry::make('webhook_url')
+                                    ->label('Match webhook URL')
+                                    ->placeholder('—')
+                                    ->url(fn ($state) => filled($state) ? $state : null)
+                                    ->columnSpanFull()
+                                    ->afterContent(
+                                        Action::make('testWebhook')
+                                            ->label('Test')
+                                            ->icon('heroicon-o-paper-airplane')
+                                            ->color('gray')
+                                            ->visible(fn ($record): bool => filled($record?->webhook_url))
+                                            ->action('testWebhook'),
+                                    ),
                                 TextEntry::make('timezone')
                                     ->placeholder('—'),
                                 TextEntry::make('max_daily_bid')
@@ -169,6 +184,13 @@ class UpworkCampaignInfolist
                                     ->label('Job don\'t')
                                     ->formatStateUsing(fn (?string $state) => ExpandableText::render($state))
                                     ->html()
+                                    ->columnSpanFull(),
+                            ]),
+                        Tab::make('Test')
+                            ->icon('heroicon-o-beaker')
+                            ->schema([
+                                Group::make(UpworkCampaignForm::testTabSchema())
+                                    ->statePath('data')
                                     ->columnSpanFull(),
                             ]),
                     ])

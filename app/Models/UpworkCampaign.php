@@ -25,6 +25,7 @@ class UpworkCampaign extends Model
         'is_active',
         'max_connect_per_bid',
         'search_url',
+        'webhook_url',
         'timezone',
         'bidding_timezone',
         'max_daily_bid',

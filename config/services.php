@@ -41,4 +41,8 @@ return [
         'webhook_secret' => env('RAZORPAY_WEBHOOK_SECRET'),
     ],
 
+    'capsolver' => [
+        'key' => env('CAPSOLVER_API_KEY'),
+    ],
+
 ];
