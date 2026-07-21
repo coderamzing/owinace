@@ -808,9 +808,39 @@ class BotController extends Controller
             ], 422);
         }
 
+        $cookies = is_array($solution['cookies'] ?? null) ? $solution['cookies'] : [];
+
+        // CapSolver may return cookies as an object map or an array of {name,value}.
+        $cookieNames = [];
+        $hasCfClearance = false;
+        foreach ($cookies as $key => $value) {
+            if (is_array($value) && isset($value['name'])) {
+                $cookieNames[] = (string) $value['name'];
+                if ($value['name'] === 'cf_clearance' && ! empty($value['value'])) {
+                    $hasCfClearance = true;
+                }
+            } else {
+                $cookieNames[] = (string) $key;
+                if ($key === 'cf_clearance' && ! empty($value)) {
+                    $hasCfClearance = true;
+                }
+            }
+        }
+        if (! empty($solution['token'])) {
+            $hasCfClearance = true;
+        }
+
         return response()->json([
             'success' => true,
             'data' => $solution,
+            'diagnostics' => [
+                'hasCfClearance' => $hasCfClearance,
+                'cookieKeys' => $cookieNames,
+                'solutionUserAgent' => $solution['userAgent'] ?? null,
+                'userAgentMatches' => empty($solution['userAgent'])
+                    || $solution['userAgent'] === $validated['userAgent'],
+                'expectedIp' => $profileOrError->proxy_last_ip,
+            ],
         ]);
     }
 

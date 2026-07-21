@@ -550,33 +550,82 @@ async function findReusableScanTab() {
 	return null;
 }
 
+/**
+ * CapSolver may return cookies as an object map ({cf_clearance: "…"}) OR as an
+ * array of cookie objects ([{name, value, domain, …}]). Normalize both to a
+ * flat [{name, value}] list so cf_clearance is never silently dropped.
+ */
+function normalizeCapSolverCookies(raw) {
+	const out = [];
+	if (!raw) return out;
+
+	if (Array.isArray(raw)) {
+		for (const c of raw) {
+			if (c && typeof c === 'object' && c.name) {
+				out.push({ name: String(c.name), value: String(c.value ?? '') });
+			}
+		}
+		return out;
+	}
+
+	if (typeof raw === 'object') {
+		for (const [name, value] of Object.entries(raw)) {
+			// Guard against nested cookie objects keyed by index/name
+			if (value && typeof value === 'object' && value.name) {
+				out.push({ name: String(value.name), value: String(value.value ?? '') });
+			} else {
+				out.push({ name: String(name), value: String(value ?? '') });
+			}
+		}
+	}
+	return out;
+}
+
 async function applyCapSolverCookies(solution, websiteURL) {
-	const cookies = { ...(solution?.cookies || {}) };
-	if (solution?.token && !cookies.cf_clearance) {
-		cookies.cf_clearance = solution.token;
+	const list = normalizeCapSolverCookies(solution?.cookies);
+	const hasClearance = list.some((c) => c.name === 'cf_clearance');
+	if (!hasClearance && solution?.token) {
+		list.push({ name: 'cf_clearance', value: String(solution.token) });
 	}
-	const names = Object.keys(cookies);
-	if (!names.length) return false;
+	if (!list.length) return false;
 
-	let hostname;
+	let apex;
 	try {
-		hostname = new URL(websiteURL).hostname.replace(/^www\./, '');
+		apex = new URL(websiteURL).hostname.replace(/^www\./, '');
 	} catch {
-		hostname = 'upwork.com';
+		apex = 'upwork.com';
 	}
 
-	for (const name of names) {
-		await chrome.cookies.set({
-			url: `https://www.${hostname}/`,
-			name,
-			value: String(cookies[name]),
-			domain: `.${hostname}`,
-			path: '/',
-			secure: true,
-			httpOnly: name === 'cf_clearance',
-		}).catch(() => null);
+	// Set on both the apex domain and the exact www host so cf_clearance is
+	// matched regardless of which host the challenge/search page is served on.
+	const targets = [
+		{ url: `https://www.${apex}/`, domain: `.${apex}` },
+		{ url: `https://${apex}/`, domain: `.${apex}` },
+	];
+
+	let applied = 0;
+	for (const cookie of list) {
+		for (const t of targets) {
+			const ok = await chrome.cookies.set({
+				url: t.url,
+				name: cookie.name,
+				value: cookie.value,
+				domain: t.domain,
+				path: '/',
+				secure: true,
+				httpOnly: cookie.name === 'cf_clearance',
+				sameSite: 'no_restriction',
+			}).then((c) => !!c).catch(() => false);
+			if (ok) applied += 1;
+		}
 	}
-	return true;
+
+	const names = list.map((c) => c.name);
+	console.log(
+		`[LeadCliq] CapSolver cookies applied: ${names.join(', ') || '(none)'} ` +
+			`(cf_clearance=${names.includes('cf_clearance')}, sets=${applied})`
+	);
+	return applied > 0;
 }
 
 async function solveCloudflareOnTab(tabId, campaign) {
@@ -602,19 +651,51 @@ async function solveCloudflareOnTab(tabId, campaign) {
 	});
 
 	const solution = solved.data;
+	const diag = solved.diagnostics || {};
+	scanState.lastCapSolverDiag = diag;
+
+	const clearanceCookies = normalizeCapSolverCookies(solution?.cookies);
+	const hasClearance =
+		clearanceCookies.some((c) => c.name === 'cf_clearance') || !!solution?.token;
+	if (!hasClearance) {
+		// CapSolver answered but returned only a Turnstile token / no clearance
+		// cookie — a cf_clearance is required to pass an interstitial challenge.
+		scanState.status =
+			'CapSolver returned no cf_clearance cookie (wrong challenge type / IP mismatch)';
+		await broadcastStatus();
+		throw new Error('CapSolver returned no cf_clearance cookie');
+	}
+
+	if (diag.userAgentMatches === false) {
+		console.warn(
+			`[LeadCliq] CapSolver UA mismatch — solution UA differs from browser UA. cf_clearance will be rejected on reload.`
+		);
+	}
+
 	const applied = await applyCapSolverCookies(solution, websiteURL);
 	if (!applied) {
 		throw new Error('CapSolver returned no cookies');
 	}
 
-	scanState.status = 'CapSolver solved — reloading…';
+	scanState.status = `CapSolver solved (cf_clearance ${diag.hasCfClearance ? 'ok' : 'via token'}) — reloading…`;
 	await broadcastStatus();
 
 	const targetUrl = campaign?.search_url || websiteURL;
 	await chrome.tabs.update(tabId, { url: targetUrl });
 	await waitTabComplete(tabId);
-	await sleep(2000);
-	return true;
+
+	// Give the browser time to run Cloudflare's JS challenge with the fresh
+	// cookies. A managed challenge often clears itself here (and mints a valid
+	// cf_clearance for the browser's own exit IP) even if CapSolver's cookie
+	// was tied to a slightly different session.
+	scanState.status = 'CapSolver solved — verifying challenge cleared…';
+	await broadcastStatus();
+	const post = await sendToTab(tabId, {
+		type: 'SCAN_PAGE_STATE',
+		timeoutMs: 30000,
+		cfHitsNeeded: 12,
+	}).catch(() => null);
+	return post?.state === 'jobs';
 }
 
 async function notifyLoginRequired(campaign) {
@@ -646,13 +727,17 @@ async function notifyLoginRequired(campaign) {
 /**
  * Wait for jobs list; solve Cloudflare via server CapSolver if needed.
  */
-async function ensureJobsReady(tabId, campaign, { maxSolveAttempts = 2 } = {}) {
+async function ensureJobsReady(tabId, campaign, { maxSolveAttempts = 3 } = {}) {
 	for (let attempt = 0; attempt <= maxSolveAttempts; attempt++) {
 		if (!scanState?.running) return false;
 
+		// After a solve attempt, be patient: let the browser clear the managed
+		// challenge on its own before deciding to spend another CapSolver task.
+		const isRetry = attempt > 0;
 		const stateRes = await sendToTab(tabId, {
 			type: 'SCAN_PAGE_STATE',
-			timeoutMs: 35000,
+			timeoutMs: isRetry ? 45000 : 35000,
+			cfHitsNeeded: isRetry ? 12 : 3,
 		});
 		const state = stateRes?.state;
 
@@ -675,12 +760,29 @@ async function ensureJobsReady(tabId, campaign, { maxSolveAttempts = 2 } = {}) {
 		}
 
 		if (attempt >= maxSolveAttempts) {
-			scanState.status = 'Cloudflare persisted after CapSolver attempts';
+			const d = scanState.lastCapSolverDiag || {};
+			let reason = '';
+			if (d.userAgentMatches === false) {
+				reason = ' — UA mismatch (CapSolver used a different User-Agent)';
+			} else if (d.hasCfClearance === false) {
+				reason = ' — no cf_clearance returned';
+			} else if (d.expectedIp) {
+				reason = ` — cookie rejected (likely proxy exit-IP ≠ ${d.expectedIp})`;
+			}
+			scanState.status = `Cloudflare persisted after CapSolver attempts${reason}`;
 			await broadcastStatus();
 			return false;
 		}
 
-		await solveCloudflareOnTab(tabId, campaign);
+		scanState.status = `Cloudflare challenge — CapSolver attempt ${attempt + 1}/${maxSolveAttempts}…`;
+		await broadcastStatus();
+		const cleared = await solveCloudflareOnTab(tabId, campaign);
+		if (cleared) {
+			if (scanState?.running) {
+				await sendToTab(tabId, { type: 'SCAN_MARK_TAB' }).catch(() => {});
+			}
+			return true;
+		}
 	}
 	return false;
 }

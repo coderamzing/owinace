@@ -120,22 +120,24 @@
 	 * (or normal pages with CF scripts) does not create CapSolver tasks.
 	 * @returns {'jobs'|'cloudflare'|'timeout'}
 	 */
-	async function waitForJobsOrCloudflare(timeoutMs = 35000) {
+	async function waitForJobsOrCloudflare(timeoutMs = 35000, cfHitsNeeded = 3) {
 		const start = Date.now();
 		let cfHits = 0;
 		while (Date.now() - start < timeoutMs) {
 			if (jobCount() > 0) return 'jobs';
 			if (isCloudflareChallenge()) {
 				cfHits += 1;
-				// ~4.5s of sustained challenge before calling CapSolver
-				if (cfHits >= 3) return 'cloudflare';
+				// Sustained challenge (cfHitsNeeded × ~1.5s) before calling CapSolver.
+				// Post-solve checks pass a higher threshold so the browser has time
+				// to clear the managed challenge on its own with the fresh cookies.
+				if (cfHits >= cfHitsNeeded) return 'cloudflare';
 			} else {
 				cfHits = 0;
 			}
 			await sleep(1500);
 		}
 		if (jobCount() > 0) return 'jobs';
-		if (cfHits >= 2 && isCloudflareChallenge()) return 'cloudflare';
+		if (cfHits >= Math.max(2, cfHitsNeeded - 1) && isCloudflareChallenge()) return 'cloudflare';
 		return 'timeout';
 	}
 

@@ -67,12 +67,21 @@ class CapSolverService
             $taskId = $createData['taskId'] ?? null;
 
             if (! $taskId) {
-                Log::error('CapSolver createTask failed', ['response' => $createData]);
+                Log::error('CapSolver createTask failed', [
+                    'errorId' => $createData['errorId'] ?? null,
+                    'errorCode' => $createData['errorCode'] ?? null,
+                    'errorDescription' => $createData['errorDescription'] ?? null,
+                    'response' => $createData,
+                ]);
 
                 return null;
             }
 
-            Log::info('CapSolver task created', ['taskId' => $taskId]);
+            Log::info('CapSolver task created', [
+                'taskId' => $taskId,
+                'websiteURL' => $websiteURL,
+                'proxyAddress' => $proxyFields['proxyAddress'] ?? null,
+            ]);
 
             for ($attempt = 0; $attempt < self::MAX_POLL_ATTEMPTS; $attempt++) {
                 sleep(self::POLL_INTERVAL_SECONDS);
@@ -99,6 +108,15 @@ class CapSolverService
                         $cookies['cf_clearance'] = $solution['token'];
                     }
 
+                    Log::info('CapSolver solved', [
+                        'taskId' => $taskId,
+                        'cookieKeys' => array_keys($cookies),
+                        'hasCfClearance' => ! empty($cookies['cf_clearance']),
+                        'solutionUserAgent' => $solution['userAgent'] ?? null,
+                        'requestUserAgent' => $userAgent,
+                        'userAgentMatches' => ($solution['userAgent'] ?? $userAgent) === $userAgent,
+                    ]);
+
                     return [
                         'cookies' => $cookies,
                         'token' => $solution['token'] ?? null,
@@ -107,7 +125,12 @@ class CapSolverService
                 }
 
                 if ($status === 'failed' || ! empty($data['errorId'])) {
-                    Log::error('CapSolver solve failed', ['response' => $data]);
+                    Log::error('CapSolver solve failed', [
+                        'taskId' => $taskId,
+                        'errorId' => $data['errorId'] ?? null,
+                        'errorCode' => $data['errorCode'] ?? null,
+                        'errorDescription' => $data['errorDescription'] ?? null,
+                    ]);
 
                     return null;
                 }

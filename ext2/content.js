@@ -26,7 +26,10 @@
 						break;
 
 					case 'SCAN_PAGE_STATE': {
-						const ready = await Scan.waitForJobsOrCloudflare(msg.timeoutMs || 35000);
+						const ready = await Scan.waitForJobsOrCloudflare(
+							msg.timeoutMs || 35000,
+							msg.cfHitsNeeded || 3
+						);
 						// Jobs always win — do not CapSolver a loaded Upwork page
 						if (ready === 'jobs' || Scan.jobCount() > 0) {
 							sendResponse({ ok: true, state: 'jobs', url: location.href });
