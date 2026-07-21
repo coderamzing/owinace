@@ -1,6 +1,6 @@
 // LeadCliq ext2 — API + Phase 1 scan orchestrator (no auto-apply)
-// const BACKEND_URL = 'https://leadcliq.ai/';
-const BACKEND_URL = 'http://localhost:8000/';
+const BACKEND_URL = 'https://leadcliq.ai/';
+//const BACKEND_URL = 'http://localhost:8000/';
 const SCAN_ALARM = 'leadcliq-scan-tick';
 // Match upbot2/lib/engine.js: randomDelay(1*60, 5*60) between campaigns
 const BETWEEN_CAMPAIGN_MIN_MS = 60_000;
@@ -10,6 +10,10 @@ const EMPTY_CAMPAIGNS_MS = 10 * 60_000;
 const BETWEEN_JOB_MIN_MS = 8_000;
 const BETWEEN_JOB_MAX_MS = 20_000;
 const MAX_EXTRACTS_PER_PASS = 5;
+/** Pause after Start Scan before opening Upwork */
+const SCAN_START_WAIT_MS = 5_000;
+/** Pause after search page load before first job action (open dialog) */
+const PAGE_LOAD_SETTLE_MS = 10_000;
 const IP_CHECK_URLS = [
 	'https://api.ipify.org?format=json',
 	'https://ipv4.nexcess.net/',
@@ -682,8 +686,10 @@ async function ensureJobsReady(tabId, campaign, { maxSolveAttempts = 2 } = {}) {
 }
 
 async function settleAfterCampaignNavigation(tabId) {
-	// Match upbot2 runCampaign: humanDelay(5) ≈ 5–10s after opening search URL
-	await sleep(randomMs(5_000, 10_000));
+	// Fixed settle so the SPA finishes rendering before first job dialog open
+	scanState.status = `Page loaded — waiting ${formatWait(PAGE_LOAD_SETTLE_MS)} before first action…`;
+	await broadcastStatus();
+	await sleep(PAGE_LOAD_SETTLE_MS);
 	if (scanState?.running) {
 		await sendToTab(tabId, { type: 'SCAN_MARK_TAB' }).catch(() => {});
 	}
@@ -1069,7 +1075,7 @@ async function startScan({ teamId, profileCode, profileTitle }) {
 		const match = await ensureScanProxy(teamId, profileCode);
 		scanState.expectedIp = match.expectedIp;
 		scanState.browserIp = match.browserIp;
-		scanState.status = `Proxy OK (${match.browserIp}) — starting…`;
+		scanState.status = `Proxy OK (${match.browserIp}) — waiting ${formatWait(SCAN_START_WAIT_MS)}…`;
 		await broadcastStatus();
 	} catch (e) {
 		// Keep sticky proxy selection; only fail the scan start
@@ -1080,6 +1086,11 @@ async function startScan({ teamId, profileCode, profileTitle }) {
 		throw e;
 	}
 
+	await sleep(SCAN_START_WAIT_MS);
+	if (!scanState?.running) return;
+
+	scanState.status = 'Starting scan…';
+	await broadcastStatus();
 	await runScanLoop();
 }
 

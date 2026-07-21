@@ -54,20 +54,28 @@
 		// Real job list = never a challenge
 		if (jobCount() > 0) return false;
 
-		const title = (document.title || '').trim();
+		// Strip our own scan-tab prefix so "[LeadCliq] Just a moment…" still matches
+		const title = (document.title || '').replace(/^\[LeadCliq\]\s*/i, '').trim();
 		if (
-			/^just a moment/i.test(title) ||
+			/just a moment/i.test(title) ||
 			/^attention required/i.test(title) ||
-			/verify you are human/i.test(title)
+			/verify(?:ing)? you are human/i.test(title) ||
+			/checking (?:if the site connection is secure|your browser)/i.test(title)
 		) {
 			return true;
 		}
+
+		// Cloudflare sets this global on any challenge/interstitial page
+		try {
+			if (global._cf_chl_opt || global.__CF$cv$params) return true;
+		} catch (_) {}
 
 		// Visible challenge UI (not buried CF scripts on a normal SPA)
 		const visibleChallenge =
 			document.querySelector('#challenge-form') ||
 			document.querySelector('#challenge-stage') ||
 			document.querySelector('#cf-challenge-running') ||
+			document.querySelector('#cf-chl-widget') ||
 			document.querySelector('.cf-browser-verification') ||
 			document.querySelector('iframe[src*="challenges.cloudflare.com"]') ||
 			document.querySelector('iframe[src*="turnstile"]');
@@ -87,7 +95,7 @@
 		// Sparse interstitial body (CF holding page before Upwork mounts)
 		const bodyText = (document.body?.innerText || '').replace(/\s+/g, ' ').trim().slice(0, 400);
 		if (
-			/checking your browser|verify you are human|just a moment|enable javascript and cookies/i.test(
+			/checking your browser|verify(?:ing)? you are human|just a moment|enable javascript and cookies|needs to review the security of your connection/i.test(
 				bodyText
 			)
 		) {
@@ -279,6 +287,9 @@
 
 	function markScanTab() {
 		try {
+			// Never stamp our prefix onto a Cloudflare interstitial — it would
+			// corrupt the "Just a moment…" title CapSolver detection relies on.
+			if (isCloudflareChallenge()) return;
 			if (!document.title.startsWith('[LeadCliq]')) {
 				document.title = `[LeadCliq] ${document.title}`;
 			}
